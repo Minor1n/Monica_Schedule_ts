@@ -1,0 +1,190 @@
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="Content-Security-Policy" content="upgrade-insecure-requests">
+    <title>Monica Schedule</title>
+    <script src="https://telegram.org/js/telegram-web-app.js"></script>
+    <style>
+        html{width:100vw;scrollbar-width: none;}
+        body{
+            margin: 0;
+            font-family: Arial, sans-serif;
+        }
+        div{width:100%;}
+        table{
+            background-color: rgb(0,0,0,0.2);
+            padding: 1vw;
+            width: 100%;
+        }
+        td{
+            background-color: rgba(255,255,255,0.70);
+            text-align: center;
+            height: 3.5vw;
+        }
+        b{font-size: 2vw; margin:0.5vw;}
+        .line{background-color: rgb(0,0,0,0.0); height: 1vw;}
+        .title{font-size: 5vw;}
+        .title b{font-size: 5vw;}
+
+        button{
+            border: none;
+            background: none;
+            padding:0;
+        }
+        .arrow svg {
+            width:5vw;
+            height: auto;
+            margin: 0 2rem;
+            cursor: pointer;
+            overflow: visible;
+        }
+        .arrow svg polygon,
+        .arrow svg path {
+            transition: all 0.5s cubic-bezier(0.2, 1, 0.3, 1);
+            fill: #000;
+        }
+        .arrow svg:hover polygon,
+        .arrow svg:hover path {
+            transition: all 1s cubic-bezier(0.2, 1, 0.3, 1);
+            fill: #000;
+        }
+        .arrow svg:hover .arrow-pl {
+            animation: arrow-anim 1s cubic-bezier(0.2, 1, 0.3, 1);
+        }
+        .arrow svg:hover .arrow-pl-fixed {
+            animation: arrow-fixed-anim 1s cubic-bezier(0.2, 1, 0.3, 1);
+        }
+
+        @keyframes arrow-anim {
+            0% {
+                opacity: 1;
+                transform: translateX(0);
+            }
+            5% {
+                transform: translateX(-0.1rem);
+            }
+            100% {
+                transform: translateX(1rem);
+                opacity: 0;
+            }
+        }
+        @keyframes arrow-fixed-anim {
+            5% {
+                opacity: 0;
+            }
+            20% {
+                opacity: 0.4;
+            }
+            100% {
+                opacity: 1;
+            }
+        }
+
+        select{
+            all: unset;
+            scrollbar-width: none;
+            font-size: 5vw;
+        }
+        form{
+            display: inline;
+        }
+
+    </style>
+    <script>
+        let replacementPage = 0
+        let tg = window.Telegram.WebApp;
+        let user = tg?.initDataUnsafe?.user?.id ? tg.initDataUnsafe.user.id : 6018898378
+        fetch(`https://www.minorin.ru/randomGradient`).then(req=>{
+            req.json().then(res=>{
+                document.body.style.backgroundImage = String(res.gradient)
+            })
+        })
+
+        fetch(`https://www.minorin.ru/scheduleTable/${user}`).then(req=>{
+            req.json().then(res=>{
+                document.getElementById("schedule").innerHTML = `<table>${res.table}</table>`
+            })
+        })
+
+        fetch(`https://www.minorin.ru/replacementTable/${replacementPage}`).then(req=>{
+            req.json().then(res=>{
+                document.getElementById("replacement").innerHTML = `<table>${res.table}</table>`
+            })
+        })
+
+        fetch(`https://www.minorin.ru/selectGroup/${user}`).then(req=>{
+            req.json().then(res=>{
+                document.getElementById("selectGroup").innerHTML = `${res.table}`
+            })
+        })
+
+        function changePage(i){
+            if(replacementPage+i<0){alert('Замены не найдены!')}
+            else{
+                fetch(`https://www.minorin.ru/replacementTable/${replacementPage+i}`).then(req=>{
+                    req.json().then(res=>{
+                        if(res.table!==null){
+                            replacementPage += i
+                            document.getElementById("replacement").innerHTML = `<table>${res.table}</table>`
+                        }else{
+                            alert('Замены не найдены!')
+                        }
+                    })
+                })
+            }
+        }
+    </script>
+</head>
+<body>
+<table>
+    <tr class="line"></tr>
+    <tr>
+        <td class="title"><b>Расписание</b><form name="myForm"><select name="selectGroup" id="selectGroup"></select>▼</form></td>
+    </tr>
+</table>
+<div id="schedule"></div>
+<table>
+    <tr>
+        <td>
+            <button onclick="changePage(1)" class="arrow">
+                <svg width="18px" height="17px" viewBox="0 0 18 17" version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink">
+                    <g transform="translate(8.500000, 8.500000) scale(-1, 1) translate(-8.500000, -8.500000)">
+                        <polygon class="arrow-pl" points="16.3746667 8.33860465 7.76133333 15.3067621 6.904 14.3175671 14.2906667 8.34246869 6.908 2.42790698 7.76 1.43613596"></polygon>
+                        <polygon class="arrow-pl-fixed" points="16.3746667 8.33860465 7.76133333 15.3067621 6.904 14.3175671 14.2906667 8.34246869 6.908 2.42790698 7.76 1.43613596"></polygon>
+                        <path d="M-1.48029737e-15,0.56157424 L-1.48029737e-15,16.1929159 L9.708,8.33860465 L-2.66453526e-15,0.56157424 L-1.48029737e-15,0.56157424 Z M1.33333333,3.30246869 L7.62533333,8.34246869 L1.33333333,13.4327013 L1.33333333,3.30246869 L1.33333333,3.30246869 Z"></path>
+                    </g>
+                </svg>
+
+            </button>
+        </td>
+        <td class="title"><b>Замены</b></td>
+        <td>
+            <button onclick="changePage(-1)" class="arrow">
+                <svg width="18px" height="17px" viewBox="-1 0 18 17" version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink">
+                    <g>
+                        <polygon class="arrow-pl" points="16.3746667 8.33860465 7.76133333 15.3067621 6.904 14.3175671 14.2906667 8.34246869 6.908 2.42790698 7.76 1.43613596"></polygon>
+                        <polygon class="arrow-pl-fixed" points="16.3746667 8.33860465 7.76133333 15.3067621 6.904 14.3175671 14.2906667 8.34246869 6.908 2.42790698 7.76 1.43613596"></polygon>
+                        <path d="M-4.58892184e-16,0.56157424 L-4.58892184e-16,16.1929159 L9.708,8.33860465 L-1.64313008e-15,0.56157424 L-4.58892184e-16,0.56157424 Z M1.33333333,3.30246869 L7.62533333,8.34246869 L1.33333333,13.4327013 L1.33333333,3.30246869 L1.33333333,3.30246869 Z"></path>
+                    </g>
+                </svg>
+
+            </button>
+        </td>
+    </tr>
+</table>
+<div id="replacement"></div>
+<script>
+    let sGroup = document.myForm.selectGroup
+    function changeOption(){
+        const selectedOption = sGroup.options[sGroup.selectedIndex];
+        console.log(selectedOption.value)
+        fetch(`https://www.minorin.ru/updateGroup/${selectedOption.value}`).then(req=>{
+            req.json().then(res=>{
+                document.getElementById("schedule").innerHTML = `<table>${res.table}</table>`
+            })
+        })
+    }
+    sGroup.addEventListener("change", changeOption)
+</script>
+</body>
+</html>

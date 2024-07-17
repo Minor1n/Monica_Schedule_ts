@@ -1,0 +1,14 @@
+import dotenv from "dotenv";
+
+dotenv.config();
+
+const {TOKEN, PASSWORD, SQLHOST, SQLUSER, SQLDATABASE, SQLPASSWORD, HTMLSTART1, HTMLSTART2, HTMLEND, PUPPETEER} = process.env;
+
+if (!TOKEN||!PASSWORD||!SQLHOST||!SQLUSER||!SQLDATABASE||!SQLPASSWORD||!HTMLSTART1||!HTMLSTART2||!HTMLEND||!PUPPETEER) {
+    throw new Error("Missing environment variables");
+}
+
+export const config = {
+    TOKEN, PASSWORD, SQLHOST, SQLUSER, SQLDATABASE, SQLPASSWORD, HTMLSTART1, HTMLSTART2, HTMLEND,
+    PUPPETEER: eval(`(${PUPPETEER})`)
+};
