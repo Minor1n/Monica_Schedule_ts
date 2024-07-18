@@ -14,7 +14,7 @@ import {Commands} from "./commands";
 
 
 let app = express()
-//app.use(cors());
+app.use(cors());
 app.get('/', (req, res) => {res.sendFile(path.join(__dirname+'/index.html'))})
 app.get('/scheduleTable/[0-9]+', async (req, res) => {
     let user = await SQL.users.select(Number(req.url.slice(15)))
