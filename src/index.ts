@@ -54,7 +54,7 @@ app.get('/updateGroup/[0-9\%A-Za-z\-]+', async (req, res) => {
 })
 
 const httpServer = http.createServer(app);
-httpServer.listen(3000,'localhost');//46.23.96.113
+httpServer.listen(3000,'46.23.96.113');
 
 
 bot.command('start',(ctx)=>{Commands.start.execute(ctx)})
