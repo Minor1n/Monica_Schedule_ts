@@ -34,6 +34,10 @@ app.get('/dutyTable/[0-9]+/[0-9]+', async (req, res) => {
     let table = await Functions.duty.generateHTML(user.groupName,Number(nums[1]))
     res.send({table: table});
 })
+// app.get('/dutyPlus/[0-9]+', async (req, res) => {
+//     let user = await SQL.users.select(Number(req.url.slice(10)))
+//     res.send({message: await Functions.duty.dutyPlus(user)});
+// })
 app.get("/randomGradient", async (req,res) => {
     let gradients = await SQL.gradients.select_all_gradients()
     let gradient = gradients[Math.floor(Math.random() * (gradients.length-1))]
@@ -62,7 +66,7 @@ app.get('/updateGroup/[0-9\%A-Za-z\-]+', async (req, res) => {
 })
 
 const httpServer = http.createServer(app);
-httpServer.listen(3000,'46.23.96.113');
+httpServer.listen(3000,'46.23.96.113');//46.23.96.113
 
 
 bot.command('start',(ctx)=>{Commands.start(ctx)})

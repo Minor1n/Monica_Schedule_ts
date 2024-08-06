@@ -10,7 +10,7 @@ export async function duty(ctx:Context){
         let day = new Date().getDay()
         if(day !== 0 && author.payment !== "ban" && author.dutyDate + 43200000 <= date){
             await SQL.duty.insert(author.groupName,date,author.userId,author.name)
-            let users = await SQL.users.select_all()
+            let users = await SQL.users.select_all_by_group(author.groupName)
 
             await SQL.users.update_duty(author.userId,author.duty+1)//???????????
             await SQL.users.update_dutyDate(author.userId, date)
@@ -20,6 +20,7 @@ export async function duty(ctx:Context){
                     //await bot.telegram.sendMessage(user.userId,`${author.name} отдежурил, если нет обратитесь к администратору`).catch(e=>{console.log(e)})
                 }
             }
+            await ctx.reply('Успешно')
         }else{await bot.telegram.sendMessage(ctx.chat.id, 'Сегодня воскресенье, вы уже отдежурили или заблокированы').catch(e=>{console.log(e)});}
     }
 }

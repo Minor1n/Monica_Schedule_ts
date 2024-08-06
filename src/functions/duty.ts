@@ -1,4 +1,4 @@
-import {SQL} from "../sql";
+import {SQL, User} from "../sql";
 import nodeHtmlToImage from "node-html-to-image";
 import {config} from "../config";
 import {bot} from "../index";
@@ -96,3 +96,22 @@ ${resDuty.join('')}
 ${resTop.join('')}
 `)
 }
+//
+// export async function dutyPlus(author:User){
+//     let date = new Date().getTime()
+//     let day = new Date().getDay()
+//     if(day !== 0 && author.payment !== "ban" && author.dutyDate + 43200000 <= date){
+//         await SQL.duty.insert(author.groupName,date,author.userId,author.name)
+//         let users = await SQL.users.select_all_by_group(author.groupName)
+//
+//         await SQL.users.update_duty(author.userId,author.duty+1)//???????????
+//         await SQL.users.update_dutyDate(author.userId, date)
+//         for(let user of users){
+//             if((user.role === "admin"||user.scheduleDate === day)&&user.groupName===author.groupName){
+//                 console.log(user.scheduleDate)
+//                 //await bot.telegram.sendMessage(user.userId,`${author.name} отдежурил, если нет обратитесь к администратору`).catch(e=>{console.log(e)})
+//             }
+//         }
+//         return 'Успешно!'
+//     }else{return'Сегодня воскресенье, вы уже отдежурили или заблокированы'}
+// }
