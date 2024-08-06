@@ -1,9 +1,8 @@
 import {Context} from "telegraf";
-import {bot} from "../index";
 import {Functions} from "../functions";
 
 
-export async function execute(ctx:Context){
+export default async function (ctx:Context){
     if(ctx.chat?.id === 6018898378){
         let usersKeyboard = await Functions.payment.paid()
         await ctx.reply(`Изменить статус для:`, {

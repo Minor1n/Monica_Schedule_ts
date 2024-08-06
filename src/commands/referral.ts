@@ -1,9 +1,8 @@
 import {Context} from "telegraf";
-import {bot} from "../index";
 import {SQL} from "../sql";
 
 
-export async function execute(ctx:Context){
+export default async function(ctx:Context){
     if(ctx.chat?.id){
         let user = await SQL.users.select(ctx.chat.id)
         let {text} = ctx

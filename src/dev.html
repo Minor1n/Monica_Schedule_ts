@@ -92,33 +92,34 @@
     </style>
     <script>
         let replacementPage = 0
+        let dutyPage = 0
         let tg = window.Telegram.WebApp;
         let user = tg?.initDataUnsafe?.user?.id ? tg.initDataUnsafe.user.id : 6018898378
-        fetch(`https://www.minorin.ru/randomGradient`).then(req=>{
+        fetch(`http://localhost:3000/randomGradient`).then(req=>{
             req.json().then(res=>{
                 document.body.style.backgroundImage = String(res.gradient)
             })
         })
 
-        fetch(`https://www.minorin.ru/scheduleTable/${user}`).then(req=>{
+        fetch(`http://localhost:3000/scheduleTable/${user}`).then(req=>{
             req.json().then(res=>{
                 document.getElementById("schedule").innerHTML = `<table>${res.table}</table>`
             })
         })
 
-        fetch(`https://www.minorin.ru/replacementTable/${replacementPage}`).then(req=>{
+        fetch(`http://localhost:3000/replacementTable/${replacementPage}`).then(req=>{
             req.json().then(res=>{
                 document.getElementById("replacement").innerHTML = `<table>${res.table}</table>`
             })
         })
 
-        fetch(`https://www.minorin.ru/dutyTable/${user}/${dutyPage}`).then(req=>{
+        fetch(`http://localhost:3000/dutyTable/${user}/${dutyPage}`).then(req=>{
             req.json().then(res=>{
                 document.getElementById("duty").innerHTML = `<table>${res.table}</table>`
             })
         })
 
-        fetch(`https://www.minorin.ru/selectGroup/${user}`).then(req=>{
+        fetch(`http://localhost:3000/selectGroup/${user}`).then(req=>{
             req.json().then(res=>{
                 document.getElementById("selectGroup").innerHTML = `${res.table}`
             })
@@ -127,7 +128,7 @@
         function changePage(i){
             if(replacementPage+i<0){alert('Замены не найдены!')}
             else{
-                fetch(`https://www.minorin.ru/replacementTable/${replacementPage+i}`).then(req=>{
+                fetch(`http://localhost:3000/replacementTable/${replacementPage+i}`).then(req=>{
                     req.json().then(res=>{
                         if(res.table!==null){
                             replacementPage += i
@@ -139,11 +140,10 @@
                 })
             }
         }
-
         function changePageDuty(i){
             if(dutyPage+i<0){alert('Дежурства не найдены!')}
             else{
-                fetch(`https://www.minorin.ru/dutyTable/${user}/${dutyPage+i}`).then(req=>{
+                fetch(`http://localhost:3000/dutyTable/${user}/${dutyPage+i}`).then(req=>{
                     req.json().then(res=>{
                         if(res.table!==null){
                             dutyPage += i
@@ -230,7 +230,7 @@
     function changeOption(){
         const selectedOption = sGroup.options[sGroup.selectedIndex];
         console.log(selectedOption.value)
-        fetch(`https://www.minorin.ru/updateGroup/${selectedOption.value}`).then(req=>{
+        fetch(`http://localhost:3000/updateGroup/${selectedOption.value}`).then(req=>{
             req.json().then(res=>{
                 document.getElementById("schedule").innerHTML = `<table>${res.table}</table>`
             })

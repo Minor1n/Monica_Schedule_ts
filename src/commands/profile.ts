@@ -1,9 +1,8 @@
 import {Context} from "telegraf";
-import {bot} from "../index";
 import {SQL} from "../sql";
 
 
-export async function execute(ctx:Context){
+export default async function(ctx:Context){
     console.log(ctx.chat?.id)
     if(ctx.chat?.id){
         console.log(1)

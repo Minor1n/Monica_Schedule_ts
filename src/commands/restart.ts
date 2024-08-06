@@ -1,8 +1,7 @@
 import {Context} from "telegraf";
-import {bot} from "../index";
 
 
-export async function execute(ctx:Context){
+export default async function(ctx:Context){
     if(ctx.chat?.id === 6018898378){
         await ctx.reply('Бот выключен!')
         setTimeout(() => {

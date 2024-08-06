@@ -64,8 +64,19 @@ export const SQL= {
                     if (err) {
                         reject(err);
                     }
-                    console.log(result[0])
                     resolve(result[0]);
+                })
+            })
+        },
+
+        select_all_by_group: async (group:string):Promise<User[]> => {
+            const connection = mysql.createConnection(data)
+            return new Promise(async function (resolve,reject) {
+                connection.query(`SELECT * FROM users WHERE groupName = '${group}'`, (err, result) => {
+                    if (err) {
+                        reject(err);
+                    }
+                    resolve(result);
                 })
             })
         },
@@ -117,6 +128,11 @@ export const SQL= {
         update_dutyDate: async function (id:number,dutyDate:number) {
             const connection = mysql.createConnection(data)
             connection.query(`UPDATE users SET dutyDate = '${dutyDate}' WHERE userId = '${id}'`)
+        },
+
+        update_scheduleDate: async function (id:number,day:number) {
+            const connection = mysql.createConnection(data)
+            connection.query(`UPDATE users SET scheduleDate = '${day}' WHERE userId = '${id}'`)
         },
 
         update_name: async (id:number,name:string)=>{
@@ -304,5 +320,22 @@ export const SQL= {
             })
         },
 
+    },
+    duty:{
+        select: async (group:string,date:number,lastDate:number):Promise<{group:string,date:number,user:number,name:string}[]> => {
+            const connection = mysql.createConnection(data)
+            return new Promise(async function (resolve,reject) {
+                connection.query(`SELECT * FROM duty WHERE \`group\` = '${group}' AND date>${date} AND date<${lastDate}`, (err, result) => {
+                    if (err) {
+                        reject(err);
+                    }
+                    resolve(result);
+                })
+            })
+        },
+        insert: async (group:string,date:number,userId:number,name:string) => {
+            const connection = mysql.createConnection(data)
+            connection.query(`INSERT INTO duty (\`group\`,\`date\`,\`user\`,\`name\`) values('${group}','${date}','${userId}','${name}')`)
+        },
     }
 }

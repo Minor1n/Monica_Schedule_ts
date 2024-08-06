@@ -1,12 +1,11 @@
 import {Context, Input} from "telegraf";
-import {bot} from "../index";
 import nodeHtmlToImage from "node-html-to-image";
 import {SQL} from "../sql";
 import {Functions} from "../functions";
 import {config} from "../config";
 
 
-export async function execute(ctx:Context){
+export default async function(ctx:Context){
     if(ctx.chat?.id){
         let user = await SQL.users.select(ctx.chat?.id)
         if(user){

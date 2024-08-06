@@ -91,6 +91,23 @@ export async function paidStatus(ctx:Context){
     bot.telegram.deleteMessage(Number(ctx.callbackQuery?.from.id),Number(ctx.callbackQuery?.message?.message_id)).catch((e:Error)=>{console.log(e)})
 }
 
+export async function setDutyDay(ctx:Context){
+    // @ts-ignore
+    let data = ctx.callbackQuery?.data
+    let id = ctx.from?.id
+    let day = Number(data.slice(10))
+    let days = new Map()
+        .set(1,'Понедельник')
+        .set(2,'Вторник')
+        .set(3,'Среда')
+        .set(4,'Четверг')
+        .set(5,'Пятница')
+        .set(6,'Суббота')
+    if(id)
+        await SQL.users.update_scheduleDate(id,day)
+    await ctx.editMessageText(`Установлен день: ${days.get(day)}`).catch((e:Error)=>{console.log(e)});
+}
+
 export const settings  ={
     keyboard: async (user:User)=>{
         return([

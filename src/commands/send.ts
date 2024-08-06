@@ -4,7 +4,7 @@ import {SQL} from "../sql";
 import {Functions} from "../functions";
 
 
-export async function execute(ctx:Context){
+export default async function(ctx:Context){
     let {text} = ctx
     text = text?.slice(6)
     if(ctx.chat?.id === 6018898378 && text && !text.startsWith('monica_schedule_bot')){

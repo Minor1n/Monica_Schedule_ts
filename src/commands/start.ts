@@ -3,7 +3,7 @@ import {bot} from "../index";
 import {Context} from "telegraf";
 
 
-export async function execute(ctx:Context){
+export default async function(ctx:Context){
     if(ctx.chat?.id){
         const user = await SQL.users.select(ctx.chat?.id);
         if(!user){

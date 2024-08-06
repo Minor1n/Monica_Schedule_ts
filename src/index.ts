@@ -26,6 +26,14 @@ app.get('/replacementTable/[0-9]+', async (req, res) => {
     let table = replacement ? replacement.html : null
     res.send({table: table});
 })
+app.get('/dutyTable/[0-9]+/[0-9]+', async (req, res) => {
+    let nums = req.url.match(/[0-9]+/g)
+    console.log(nums)
+    if(!nums)return
+    let user = await SQL.users.select(Number(nums[0]))
+    let table = await Functions.duty.generateHTML(user.groupName,Number(nums[1]))
+    res.send({table: table});
+})
 app.get("/randomGradient", async (req,res) => {
     let gradients = await SQL.gradients.select_all_gradients()
     let gradient = gradients[Math.floor(Math.random() * (gradients.length-1))]
@@ -57,66 +65,69 @@ const httpServer = http.createServer(app);
 httpServer.listen(3000,'46.23.96.113');
 
 
-bot.command('start',(ctx)=>{Commands.start.execute(ctx)})
-bot.command('fetch',ctx=>{ Commands.fetch.execute(ctx.chat.id,ctx) })
-bot.command('send',ctx=>{ Commands.send.execute(ctx) })
-bot.command('schedule',ctx=>{ Commands.schedule.execute(ctx) })
-bot.command('theme',ctx=>{ Commands.theme.execute(ctx) })
-bot.command('status',ctx=>{ Commands.status.execute(ctx) })
-bot.command('settings',ctx=>{ Commands.settings.execute(ctx) })
+bot.command('start',(ctx)=>{Commands.start(ctx)})
+bot.command('fetch',ctx=>{ Commands.fetch(ctx.chat.id,ctx) })
+bot.command('send',ctx=>{ Commands.send(ctx) })
+bot.command('schedule',ctx=>{ Commands.schedule(ctx) })
+bot.command('theme',ctx=>{ Commands.theme(ctx) })
+bot.command('status',ctx=>{ Commands.status(ctx) })
+bot.command('settings',ctx=>{ Commands.settings(ctx) })
 bot.command('profile',ctx=>{
-    console.log('111'); Commands.profile.execute(ctx) })
-bot.command('setname',ctx=>{ Commands.setName.execute(ctx) })
-bot.command('setgroup',ctx=>{ Commands.setGroup.execute(ctx) })
-bot.command('referral',ctx=>{ Commands.referral.execute(ctx) })
-bot.command('paid',ctx=>{ Commands.paid.execute(ctx) })
-//bot.hears("Отдежурил",ctx=>{ Functions.hears.duty(ctx) })
-bot.command('replacement',ctx=>{ Commands.replacement.execute(ctx) })
-bot.command('restart',ctx=>{ Commands.restart.execute(ctx) })
-bot.command('duty',ctx=>{ Commands.duty.execute(ctx) })
+    console.log('111'); Commands.profile(ctx) })
+bot.command('setname',ctx=>{ Commands.setName(ctx) })
+bot.command('setgroup',ctx=>{ Commands.setGroup(ctx) })
+bot.command('referral',ctx=>{ Commands.referral(ctx) })
+bot.command('paid',ctx=>{ Commands.paid(ctx) })
+bot.hears("Отдежурил",ctx=>{ Functions.hears.duty(ctx) })
+bot.command('replacement',ctx=>{ Commands.replacement(ctx) })
+bot.command('restart',ctx=>{ Commands.restart(ctx) })
+bot.command('duty',ctx=>{ Commands.duty(ctx) })
+bot.command('setdutydate',ctx=>{ Commands.setDutyDay(ctx) })
 bot.on('callback_query',async(ctx)=>{
     // @ts-ignore
     let data = ctx.callbackQuery?.data
     if(data.startsWith('userPaid')){
         await Functions.callback_query.userPaid(ctx,8)
-    }
+    }else
     if(data.startsWith('paidStatus')){
         await Functions.callback_query.paidStatus(ctx)
-    }
+    }else
     if(data.startsWith('userStatus')){
         await Functions.callback_query.userStatus(ctx)
-    }
+    }else
     if(data.startsWith('vipStatus')){
         await Functions.callback_query.vipStatus(ctx)
-    }
+    }else
     if(data.startsWith('settings')){
         if(data.startsWith('settingsSchedule')){
             await Functions.callback_query.settings.schedule(ctx)
-        }
+        }else
         if(data.startsWith('settingsReplacement')){
             await Functions.callback_query.settings.replacement(ctx)
-        }
+        }else
         if(data.startsWith('settingsDuty')){
             await Functions.callback_query.settings.duty(ctx)
         }
-    }
+    }else
     if(data.startsWith('setGroup')){
         await Functions.callback_query.setGroup(ctx)
+    }else
+    if(data.startsWith('setDutyDay')){
+        await Functions.callback_query.setDutyDay(ctx)
     }
 })
-
 
 CronJob.from({
     cronTime: '0 10 14 * * 1-5,7',
     onTick: async ()=>{
-        await Commands.fetch.execute(6018898378)
+        await Commands.fetch(6018898378)
     },
     start: true,
 });
 // CronJob.from({
-//     cronTime: '0 30 7 * * 1-6',
+//     cronTime: '0 10 14 * * 6',
 //     onTick: async ()=>{
-//         await Functions.duty.update().catch(e=>{console.log(e)})
+//         await Functions.duty.sender()
 //     },
 //     start: true,
 // });
@@ -134,10 +145,3 @@ CronJob.from({
     },
     start: true,
 });
-// CronJob.from({
-//     cronTime: '0 0 8 * * 0',
-//     onTick: async ()=>{
-//         await Functions.duty.recount().catch(e=>{console.log(e)});
-//     },
-//     start: true,
-// });

@@ -5,7 +5,7 @@ import nodeHtmlToImage from "node-html-to-image";
 import {Functions} from "../functions";
 
 
-export async function execute(ctx:Context){
+export default async function(ctx:Context){
     if(ctx.chat?.id){
         let user = await SQL.users.select(ctx.chat.id)
         if(user){

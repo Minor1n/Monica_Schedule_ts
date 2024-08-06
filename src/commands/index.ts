@@ -1,18 +1,20 @@
-import * as start from './start'
-import * as send from './send'
-import * as duty from './duty'
-import * as fetch from './fetch'
-import * as paid from './paid'
-import * as profile from './profile'
-import * as referral from './referral'
-import * as replacement from './replacement'
-import * as restart from './restart'
-import * as schedule from './schedule'
-import * as setGroup from './setGroup'
-import * as setName from './setName'
-import * as settings from './settings'
-import * as status from './status'
-import * as theme from './theme'
+import start from './start'
+import send from './send'
+import duty from './duty'
+import fetch from './fetch'
+import paid from './paid'
+import profile from './profile'
+import referral from './referral'
+import replacement from './replacement'
+import restart from './restart'
+import schedule from './schedule'
+import setGroup from './setGroup'
+import setName from './setName'
+import settings from './settings'
+import status from './status'
+import theme from './theme'
+import setDutyDay from "./setDutyDay";
+
 
 
 export const Commands = {
@@ -30,5 +32,6 @@ export const Commands = {
     setName,
     settings,
     status,
-    theme
+    theme,
+    setDutyDay
 }

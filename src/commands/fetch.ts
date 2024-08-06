@@ -4,7 +4,7 @@ import {SQL} from "../sql";
 import {Functions} from "../functions";
 
 
-export async function execute(id:number,ctx?:Context){
+export default async function(id:number,ctx?:Context){
     if(id === 6018898378){
         let dates=[]
         let scheduleLink = (await SQL.settings.select('scheduleLink')).value
