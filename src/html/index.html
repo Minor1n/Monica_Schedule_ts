@@ -112,71 +112,28 @@
         }
     </style>
     <script>
-        let replacementPage = 0
-        let dutyPage = 0
         let tg = window.Telegram.WebApp;
-        let user = tg.initDataUnsafe.user.id ? tg.initDataUnsafe.user.id : 6018898378
-        console.log(user,tg.initDataUnsafe.user.id)
-        fetch(`https://www.minorin.ru/randomGradient`).then(req=>{
-            req.json().then(res=>{
-                document.body.style.backgroundImage = String(res.gradient)
-            })
-        })
-
-        fetch(`https://www.minorin.ru/scheduleTable/${user}`).then(req=>{
-            req.json().then(res=>{
-                document.getElementById("schedule").innerHTML = `<table>${res.table}</table>`
-            })
-        })
-
-        fetch(`https://www.minorin.ru/replacementTable/${replacementPage}`).then(req=>{
-            req.json().then(res=>{
-                document.getElementById("replacement").innerHTML = `<table>${res.table}</table>`
-            })
-        })
-
-        fetch(`https://www.minorin.ru/dutyTable/${user}/${dutyPage}`).then(req=>{
-            req.json().then(res=>{
-                document.getElementById("duty").innerHTML = `<table>${res.table}</table>`
-            })
-        })
-
-        fetch(`https://www.minorin.ru/selectGroup/${user}`).then(req=>{
-            req.json().then(res=>{
-                document.getElementById("selectGroup").innerHTML = `${res.table}`
-            })
-        })
-
-        function changePage(i){
-            if(replacementPage+i<0){alert('Замены не найдены!')}
-            else{
-                fetch(`https://www.minorin.ru/replacementTable/${replacementPage+i}`).then(req=>{
-                    req.json().then(res=>{
-                        if(res.table!==null){
-                            replacementPage += i
-                            document.getElementById("replacement").innerHTML = `<table>${res.table}</table>`
-                        }else{
-                            alert('Замены не найдены!')
-                        }
-                    })
+        let user = tg?.initDataUnsafe?.user?.id ? tg.initDataUnsafe.user.id : 6018898378
+        function profile() {
+            fetch('https://www.minorin.ru/profile').then(req=>{
+                req.json().then(res=>{
+                    document.body = res.body
                 })
-            }
+            })
         }
-
-        function changePageDuty(i){
-            if(dutyPage+i<0){alert('Дежурства не найдены!')}
-            else{
-                fetch(`https://www.minorin.ru/dutyTable/${user}/${dutyPage+i}`).then(req=>{
-                    req.json().then(res=>{
-                        if(res.table!==null){
-                            dutyPage += i
-                            document.getElementById("duty").innerHTML = `<table>${res.table}</table>`
-                        }else{
-                            alert('Дежурства не найдены!')
-                        }
-                    })
+        function settings() {
+            fetch('https://www.minorin.ru/settings').then(req=>{
+                req.json().then(res=>{
+                    document.body = res.body
                 })
-            }
+            })
+        }
+        function home() {
+            fetch('https://www.minorin.ru/home').then(req=>{
+                req.json().then(res=>{
+                    document.body = res.body
+                })
+            })
         }
     </script>
 </head>
@@ -199,7 +156,6 @@
                         <path d="M-1.48029737e-15,0.56157424 L-1.48029737e-15,16.1929159 L9.708,8.33860465 L-2.66453526e-15,0.56157424 L-1.48029737e-15,0.56157424 Z M1.33333333,3.30246869 L7.62533333,8.34246869 L1.33333333,13.4327013 L1.33333333,3.30246869 L1.33333333,3.30246869 Z"></path>
                     </g>
                 </svg>
-
             </button>
         </td>
         <td class="title"><b>Замены</b></td>
@@ -212,7 +168,6 @@
                         <path d="M-4.58892184e-16,0.56157424 L-4.58892184e-16,16.1929159 L9.708,8.33860465 L-1.64313008e-15,0.56157424 L-4.58892184e-16,0.56157424 Z M1.33333333,3.30246869 L7.62533333,8.34246869 L1.33333333,13.4327013 L1.33333333,3.30246869 L1.33333333,3.30246869 Z"></path>
                     </g>
                 </svg>
-
             </button>
         </td>
     </tr>
@@ -230,7 +185,6 @@
                         <path d="M-1.48029737e-15,0.56157424 L-1.48029737e-15,16.1929159 L9.708,8.33860465 L-2.66453526e-15,0.56157424 L-1.48029737e-15,0.56157424 Z M1.33333333,3.30246869 L7.62533333,8.34246869 L1.33333333,13.4327013 L1.33333333,3.30246869 L1.33333333,3.30246869 Z"></path>
                     </g>
                 </svg>
-
             </button>
         </td>
         <td class="title"><b>Дежурства</b></td>
@@ -250,12 +204,12 @@
 <div id="duty"></div>
 <div class="buf"></div>
 <nav class="mobile-nav">
-    <a href="#" class="bloc-icon">
+    <button class="bloc-icon">
         <svg width="800px" height="800px" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
             <path d="M19 7.90637V18C19 19.1046 18.1046 20 17 20H7C5.89543 20 5 19.1046 5 18V7.90637M2 10.0001L10.8531 3.80297C11.5417 3.32092 12.4583 3.32092 13.1469 3.80297L22 10.0001" stroke="#000000" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
         </svg>
-    </a>
-    <a href="https://www.minorin.ru/profile" class="bloc-icon">
+    </button>
+    <button onclick="profile()" class="bloc-icon">
         <svg width="800px" height="800px" viewBox="0 0 20 20" version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink">
             <g id="Page-1" stroke="none" stroke-width="1" fill="none" fill-rule="evenodd">
                 <g id="Dribbble-Light-Preview" transform="translate(-140.000000, -2159.000000)" fill="#000000">
@@ -267,8 +221,8 @@
                 </g>
             </g>
         </svg>
-    </a>
-    <a href="https://www.minorin.ru/settings" class="bloc-icon">
+    </button>
+    <button onclick="settings()" class="bloc-icon">
         <svg width="800px" height="800px" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
             <g id="Interface / Settings">
                 <g id="Vector">
@@ -277,9 +231,72 @@
                 </g>
             </g>
         </svg>
-    </a>
+    </button>
 </nav>
 <script>
+    let replacementPage = 0
+    let dutyPage = 0
+    fetch(`https://www.minorin.ru/randomGradient`).then(req=>{
+        req.json().then(res=>{
+            document.body.style.backgroundImage = String(res.gradient)
+        })
+    })
+
+    fetch(`https://www.minorin.ru/scheduleTable/${user}`).then(req=>{
+        req.json().then(res=>{
+            document.getElementById("schedule").innerHTML = `<table>${res.table}</table>`
+        })
+    })
+
+    fetch(`https://www.minorin.ru/replacementTable/${replacementPage}`).then(req=>{
+        req.json().then(res=>{
+            document.getElementById("replacement").innerHTML = `<table>${res.table}</table>`
+        })
+    })
+
+    fetch(`https://www.minorin.ru/dutyTable/${user}/${dutyPage}`).then(req=>{
+        req.json().then(res=>{
+            document.getElementById("duty").innerHTML = `<table>${res.table}</table>`
+        })
+    })
+
+    fetch(`https://www.minorin.ru/selectGroup/${user}`).then(req=>{
+        req.json().then(res=>{
+            document.getElementById("selectGroup").innerHTML = `${res.table}`
+        })
+    })
+
+    function changePage(i){
+        if(replacementPage+i<0){alert('Замены не найдены!')}
+        else{
+            fetch(`https://www.minorin.ru/replacementTable/${replacementPage+i}`).then(req=>{
+                req.json().then(res=>{
+                    if(res.table!==null){
+                        replacementPage += i
+                        document.getElementById("replacement").innerHTML = `<table>${res.table}</table>`
+                    }else{
+                        alert('Замены не найдены!')
+                    }
+                })
+            })
+        }
+    }
+
+    function changePageDuty(i){
+        if(dutyPage+i<0){alert('Дежурства не найдены!')}
+        else{
+            fetch(`https://www.minorin.ru/dutyTable/${user}/${dutyPage+i}`).then(req=>{
+                req.json().then(res=>{
+                    if(res.table!==null){
+                        dutyPage += i
+                        document.getElementById("duty").innerHTML = `<table>${res.table}</table>`
+                    }else{
+                        alert('Дежурства не найдены!')
+                    }
+                })
+            })
+        }
+    }
     let sGroup = document.myForm.selectGroup
     function changeOption(){
         const selectedOption = sGroup.options[sGroup.selectedIndex];

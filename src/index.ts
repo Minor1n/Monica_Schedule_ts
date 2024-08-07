@@ -11,6 +11,7 @@ import * as http from "node:http";
 import {SQL} from "./sql";
 import {Functions} from "./functions";
 import {Commands} from "./commands";
+import {readFileSync} from "node:fs";
 
 
 let app = express()
@@ -65,10 +66,13 @@ app.get('/updateGroup/[0-9\%A-Za-z\-]+', async (req, res) => {
 })
 
 app.get('/profile', async (req, res) => {
-    res.sendFile(path.join(__dirname+'/html/profile.html'))
+    res.send({body:readFileSync(path.join(__dirname + '/html/profile.html'),'utf-8')})
 })
 app.get('/settings', async (req, res) => {
-    res.sendFile(path.join(__dirname+'/html/settings.html'))
+    res.send({body:readFileSync(path.join(__dirname + '/html/settings.html'),'utf-8')})
+})
+app.get('/home', async (req, res) => {
+    res.send({body:readFileSync(path.join(__dirname + '/html/home.html'),'utf-8')})
 })
 
 app.get('/profile/[0-9]+', async (req, res) => {
