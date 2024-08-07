@@ -4,6 +4,7 @@ import * as payment from './payment'
 import * as callback_query from './callback_query'
 import * as hears from './hears'
 import * as duty from "./duty";
+import profile from "./profile";
 
 export const Functions= {
     schedule,
@@ -11,5 +12,6 @@ export const Functions= {
     payment,
     callback_query,
     hears,
-    duty
+    duty,
+    profile
 }

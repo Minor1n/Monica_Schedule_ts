@@ -15,7 +15,7 @@ import {Commands} from "./commands";
 
 let app = express()
 app.use(cors());
-app.get('/', (req, res) => {res.sendFile(path.join(__dirname+'/index.html'))})
+app.get('/', (req, res) => {res.sendFile(path.join(__dirname+'/html/index.html'))})
 app.get('/scheduleTable/[0-9]+', async (req, res) => {
     let user = await SQL.users.select(Number(req.url.slice(15)))
     let table = await SQL.groups.select_schedule(user.groupName)
@@ -28,7 +28,6 @@ app.get('/replacementTable/[0-9]+', async (req, res) => {
 })
 app.get('/dutyTable/[0-9]+/[0-9]+', async (req, res) => {
     let nums = req.url.match(/[0-9]+/g)
-    console.log(nums)
     if(!nums)return
     let user = await SQL.users.select(Number(nums[0]))
     let table = await Functions.duty.generateHTML(user.groupName,Number(nums[1]))
@@ -63,6 +62,55 @@ app.get('/selectGroup/[0-9]+', async (req, res) => {
 app.get('/updateGroup/[0-9\%A-Za-z\-]+', async (req, res) => {
     let table = await SQL.groups.select_schedule(decodeURI(req.url.slice(13)))
     res.send({table: table.schedule});
+})
+
+app.get('/profile', async (req, res) => {
+    res.sendFile(path.join(__dirname+'/html/profile.html'))
+})
+app.get('/settings', async (req, res) => {
+    res.sendFile(path.join(__dirname+'/html/settings.html'))
+})
+
+app.get('/profile/[0-9]+', async (req, res) => {
+    let user = await SQL.users.select(Number(req.url.slice(9)))
+    let table = await Functions.profile(user)
+    res.send({table: table});
+})
+app.get('/settings/[0-9]+', async (req, res) => {
+    let user = await SQL.users.select(Number(req.url.slice(10)))
+    let table = `<b>В разработке</b>`
+    res.send({table: table});
+})
+
+
+app.get('/editGroup/[0-9]+/[0-9\%A-Za-z\-]+', async (req, res) => {
+    let userId = req.url.slice(11).match(/[0-9]+/g)
+    let groupName = req.url.slice(11).match(/[0-9%A-Za-z\-]+/g)
+    // @ts-ignore
+    let user = await SQL.users.select(Number(userId[0]))
+    // @ts-ignore
+    await SQL.users.update_group(user.userId,decodeURI(groupName[1])).then(()=>{
+        res.send();
+    })
+})
+app.get('/editDutyDay/[0-9]+/[0-9]+', async (req, res) => {
+    let nums = req.url.slice(13).match(/[0-9]+/g)
+    // @ts-ignore
+    let user = await SQL.users.select(Number(nums[0]))
+    // @ts-ignore
+    await SQL.users.update_scheduleDate(user.userId,nums[1]).then(()=>{
+        res.send();
+    })
+})
+app.get('/editName/[0-9]+/[0-9\%A-Za-z\-]+', async (req, res) => {
+    let userId = req.url.slice(10).match(/[0-9]+/g)
+    let userName = req.url.slice(10).match(/[0-9%A-Za-z\-]+/g)
+    // @ts-ignore
+    let user = await SQL.users.select(Number(userId[0]))
+    // @ts-ignore
+    await SQL.users.update_name(user.userId,decodeURI(userName[1])).then(()=>{
+        res.send();
+    })
 })
 
 const httpServer = http.createServer(app);
