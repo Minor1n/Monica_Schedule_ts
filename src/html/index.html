@@ -118,21 +118,21 @@
             fetch('https://www.minorin.ru/profile').then(req=>{
                 req.json().then(res=>{
                     console.log([res.body])
-                    document.body = res.body
+                    document.body.innerHTML = res.body
                 })
             })
         }
         function settings() {
             fetch('https://www.minorin.ru/settings').then(req=>{
                 req.json().then(res=>{
-                    document.body = res.body
+                    document.body.innerHTML  = res.body
                 })
             })
         }
         function home() {
             fetch('https://www.minorin.ru/home').then(req=>{
                 req.json().then(res=>{
-                    document.body = res.body
+                    document.body.innerHTML  = res.body
                 })
             })
         }
