@@ -117,6 +117,7 @@
         function profile() {
             fetch('https://www.minorin.ru/profile').then(req=>{
                 req.json().then(res=>{
+                    console.log([res.body])
                     document.body = res.body
                 })
             })
