@@ -122,7 +122,7 @@
         let replacementPage = 0
         let dutyPage = 0
         let tg = window.Telegram.WebApp;
-        let user = tg?.initDataUnsafe?.user?.id ? tg.initDataUnsafe.user.id : 6018898378
+        let user = tg?.initDataUnsafe?.user?.id ? tg.initDataUnsafe.user.id: alert('Вы не можете использовать monica_schedule в браузере')
         fetch(`https://www.minorin.ru/randomGradient`).then(req=>{
             req.json().then(res=>{
                 document.body.style.backgroundImage = String(res.gradient)
