@@ -174,7 +174,7 @@
                             document.getElementById("settingsNotification").innerHTML = `<table>${res.table}</table>`
                         })
                     })
-                    fetch(`https://www.minorin.ru/settingsTheme/${user}/`).then(req=>{
+                    fetch(`https://www.minorin.ru/settingsTheme/${user}`).then(req=>{
                         req.json().then(res=>{
                             document.getElementById("settingsTheme").innerHTML = `<table>${res.table}</table>`
                         })

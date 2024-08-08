@@ -123,6 +123,13 @@ app.get('/settingsTheme/bg/[0-9]+/[0-9\%A-Za-z\-:/]+', async (req, res) => {
     res.send({table: table});
 })
 
+app.get('/settingsTheme/[0-9]+', async (req, res) => {
+    // @ts-ignore
+    let user = await SQL.users.select(Number(req.url.slice(15)))
+    let table = await Functions.settings.theme(user)
+    res.send({table: table});
+})
+
 
 app.get('/editGroup/[0-9]+/[0-9\%A-Za-z\-]+', async (req, res) => {
     let userId = req.url.slice(11).match(/[0-9]+/g)
