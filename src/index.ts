@@ -38,10 +38,11 @@ app.get('/dutyTable/[0-9]+/[0-9]+', async (req, res) => {
 //     let user = await SQL.users.select(Number(req.url.slice(10)))
 //     res.send({message: await Functions.duty.dutyPlus(user)});
 // })
-app.get("/randomGradient", async (req,res) => {
+app.get("/randomGradient/[0-9]+", async (req,res) => {
+    let bgImage = (await SQL.users.select(Number(req.url.slice(16)))).theme
     let gradients = await SQL.gradients.select_all_gradients()
     let gradient = gradients[Math.floor(Math.random() * (gradients.length-1))]
-    res.send({gradient: gradient.slice(11, -1)});
+    res.send({gradient: bgImage === 'standard' ? gradient.slice(11, -1):bgImage});
 });
 app.get('/selectGroup/[0-9]+', async (req, res) => {
     let user = await SQL.users.select(Number(req.url.slice(13)))
@@ -109,6 +110,16 @@ app.get('/settingsNotification/duty/[0-9]+', async (req, res) => {
     await SQL.users.settings.update_duty(user.userId,status)
     user.settingsDuty = status
     let table = await Functions.settings.notification(user)
+    res.send({table: table});
+})
+app.get('/settingsTheme/bg/[0-9]+/[0-9\%A-Za-z\-:/]+', async (req, res) => {
+    // @ts-ignore
+    let user = await SQL.users.select(Number((req.url.slice(18).match(/[0-9]+/)[0])))
+    // @ts-ignore
+    let url = req.url.slice(19+(req.url.slice(18).match(/[0-9]+/)[0].length()))
+    console.log(url)
+    await SQL.users.update_theme(user.userId,url!==''?url:'standard')
+    let table = await Functions.settings.theme(user)
     res.send({table: table});
 })
 

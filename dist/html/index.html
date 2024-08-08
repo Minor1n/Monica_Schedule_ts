@@ -123,7 +123,7 @@
         let dutyPage = 0
         let tg = window.Telegram.WebApp;
         let user = tg?.initDataUnsafe?.user?.id ? tg.initDataUnsafe.user.id: alert('Вы не можете использовать monica_schedule в браузере')
-        fetch(`https://www.minorin.ru/randomGradient`).then(req=>{
+        fetch(`https://www.minorin.ru/randomGradient/${user}`).then(req=>{
             req.json().then(res=>{
                 document.body.style.backgroundImage = String(res.gradient)
             })
@@ -172,6 +172,11 @@
                     fetch(`https://www.minorin.ru/settingsNotification/${user}`).then(req=>{
                         req.json().then(res=>{
                             document.getElementById("settingsNotification").innerHTML = `<table>${res.table}</table>`
+                        })
+                    })
+                    fetch(`https://www.minorin.ru/settingsTheme/${user}/`).then(req=>{
+                        req.json().then(res=>{
+                            document.getElementById("settingsTheme").innerHTML = `<table>${res.table}</table>`
                         })
                     })
                 })
@@ -226,6 +231,14 @@
             fetch(`https://www.minorin.ru/settingsNotification/duty/${user}`).then(req=>{
                 req.json().then(res=>{
                     document.getElementById("settingsNotification").innerHTML = `<table>${res.table}</table>`
+                })
+            })
+        }
+        function updateSettingsTheme() {
+            let url = document.querySelector("input").value
+            fetch(`https://www.minorin.ru/settingsTheme/bg/${user}/${url}`).then(req=>{
+                req.json().then(res=>{
+                    document.getElementById("settingsTheme").innerHTML = `<table>${res.table}</table>`
                 })
             })
         }
