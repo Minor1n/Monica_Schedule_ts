@@ -12,6 +12,6 @@ export async function notification(user:User){
 export async function theme(user:User){
     return `
 <tr><td colspan="3"><b class="profileB">Настройки темы</b></td></tr>
-<tr><td><b class="profileB">BG image:</b></td><td style="min-width: 10vw"><form name="myForm"><input class="inputP" type="url" id="theme" name="theme" required/></form><button onclick="updateSettingsTheme()"><b class="profileB">Применить</b></button></td></tr>
+<tr><td><b class="profileB">BG image:</b></td><td style="min-width: 10vw"><form name="myForm"><input class="inputP" type="url" id="theme" name="theme" required/></form></td><td><button onclick="updateSettingsTheme()"><b class="profileB">Применить</b></button></td></tr>
     `
 }
