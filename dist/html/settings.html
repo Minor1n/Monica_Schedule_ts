@@ -35,10 +35,3 @@
         </svg>
     </button>
 </nav>
-<script>
-    fetch(`https://www.minorin.ru/settings/${user}`).then(req=>{
-        req.json().then(res=>{
-            document.getElementById("settings").innerHTML = `<table>${res.table}</table>`
-        })
-    })
-</script>

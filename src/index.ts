@@ -66,14 +66,13 @@ app.get('/updateGroup/[0-9\%A-Za-z\-]+', async (req, res) => {
 })
 
 app.get('/profile', async (req, res) => {
-    console.log([readFileSync(path.join(__dirname + '/html/profile.html'),'utf-8')])
-    res.send({body:readFileSync(path.join(__dirname + '/html/profile.html'),'utf-8').replace('\n','')})
+    res.send({body:readFileSync(path.join(__dirname + '/html/profile.html'),'utf-8')})
 })
 app.get('/settings', async (req, res) => {
-    res.send({body:readFileSync(path.join(__dirname + '/html/settings.html'),'utf-8').replace('\n','')})
+    res.send({body:readFileSync(path.join(__dirname + '/html/settings.html'),'utf-8')})
 })
 app.get('/home', async (req, res) => {
-    res.send({body:readFileSync(path.join(__dirname + '/html/home.html'),'utf-8').replace('\n','')})
+    res.send({body:readFileSync(path.join(__dirname + '/html/home.html'),'utf-8')})
 })
 
 app.get('/profile/[0-9]+', async (req, res) => {

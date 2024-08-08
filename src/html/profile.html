@@ -37,11 +37,6 @@
     </button>
 </nav>
 <script>
-    fetch(`https://www.minorin.ru/profile/${user}`).then(req=>{
-        req.json().then(res=>{
-            document.getElementById("profile").innerHTML = `<table>${res.table}</table>`
-        })
-    })
     async function update(){
         let group = document.myForm.selectGroup
         let dutyDay = document.myForm2.selectDutyDay

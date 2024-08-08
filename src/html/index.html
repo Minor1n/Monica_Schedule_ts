@@ -112,13 +112,19 @@
         }
     </style>
     <script>
+        let replacementPage = 0
+        let dutyPage = 0
         let tg = window.Telegram.WebApp;
         let user = tg?.initDataUnsafe?.user?.id ? tg.initDataUnsafe.user.id : 6018898378
         function profile() {
             fetch('https://www.minorin.ru/profile').then(req=>{
                 req.json().then(res=>{
-                    console.log([res.body])
                     document.body.innerHTML = res.body
+                    fetch(`https://www.minorin.ru/profile/${user}`).then(req=>{
+                        req.json().then(res=>{
+                            document.getElementById("profile").innerHTML = `<table>${res.table}</table>`
+                        })
+                    })
                 })
             })
         }
@@ -126,6 +132,11 @@
             fetch('https://www.minorin.ru/settings').then(req=>{
                 req.json().then(res=>{
                     document.body.innerHTML  = res.body
+                    fetch(`https://www.minorin.ru/settings/${user}`).then(req=>{
+                        req.json().then(res=>{
+                            document.getElementById("settings").innerHTML = `<table>${res.table}</table>`
+                        })
+                    })
                 })
             })
         }
@@ -133,6 +144,35 @@
             fetch('https://www.minorin.ru/home').then(req=>{
                 req.json().then(res=>{
                     document.body.innerHTML  = res.body
+                    fetch(`https://www.minorin.ru/randomGradient`).then(req=>{
+                        req.json().then(res=>{
+                            document.body.style.backgroundImage = String(res.gradient)
+                        })
+                    })
+
+                    fetch(`https://www.minorin.ru/scheduleTable/${user}`).then(req=>{
+                        req.json().then(res=>{
+                            document.getElementById("schedule").innerHTML = `<table>${res.table}</table>`
+                        })
+                    })
+
+                    fetch(`https://www.minorin.ru/replacementTable/${replacementPage}`).then(req=>{
+                        req.json().then(res=>{
+                            document.getElementById("replacement").innerHTML = `<table>${res.table}</table>`
+                        })
+                    })
+
+                    fetch(`https://www.minorin.ru/dutyTable/${user}/${dutyPage}`).then(req=>{
+                        req.json().then(res=>{
+                            document.getElementById("duty").innerHTML = `<table>${res.table}</table>`
+                        })
+                    })
+
+                    fetch(`https://www.minorin.ru/selectGroup/${user}`).then(req=>{
+                        req.json().then(res=>{
+                            document.getElementById("selectGroup").innerHTML = `${res.table}`
+                        })
+                    })
                 })
             })
         }
@@ -235,8 +275,6 @@
     </button>
 </nav>
 <script>
-    let replacementPage = 0
-    let dutyPage = 0
     fetch(`https://www.minorin.ru/randomGradient`).then(req=>{
         req.json().then(res=>{
             document.body.style.backgroundImage = String(res.gradient)
