@@ -112,14 +112,14 @@ app.get('/settingsNotification/duty/[0-9]+', async (req, res) => {
     let table = await Functions.settings.notification(user)
     res.send({table: table});
 })
-app.get('/settingsTheme/bg', async (req, res) => {
+app.get('/settingsTheme/bg/[0-9]/`[-a-zA-Z0-9@:%._\\+~#=]{1,256}\\.[a-zA-Z0-9()]{1,6}\\b([-a-zA-Z0-9()@:%_\\+.~#?&//=]*)`', async (req, res) => {
     // @ts-ignore
-    let user = await SQL.users.select(Number(req.body.user))
+    let user = await SQL.users.select(Number(req.url.slice(18).match(/[0-9]+/))[0])
     // @ts-ignore
     let url
-    console.log(req.body)
+    console.log(req.url.slice(19+user.userId.toString().length))
     try{
-        url = decodeURI(req.body.url)
+        url = decodeURI(req.url.slice(19+user.userId.toString().length))
         url = url.match(/\.(jpeg|jpg|png)$/) != null?url:'standard'
     }catch (_){
         url = 'standard'
