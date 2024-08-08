@@ -48,7 +48,7 @@ export default async function (user:User){
     return `
 <tr><td colspan="2"><b>Информация</b></td><td><b>Настроить</b></td></tr>
 <tr><td><b class="profileB">Группа:</b></td><td><b class="profileB">${group}</b></td><td><b class="profileB"><form name="myForm"><select class="selectP" name="selectGroup" id="selectGroup">${arr.join('')}</select></form>▼</b></td></tr>
-<tr><td><b class="profileB">Имя:</b></td><td><b class="profileB">${surname}</b></td><td><b class="profileB">I</b><form name="myForm1"><input class="inputP" type="text" id="name" name="name" required/></form></td></tr>
+<tr><td><b class="profileB">Имя:</b></td><td><b class="profileB">${surname}</b></td><td><b class="profileB">|</b><form name="myForm1"><input class="inputP" type="text" id="name" name="name" required/></form></td></tr>
 <tr><td><b class="profileB">День дежурства:</b></td><td><b class="profileB">${dutyDay.get(user.scheduleDate)}</b></td><td><b class="profileB"><form name="myForm2"><select class="selectP" name="selectDutyDay" id="selectDutyDay">${arr3.join('')}</select></form>▼</b></td></tr>
 <tr><td><b class="profileB">Телеграм id:</b></td><td><b class="profileB">${id}</b></td></tr>
 <tr><td><b class="profileB">Статус оплаты:</b></td><td><b class="profileB">${user.payment === 'true' ? 'Оплачен' : user.payment === 'false' ? 'Не оплачен' : user.payment}</b></td></tr>
