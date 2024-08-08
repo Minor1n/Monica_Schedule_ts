@@ -6,12 +6,12 @@
 </table>
 <div id="settings"></div>
 <nav class="mobile-nav">
-    <a href="https://www.minorin.ru" class="bloc-icon">
+    <button onclick="home()" class="bloc-icon">
         <svg width="800px" height="800px" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
             <path d="M19 7.90637V18C19 19.1046 18.1046 20 17 20H7C5.89543 20 5 19.1046 5 18V7.90637M2 10.0001L10.8531 3.80297C11.5417 3.32092 12.4583 3.32092 13.1469 3.80297L22 10.0001" stroke="#000000" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
         </svg>
-    </a>
-    <a href="https://www.minorin.ru/profile" class="bloc-icon">
+    </button>
+    <button onclick="profile()" class="bloc-icon">
         <svg width="800px" height="800px" viewBox="0 0 20 20" version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink">
             <g id="Page-1" stroke="none" stroke-width="1" fill="none" fill-rule="evenodd">
                 <g id="Dribbble-Light-Preview" transform="translate(-140.000000, -2159.000000)" fill="#000000">
@@ -23,8 +23,8 @@
                 </g>
             </g>
         </svg>
-    </a>
-    <a href="#" class="bloc-icon">
+    </button>
+    <button class="bloc-icon">
         <svg width="800px" height="800px" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
             <g id="Interface / Settings">
                 <g id="Vector">
@@ -33,7 +33,7 @@
                 </g>
             </g>
         </svg>
-    </a>
+    </button>
 </nav>
 <script>
     fetch(`https://www.minorin.ru/settings/${user}`).then(req=>{
