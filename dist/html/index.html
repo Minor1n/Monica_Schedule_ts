@@ -237,9 +237,10 @@
         function updateSettingsTheme() {
             let url = document.querySelector("input").value
             console.log(url)
-            fetch(`https://www.minorin.ru/settingsTheme/bg/${user}`,{
+            fetch(`https://www.minorin.ru/settingsTheme/bg`,{
                 method:'GET',
                 body:JSON.stringify({
+                    user:user,
                     url:url
                 })
             }).then(req=>{
