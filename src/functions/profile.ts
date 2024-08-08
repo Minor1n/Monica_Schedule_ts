@@ -47,9 +47,9 @@ export default async function (user:User){
     }
     return `
 <tr><td colspan="2"><b>Информация</b></td><td><b>Настроить</b></td></tr>
-<tr><td><b>Группа:</b></td><td><b>${group}</b></td><td><b><form name="myForm"><select name="selectGroup" id="selectGroup">${arr.join('')}</select></form>▼</b></td></tr>
-<tr><td><b>Имя:</b></td><td><b>${surname}</b></td><td><b>I</b><form name="myForm1"><input type="text" id="name" name="name" required/></form></td></tr>
-<tr><td><b>День дежурства:</b></td><td><b>${dutyDay.get(user.scheduleDate)}</b></td><td><b><form name="myForm2"><select name="selectDutyDay" id="selectDutyDay">${arr3.join('')}</select></form>▼</b></td></tr>
+<tr><td><b>Группа:</b></td><td><b>${group}</b></td><td><b><form name="myForm"><select class="selectP" name="selectGroup" id="selectGroup">${arr.join('')}</select></form>▼</b></td></tr>
+<tr><td><b>Имя:</b></td><td><b>${surname}</b></td><td><b>I</b><form name="myForm1"><input class="inputP" type="text" id="name" name="name" required/></form></td></tr>
+<tr><td><b>День дежурства:</b></td><td><b>${dutyDay.get(user.scheduleDate)}</b></td><td><b><form name="myForm2"><select class="selectP" name="selectDutyDay" id="selectDutyDay">${arr3.join('')}</select></form>▼</b></td></tr>
 <tr><td><b>Телеграм id:</b></td><td><b>${id}</b></td></tr>
 <tr><td><b>Статус оплаты:</b></td><td><b>${user.payment === 'true' ? 'Оплачен' : user.payment === 'false' ? 'Не оплачен' : user.payment}</b></td></tr>
 <tr><td><b>Сумма оплаты с учетом рефералки:</b></td><td><b>${Math.floor(user.price - (user.price * (refBonus / 100)))}р</b></td></tr>
