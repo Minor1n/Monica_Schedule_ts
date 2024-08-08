@@ -116,7 +116,7 @@ app.get('/settingsTheme/bg/[0-9]+/[0-9\%A-Za-z\-:/]+', async (req, res) => {
     // @ts-ignore
     let user = await SQL.users.select(Number((req.url.slice(18).match(/[0-9]+/)[0])))
     // @ts-ignore
-    let url = req.url.slice(19+(user.userId.length))
+    let url = req.url
     console.log(decodeURI(url))
     await SQL.users.update_theme(user.userId,decodeURI(url)!==''?decodeURI(url):'standard')
     let table = await Functions.settings.theme(user)
