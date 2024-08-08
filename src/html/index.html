@@ -181,11 +181,6 @@
             fetch('https://www.minorin.ru/home').then(req=>{
                 req.json().then(res=>{
                     document.body.innerHTML  = res.body
-                    fetch(`https://www.minorin.ru/randomGradient`).then(req=>{
-                        req.json().then(res=>{
-                            document.body.style.backgroundImage = String(res.gradient)
-                        })
-                    })
 
                     fetch(`https://www.minorin.ru/scheduleTable/${user}`).then(req=>{
                         req.json().then(res=>{
