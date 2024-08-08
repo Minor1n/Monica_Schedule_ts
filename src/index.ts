@@ -80,9 +80,35 @@ app.get('/profile/[0-9]+', async (req, res) => {
     let table = await Functions.profile(user)
     res.send({table: table});
 })
-app.get('/settings/[0-9]+', async (req, res) => {
-    let user = await SQL.users.select(Number(req.url.slice(10)))
-    let table = `<b>В разработке</b>`
+app.get('/settingsNotification/[0-9]+', async (req, res) => {
+    let user = await SQL.users.select(Number(req.url.slice(22)))
+    let table = await Functions.settings.notification(user)
+    res.send({table: table});
+})
+
+
+app.get('/settingsNotification/schedule/[0-9]+', async (req, res) => {
+    let user = await SQL.users.select(Number(req.url.slice(31)))
+    let status = user.settingsSchedule==='on'?'off':'on'
+    await SQL.users.settings.update_schedule(user.userId,status)
+    user.settingsSchedule = status
+    let table = await Functions.settings.notification(user)
+    res.send({table: table});
+})
+app.get('/settingsNotification/replacement/[0-9]+', async (req, res) => {
+    let user = await SQL.users.select(Number(req.url.slice(34)))
+    let status = user.settingsReplacement==='on'?'off':'on'
+    await SQL.users.settings.update_replacement(user.userId,status)
+    user.settingsReplacement = status
+    let table = await Functions.settings.notification(user)
+    res.send({table: table});
+})
+app.get('/settingsNotification/duty/[0-9]+', async (req, res) => {
+    let user = await SQL.users.select(Number(req.url.slice(27)))
+    let status = user.settingsDuty==='on'?'off':'on'
+    await SQL.users.settings.update_duty(user.userId,status)
+    user.settingsDuty = status
+    let table = await Functions.settings.notification(user)
     res.send({table: table});
 })
 

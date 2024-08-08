@@ -169,9 +169,9 @@
             fetch('https://www.minorin.ru/settings').then(req=>{
                 req.json().then(res=>{
                     document.body.innerHTML  = res.body
-                    fetch(`https://www.minorin.ru/settings/${user}`).then(req=>{
+                    fetch(`https://www.minorin.ru/settingsNotification/${user}`).then(req=>{
                         req.json().then(res=>{
-                            document.getElementById("settings").innerHTML = `<table>${res.table}</table>`
+                            document.getElementById("settingsNotification").innerHTML = `<table>${res.table}</table>`
                         })
                     })
                 })
@@ -205,6 +205,27 @@
                             document.getElementById("selectGroup").innerHTML = `${res.table}`
                         })
                     })
+                })
+            })
+        }
+        function updateSettingsSchedule(){
+            fetch(`https://www.minorin.ru/settingsNotification/schedule/${user}`).then(req=>{
+                req.json().then(res=>{
+                    document.getElementById("settingsNotification").innerHTML = `<table>${res.table}</table>`
+                })
+            })
+        }
+        function updateSettingsReplacement(){
+            fetch(`https://www.minorin.ru/settingsNotification/replacement/${user}`).then(req=>{
+                req.json().then(res=>{
+                    document.getElementById("settingsNotification").innerHTML = `<table>${res.table}</table>`
+                })
+            })
+        }
+        function updateSettingsDuty(){
+            fetch(`https://www.minorin.ru/settingsNotification/duty/${user}`).then(req=>{
+                req.json().then(res=>{
+                    document.getElementById("settingsNotification").innerHTML = `<table>${res.table}</table>`
                 })
             })
         }

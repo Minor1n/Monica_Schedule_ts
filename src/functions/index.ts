@@ -5,6 +5,8 @@ import * as callback_query from './callback_query'
 import * as hears from './hears'
 import * as duty from "./duty";
 import profile from "./profile";
+import * as settings from "./settings";
+
 
 export const Functions= {
     schedule,
@@ -13,5 +15,6 @@ export const Functions= {
     callback_query,
     hears,
     duty,
-    profile
+    profile,
+    settings
 }
