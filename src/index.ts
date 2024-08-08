@@ -113,8 +113,9 @@ app.get('/settingsNotification/duty/[0-9]+', async (req, res) => {
     res.send({table: table});
 })
 app.get('/settingsTheme/bg/[0-9]+/.*', async (req, res) => {
+    console.log(req.url.slice(18))
     // @ts-ignore
-    let user = await SQL.users.select(Number(req.url.slice(18).match(/[0-9]+/))[0])
+    let user = await SQL.users.select(Number(req.url.slice(18).match(/[0-9]+/g))[0])
     // @ts-ignore
     let url
     console.log(req.url.slice(19+user.userId.toString().length))
