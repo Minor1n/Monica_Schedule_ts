@@ -133,25 +133,25 @@
             })
         })
 
-        fetch(`${u}/scheduleTable/${user}`).then(req=>{
+        fetch(`${u}/home/scheduleTable/${user}`).then(req=>{
             req.json().then(res=>{
                 document.getElementById("schedule").innerHTML = `<table>${res.table}</table>`
             })
         })
 
-        fetch(`${u}/replacementTable/${replacementPage}`).then(req=>{
+        fetch(`${u}/home/replacementTable/${replacementPage}`).then(req=>{
             req.json().then(res=>{
                 document.getElementById("replacement").innerHTML = `<table>${res.table}</table>`
             })
         })
 
-        fetch(`${u}/dutyTable/${user}/${dutyPage}`).then(req=>{
+        fetch(`${u}/home/dutyTable/${user}/${dutyPage}`).then(req=>{
             req.json().then(res=>{
                 document.getElementById("duty").innerHTML = `<table>${res.table}</table>`
             })
         })
 
-        fetch(`${u}/selectGroup/${user}`).then(req=>{
+        fetch(`${u}/home/scheduleTable/selectGroup/${user}`).then(req=>{
             req.json().then(res=>{
                 document.getElementById("selectGroup").innerHTML = `${res.table}`
             })
@@ -173,12 +173,12 @@
             fetch(`${u}/settings`).then(req=>{
                 req.json().then(res=>{
                     document.body.innerHTML  = res.body
-                    fetch(`${u}/settingsNotification/${user}`).then(req=>{
+                    fetch(`${u}/settings/notification/${user}`).then(req=>{
                         req.json().then(res=>{
                             document.getElementById("settingsNotification").innerHTML = `<table>${res.table}</table>`
                         })
                     })
-                    fetch(`${u}/settingsTheme/${user}`).then(req=>{
+                    fetch(`${u}/settings/theme/${user}`).then(req=>{
                         req.json().then(res=>{
                             document.getElementById("settingsTheme").innerHTML = `<table>${res.table}</table>`
                         })
@@ -191,25 +191,25 @@
                 req.json().then(res=>{
                     document.body.innerHTML  = res.body
 
-                    fetch(`${u}/scheduleTable/${user}`).then(req=>{
+                    fetch(`${u}/home/scheduleTable/${user}`).then(req=>{
                         req.json().then(res=>{
                             document.getElementById("schedule").innerHTML = `<table>${res.table}</table>`
                         })
                     })
 
-                    fetch(`${u}/replacementTable/${replacementPage}`).then(req=>{
+                    fetch(`${u}/home/replacementTable/${replacementPage}`).then(req=>{
                         req.json().then(res=>{
                             document.getElementById("replacement").innerHTML = `<table>${res.table}</table>`
                         })
                     })
 
-                    fetch(`${u}/dutyTable/${user}/${dutyPage}`).then(req=>{
+                    fetch(`${u}/home/dutyTable/${user}/${dutyPage}`).then(req=>{
                         req.json().then(res=>{
                             document.getElementById("duty").innerHTML = `<table>${res.table}</table>`
                         })
                     })
 
-                    fetch(`${u}/selectGroup/${user}`).then(req=>{
+                    fetch(`${u}/home/scheduleTable/selectGroup/${user}`).then(req=>{
                         req.json().then(res=>{
                             document.getElementById("selectGroup").innerHTML = `${res.table}`
                         })
@@ -218,21 +218,21 @@
             })
         }
         function updateSettingsSchedule(){
-            fetch(`${u}/settingsNotification/schedule/${user}`).then(req=>{
+            fetch(`${u}/settings/notification/schedule/${user}`).then(req=>{
                 req.json().then(res=>{
                     document.getElementById("settingsNotification").innerHTML = `<table>${res.table}</table>`
                 })
             })
         }
         function updateSettingsReplacement(){
-            fetch(`${u}/settingsNotification/replacement/${user}`).then(req=>{
+            fetch(`${u}/settings/notification/replacement/${user}`).then(req=>{
                 req.json().then(res=>{
                     document.getElementById("settingsNotification").innerHTML = `<table>${res.table}</table>`
                 })
             })
         }
         function updateSettingsDuty(){
-            fetch(`${u}/settingsNotification/duty/${user}`).then(req=>{
+            fetch(`${u}/settings/notification/duty/${user}`).then(req=>{
                 req.json().then(res=>{
                     document.getElementById("settingsNotification").innerHTML = `<table>${res.table}</table>`
                 })
@@ -241,10 +241,10 @@
         function updateSettingsTheme() {
             let url = document.querySelector("input").value
             console.log(url)
-            fetch(`${u}/settingsTheme/bg?user=${user}&url=${url}`,{
+            fetch(`${u}/settings/theme/bg?user=${user}&url=${url}`,{
                 method:'POST'
             }).then(()=>{
-                fetch(`${u}/settingsTheme/${user}`).then(req=>{
+                fetch(`${u}/settings/theme/${user}`).then(req=>{
                     req.json().then(res=>{
                         document.getElementById("settingsTheme").innerHTML = `<table>${res.table}</table>`
                         fetch(`${u}/randomGradient/${user}`).then(req=>{
@@ -258,10 +258,10 @@
         }
         function updateSettingsThemeStandard() {
             let url = document.querySelector("input").value
-            fetch(`${u}/settingsTheme/bg?user=${user}&url=standard`,{
+            fetch(`${u}/settings/theme/bg?user=${user}&url=standard`,{
                 method:'POST'
             }).then(()=>{
-                fetch(`${u}/settingsTheme/${user}`).then(req=>{
+                fetch(`${u}/settings/theme/${user}`).then(req=>{
                     req.json().then(res=>{
                         document.getElementById("settingsTheme").innerHTML = `<table>${res.table}</table>`
                         fetch(`${u}/randomGradient/${user}`).then(req=>{
@@ -276,7 +276,7 @@
         function changePage(i){
             if(replacementPage+i<0){alert('Замены не найдены!')}
             else{
-                fetch(`${u}/replacementTable/${replacementPage+i}`).then(req=>{
+                fetch(`${u}/home/replacementTable/${replacementPage+i}`).then(req=>{
                     req.json().then(res=>{
                         if(res.table!==null){
                             replacementPage += i
@@ -292,7 +292,7 @@
         function changePageDuty(i){
             if(dutyPage+i<0){alert('Дежурства не найдены!')}
             else{
-                fetch(`${u}/dutyTable/${user}/${dutyPage+i}`).then(req=>{
+                fetch(`${u}/home/dutyTable/${user}/${dutyPage+i}`).then(req=>{
                     req.json().then(res=>{
                         if(res.table!==null){
                             dutyPage += i
@@ -309,7 +309,7 @@
             let sGroup = document.myForm.selectGroup
             const selectedOption = sGroup.options[sGroup.selectedIndex];
             console.log(selectedOption.value)
-            fetch(`${u}/updateGroup/${selectedOption.value}`).then(req=>{
+            fetch(`${u}/home/scheduleTable/updateGroup/${selectedOption.value}`).then(req=>{
                 req.json().then(res=>{
                     document.getElementById("schedule").innerHTML = `<table>${res.table}</table>`
                 })
@@ -322,10 +322,10 @@
             let name = document.querySelector("input").value
             const selectedGroup = group.options[group.selectedIndex].value
             const selectedDutyDay = dutyDay.options[dutyDay.selectedIndex].value
-            await fetch(`${u}/editDutyDay/${user}/${selectedDutyDay}`).then(async ()=>{
-                await fetch(`${u}/editGroup/${user}/${selectedGroup}`).then(async ()=>{
+            await fetch(`${u}/profile/editDutyDay/${user}/${selectedDutyDay}`).then(async ()=>{
+                await fetch(`${u}/profile/editGroup/${user}/${selectedGroup}`).then(async ()=>{
                     if(name!==''){
-                        await fetch(`${u}/editName/${user}/${name}`).then(async ()=>{
+                        await fetch(`${u}/profile/editName/${user}/${name}`).then(async ()=>{
                             fetch(`${u}/profile/${user}`).then(req=>{
                                 req.json().then(res=>{
                                     document.getElementById("profile").innerHTML = `<table>${res.table}</table>`
