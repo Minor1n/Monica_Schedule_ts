@@ -41,9 +41,9 @@ export async function sender(){
 
 export async function generateHTML(group:string,num:number):Promise<string>{
     let users = await SQL.users.select_all_by_group(group)
-    let arr:string[][] =  [[],[],[],[],[]]
-    let arr2:string[][] = [[],[],[],[],[]]
-    let arr3:string[][] = [[],[],[],[],[]]
+    let arr:string[][] =  [[],[],[],[],[],[]]
+    let arr2:string[][] = [[],[],[],[],[],[]]
+    let arr3:string[][] = [[],[],[],[],[],[]]
     let resSchedule = []
     let resDuty = []
     let resTop = []
