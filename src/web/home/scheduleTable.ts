@@ -3,8 +3,9 @@ import {SQL} from "../../sql";
 
 export default async function (userId:number):Promise<{table:string}>{
     let user = await SQL.users.select(userId)
-    let table = await SQL.groups.select_schedule(user.groupName)
-    return {table: table.schedule}
+    let group = await SQL.groups.select_schedule(user.groupName)
+    let table = group.schedule!==null?group.schedule:`<tr><td><b>Расписание еще не было сгенерировано!</b></td></tr>`
+    return {table: table}
 }
 
 export async function select(userId:number):Promise<{table:string}>{
@@ -26,6 +27,7 @@ export async function select(userId:number):Promise<{table:string}>{
 }
 
 export async function update(groupName:string):Promise<{table:string}>{
-    let table = await SQL.groups.select_schedule(groupName)
-    return {table: table.schedule}
+    let group = await SQL.groups.select_schedule(groupName)
+    let table = group.schedule!==null?group.schedule:`<tr><td><b>Расписание еще не было сгенерировано!</b></td></tr>`
+    return {table: table}
 }
