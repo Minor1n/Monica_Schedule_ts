@@ -273,6 +273,22 @@
                 })
             })
         }
+        function updateSettingsLightMode() {
+            fetch(`${u}/settings/theme/lightMode?user=${user}`,{
+                method:'POST'
+            }).then(()=>{
+                fetch(`${u}/settings/theme/${user}`).then(req=>{
+                    req.json().then(res=>{
+                        document.getElementById("settingsTheme").innerHTML = `<table>${res.table}</table>`
+                        fetch(`${u}/randomGradient/${user}`).then(req=>{
+                            req.json().then(res=>{
+                                document.body.style.backgroundImage = String(res.gradient)
+                            })
+                        })
+                    })
+                })
+            })
+        }
         function changePage(i){
             if(replacementPage+i<0){alert('Замены не найдены!')}
             else{

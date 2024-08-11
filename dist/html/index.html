@@ -126,7 +126,7 @@
         let dutyPage = 0
         let u = 'https://www.minorin.ru'
         let tg = window.Telegram.WebApp;
-        let user = tg?.initDataUnsafe?.user?.id ? tg.initDataUnsafe.user.id: 6018898378//alert('Вы не можете использовать monica_schedule в браузере')
+        let user = tg?.initDataUnsafe?.user?.id ? tg.initDataUnsafe.user.id:alert('Вы не можете использовать monica_schedule в браузере')
         fetch(`${u}/randomGradient/${user}`).then(req=>{
             req.json().then(res=>{
                 document.body.style.backgroundImage = String(res.gradient)
@@ -259,6 +259,22 @@
         function updateSettingsThemeStandard() {
             let url = document.querySelector("input").value
             fetch(`${u}/settings/theme/bg?user=${user}&url=standard`,{
+                method:'POST'
+            }).then(()=>{
+                fetch(`${u}/settings/theme/${user}`).then(req=>{
+                    req.json().then(res=>{
+                        document.getElementById("settingsTheme").innerHTML = `<table>${res.table}</table>`
+                        fetch(`${u}/randomGradient/${user}`).then(req=>{
+                            req.json().then(res=>{
+                                document.body.style.backgroundImage = String(res.gradient)
+                            })
+                        })
+                    })
+                })
+            })
+        }
+        function updateSettingsLightMode() {
+            fetch(`${u}/settings/theme/lightMode?user=${user}`,{
                 method:'POST'
             }).then(()=>{
                 fetch(`${u}/settings/theme/${user}`).then(req=>{

@@ -27,6 +27,7 @@ export type User = {
     refAgents:number;
     refKeyStatus:string;
     paidWhenever:string;
+    lightMode:number;
 }
 export type Settings = {
     type:string;
@@ -143,6 +144,10 @@ export const SQL= {
 
         update_paidWhenever: async (id:number,status:string)=>{
             connection.query(`UPDATE users SET paidWhenever = '${status}' WHERE userId = '${id}'`)
+        },
+
+        update_lightMode: async function (id:number,lightMode:0|1) {
+            connection.query(`UPDATE users SET lightMode = '${lightMode}' WHERE userId = '${id}'`)
         },
 
         settings:{

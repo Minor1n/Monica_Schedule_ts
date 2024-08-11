@@ -77,6 +77,9 @@ export default (dirname:string)=> {
     app.post('/settings/theme/bg', async (req, res) => {
         res.send(await settings.theme.bg(Number(req.query.user),String(req.query.url)));
     })
+    app.post('/settings/theme/lightMode', async (req, res) => {
+        res.send(await settings.theme.lightMode(Number(req.query.user)));
+    })
 // app.get('/dutyPlus/[0-9]+', async (req, res) => {
 //     let user = await SQL.users.select(Number(req.url.slice(10)))
 //     res.send({message: await Functions.duty.dutyPlus(user)});
