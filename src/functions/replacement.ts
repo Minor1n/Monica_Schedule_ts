@@ -40,7 +40,7 @@ export async function regenerate(url:string,date:string):Promise<Replacement>{
                 !x.startsWith('Группа') && !x.startsWith('ПАРА') && x.replace(' ', '') !== '' && !x.startsWith('ПРЕПОДАВАТЕЛЬ') && !x.startsWith('ЗАМЕНА') && x.replace(' ', '') !== 'ПО' && !x.startsWith('РАСПИСАНИЮ')
             )
             let i = 0
-            for (let key in textArr) {
+            for (let _ in textArr) {
                 if (textArr[i]) {
                     if (textArr[i].match(/ЗАМЕНЫ/g) === null) {
                         let group:string='', text: any[]|string = '', length = 1;
@@ -129,13 +129,13 @@ export async function sender(replacement:Replacement){
         let gradient = replGradients[Math.floor(Math.random() * (replGradients.length-1))]
         let i = await nodeHtmlToImage({
             html: `${config.HTMLSTART1}${gradient}${config.HTMLSTART2}${replacement.html}${config.HTMLEND}`,
-            puppeteerArgs: config.PUPPETEER
+            puppeteerArgs: config.puppeteer
         })
         for(let user of users){
             let htmlImg = `background-image: url(${user.theme});`
             let image = user.theme === 'standard' ? i : await nodeHtmlToImage({
                 html: `${config.HTMLSTART1}${htmlImg}${config.HTMLSTART2}${replacement.html}${config.HTMLEND}`,
-                puppeteerArgs: config.PUPPETEER
+                puppeteerArgs: config.puppeteer
             })
             if(user.payment !== 0 && user.settingsReplacement ==='on' && await Functions.payment.groupTG(user)){
                 // @ts-ignore

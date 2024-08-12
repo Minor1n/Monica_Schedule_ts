@@ -18,7 +18,7 @@ export default async function(ctx:Context){
                             let htmlImg = user.theme === "standard" ? gradients[Math.floor(Math.random() * (gradients.length-1))] : `background-image: url(${user.theme});`
                             let image = await nodeHtmlToImage({
                                 html: `${config.HTMLSTART1}${htmlImg}${config.HTMLSTART2}${html}${config.HTMLEND}`,
-                                puppeteerArgs: config.PUPPETEER
+                                puppeteerArgs: config.puppeteer
                             })
                             // @ts-ignore
                             await ctx.replyWithPhoto(Input.fromBuffer(Buffer.from(image), `schedule.png`))

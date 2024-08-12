@@ -28,6 +28,7 @@ export type User = {
     refKeyStatus:string;
     paidWhenever:string;
     lightMode:number;
+    groupBots:number;
 }
 export type Settings = {
     type:string;

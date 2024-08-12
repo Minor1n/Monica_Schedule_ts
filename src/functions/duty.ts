@@ -1,4 +1,4 @@
-import {SQL, User} from "../sql";
+import {SQL} from "../sql";
 import nodeHtmlToImage from "node-html-to-image";
 import {config} from "../config";
 import {bot} from "../index";
@@ -20,7 +20,7 @@ export async function sender(){
         let html = await generateHTML(group,0)
         let i = await nodeHtmlToImage({
             html: `${config.HTMLSTART1}${gradient}${config.HTMLSTART2}${html}${config.HTMLEND}`,
-            puppeteerArgs: config.PUPPETEER
+            puppeteerArgs: config.puppeteer
         })
         htmls.set(group,{html:html,standard:i})
     }
@@ -30,7 +30,7 @@ export async function sender(){
             let htmlImg = `background-image: url(${user.theme});`
             let image = user.theme === "standard" ? htmls.get(user.groupName).standard : await nodeHtmlToImage({
                 html: `${config.HTMLSTART1}${htmlImg}${config.HTMLSTART2}${htmls.get(user.groupName).html}${config.HTMLEND}`,
-                puppeteerArgs: config.PUPPETEER
+                puppeteerArgs: config.puppeteer
             })
             // @ts-ignore
             await bot.telegram.sendPhoto(user.userId, Input.fromBuffer(Buffer.from(image), `duty.png`))

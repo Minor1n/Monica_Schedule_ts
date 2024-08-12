@@ -81,7 +81,7 @@ export async function referral(user:User,status:string){
 export async function groupTG(groupTG:User):Promise<boolean>{
     if(groupTG.userId<0){
         let users = await SQL.users.select_all()
-        let usersCount = 0
+        let usersCount = groupTG.groupBots
         for(let user of users){
             if(user.userId!==groupTG.userId){
                 if(-1<user.payment&&user.payment<2){

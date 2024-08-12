@@ -49,14 +49,14 @@ export async function sender(schedule:Schedule|string){
                 await SQL.groups.update_schedule(u.group,u.html)
                 let i = await nodeHtmlToImage({
                     html: `${config.HTMLSTART1}${gradient}${config.HTMLSTART2}${u.html}${config.HTMLEND}`,
-                    puppeteerArgs: config.PUPPETEER
+                    puppeteerArgs: config.puppeteer
                 })
                 for(let user of users){
                     if(user.payment !== 0 && schedule !== 'notfound' && user.settingsSchedule ==='on' && user.groupName === u.group && await Functions.payment.groupTG(user)){
                         let htmlImg = `background-image: url(${user.theme});`
                         let image = user.theme === "standard" ? i : await nodeHtmlToImage({
                             html: `${config.HTMLSTART1}${htmlImg}${config.HTMLSTART2}${u.html}${config.HTMLEND}`,
-                            puppeteerArgs: config.PUPPETEER
+                            puppeteerArgs: config.puppeteer
                         })
                         // @ts-ignore
                         await bot.telegram.sendPhoto(user.userId, Input.fromBuffer(Buffer.from(image), `schedule.png`))

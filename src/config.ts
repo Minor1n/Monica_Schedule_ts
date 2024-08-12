@@ -2,9 +2,9 @@ import dotenv from "dotenv";
 
 dotenv.config();
 
-const {TOKEN, PASSWORD, SQLHOST, SQLUSER, SQLDATABASE, SQLPASSWORD, HTMLSTART1, HTMLSTART2, HTMLEND, PUPPETEER} = process.env;
+const {TOKEN, PASSWORD, SQLHOST, SQLUSER, SQLDATABASE, SQLPASSWORD, HTMLSTART1, HTMLSTART2, HTMLEND} = process.env;
 
-if (!TOKEN||!PASSWORD||!SQLHOST||!SQLUSER||!SQLDATABASE||!SQLPASSWORD||!HTMLSTART1||!HTMLSTART2||!HTMLEND||!PUPPETEER) {
+if (!TOKEN||!PASSWORD||!SQLHOST||!SQLUSER||!SQLDATABASE||!SQLPASSWORD||!HTMLSTART1||!HTMLSTART2||!HTMLEND) {
     throw new Error("Missing environment variables");
 }
 
@@ -21,9 +21,10 @@ let payment:Map<number,string> = new Map()
     .set(8,'Оплачен на 7 месяцев')
     .set(9,'Оплачен на 8 месяцев')
     .set(10,'Оплачен на 9 месяцев')
+const puppeteer = { args: [ '--no-sandbox', '--disable-setuid-sandbox', '--disable-dev-shm-usage', '--disable-accelerated-2d-canvas', '--no-first-run', '--headless', '--no-zygote', '--disable-gpu' ], headless: true, ignoreHTTPSErrors: true }
 
 export const config = {
     TOKEN, PASSWORD, SQLHOST, SQLUSER, SQLDATABASE, SQLPASSWORD, HTMLSTART1, HTMLSTART2, HTMLEND,
-    PUPPETEER: eval(`(${PUPPETEER})`),
+    puppeteer,
     payment
 };

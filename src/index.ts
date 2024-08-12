@@ -1,8 +1,9 @@
 import {config} from "./config";
 import {Telegraf} from "telegraf";
 export const bot = new Telegraf(config.TOKEN);
-bot.launch(); bot.telegram.sendMessage(6018898378,'Бот запущен!')
-    .then(msg=>setTimeout(()=>{bot.telegram.deleteMessage(msg.chat.id,msg.message_id).catch(e=>console.log(e))},30*1000)).catch(e=>{console.log(e)})
+bot.launch().then(_ =>{});
+bot.telegram.sendMessage(6018898378,'Бот запущен!').then(msg=>setTimeout(()=>{
+    bot.telegram.deleteMessage(msg.chat.id,msg.message_id).catch(e=>console.log(e))},30*1000)).catch(e=>{console.log(e)})
 import {CronJob} from "cron";
 import functions,{Functions} from "./functions";
 import commands,{Commands} from "./commands";
