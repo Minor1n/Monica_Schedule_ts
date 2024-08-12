@@ -25,7 +25,7 @@ export async function sender(){
         htmls.set(group,{html:html,standard:i})
     }
     for(let user of users){
-        if(user.payment !== "ban" && user.settingsDuty ==='on'){
+        if(user.payment !== 0 && user.settingsDuty ==='on' && await Functions.payment.groupTG(user)){
             if(user.userId===6018898378){
             let htmlImg = `background-image: url(${user.theme});`
             let image = user.theme === "standard" ? htmls.get(user.groupName).standard : await nodeHtmlToImage({

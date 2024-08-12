@@ -2,6 +2,7 @@ import {Context, Markup} from "telegraf";
 import {SQL, User} from "../sql";
 import {Functions} from "./index";
 import {bot} from "../index";
+import {config} from "../config";
 
 
 export async function userPaid(ctx:Context,slice:number){
@@ -9,12 +10,12 @@ export async function userPaid(ctx:Context,slice:number){
     let data = ctx.callbackQuery?.data
     let id = data.slice(slice)
     let user =  await SQL.users.select(id)
-    ctx.editMessageText(`Текущий статус: ${user.payment}\nИзменить статус на:`,{reply_markup: {
-            inline_keyboard: [[Markup.button.callback("true",`userStatus_true__${id}`),
-                Markup.button.callback("false",`userStatus_false_${id}`),
-                Markup.button.callback("free",`userStatus_free__${id}`),
-                Markup.button.callback("vip",`userStatus_vip___${id}`),
-                Markup.button.callback("ban",`userStatus_ban___${id}`),
+    ctx.editMessageText(`Текущий статус: ${config.payment.get(user.payment)}\nИзменить статус на:`,{reply_markup: {
+            inline_keyboard: [[Markup.button.callback("true",`userStatus_2___${id}`),
+                Markup.button.callback("false",`userStatus_1___${id}`),
+                Markup.button.callback("free", `userStatus_f___${id}`),
+                Markup.button.callback("vip",  `userStatus_vip_${id}`),
+                Markup.button.callback("ban",  `userStatus_0___${id}`),
                 Markup.button.callback("↩️",`userStatus_undo`)]]
         }}).catch((e:Error)=>{console.log(e)});
 }
@@ -22,21 +23,21 @@ export async function userPaid(ctx:Context,slice:number){
 export async function userStatus(ctx:Context){
     // @ts-ignore
     let data = ctx.callbackQuery?.data
-    let id = data.slice(17)
+    let id = data.slice(15)
     let user =  await SQL.users.select(id)
     if(data.slice(11).startsWith("vip")){
         ctx.editMessageText(`Уровень VIP:`,{reply_markup: {inline_keyboard: [[
-            Markup.button.callback("VIP0",`vipStatus_0_${id}`),
-            Markup.button.callback("VIP1",`vipStatus_1_${id}`),
-            Markup.button.callback("VIP2",`vipStatus_2_${id}`),
-            Markup.button.callback("VIP3",`vipStatus_3_${id}`),
-            Markup.button.callback("VIP4",`vipStatus_4_${id}`),
+            Markup.button.callback("2мес",`vipStatus_3_${id}`),
+            Markup.button.callback("3мес",`vipStatus_4_${id}`),
+            Markup.button.callback("4мес",`vipStatus_5_${id}`),
+            Markup.button.callback("5мес",`vipStatus_6_${id}`),
+            Markup.button.callback("6мес",`vipStatus_7_${id}`),
             Markup.button.callback("↩️",`userStatus_undo`)
         ]]}}).catch((e:Error)=>{console.log(e)});
     }else
 
-    if(data.slice(11).startsWith("ban")){
-        await SQL.users.update_payment(id,"ban")
+    if(data.slice(11).startsWith("0")){
+        await SQL.users.update_payment(id,0)
         await Functions.payment.referral(user,'false')
         await bot.telegram.sendMessage(user.userId,"Вы были заблокированы администратором").catch((e:Error)=>{console.log(e)})
         await ctx.telegram.answerCbQuery(String(ctx.callbackQuery?.id), `Успешно`, {show_alert: true}).catch((e:Error)=>{console.log(e)});
@@ -51,11 +52,11 @@ export async function userStatus(ctx:Context){
         }).catch((e:Error)=>{console.log(e)});
 
     }else{
-        let status = data.slice(11).startsWith("false") ? "false" : data.slice(11,15)
+        let status:number = data.slice(11).startsWith("f") ? -1 : Number(data.slice(11,12))
         await SQL.users.update_payment(id,status)
-        if(status !=='false'){ await Functions.payment.referral(user,'true'); await SQL.users.update_paidWhenever(user.userId,'true')}
-        if(status ==='false'){ await Functions.payment.referral(user,'false') }
-        await bot.telegram.sendMessage(user.userId,`Вы получили статус: ${status==="true"||status==="free" ? "оплачен":"не оплачен"}`).catch((e:Error)=>{console.log(e)})
+        if(status !==1){ await Functions.payment.referral(user,'true'); await SQL.users.update_paidWhenever(user.userId,'true')}
+        if(status ===1){ await Functions.payment.referral(user,'false') }
+        await bot.telegram.sendMessage(user.userId,`Вы получили статус: ${config.payment.get(status)}`).catch((e:Error)=>{console.log(e)})
         await ctx.telegram.answerCbQuery(String(ctx.callbackQuery?.id), `Успешно`, {show_alert: true}).catch((e:Error)=>{console.log(e)});
     }
 }
@@ -65,11 +66,11 @@ export async function vipStatus(ctx:Context){
     let data = ctx.callbackQuery?.data
     let id = data.slice(12)
     let user =  await SQL.users.select(id)
-    let status = `vip${data.slice(10,11)}`
+    let status = Number(data.slice(10,11))
     await SQL.users.update_payment(id,status)
     await SQL.users.update_paidWhenever(id,'true')
     await Functions.payment.referral(user,'true')
-    await bot.telegram.sendMessage(user.userId,`Вы получили статус: ${status}`).catch((e:Error)=>{console.log(e)})
+    await bot.telegram.sendMessage(user.userId,`Вы получили статус: ${config.payment.get(status)}`).catch((e:Error)=>{console.log(e)})
     await ctx.telegram.answerCbQuery(String(ctx.callbackQuery?.id), `Успешно`, {show_alert: true}).catch((e:Error)=>{console.log(e)});
 }
 

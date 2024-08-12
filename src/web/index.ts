@@ -14,8 +14,8 @@ export default (dirname:string)=> {
     app.get('/', (req, res) => {res.sendFile(path.join(dirname+'/html/index.html'))})
 
     //HOME
-    app.get('/home', async (req, res) => {
-        res.send(await pages.home(dirname))
+    app.get('/home/[0-9]+', async (req, res) => {
+        res.send(await pages.home(dirname,Number(req.url.slice(6))))
     })
     app.get('/home/scheduleTable/[0-9]+', async (req, res) => {
         res.send(await home.scheduleTable.default(Number(req.url.slice(20))));

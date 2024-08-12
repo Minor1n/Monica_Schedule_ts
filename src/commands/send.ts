@@ -10,7 +10,7 @@ export default async function(ctx:Context){
     if(ctx.chat?.id === 6018898378 && text && !text.startsWith('monica_schedule_bot')){
         let users = await SQL.users.select_all()
         for(let user of users){
-            if(user.payment !== "ban"){
+            if(user.payment !== 0){
                 await bot.telegram.sendMessage(user.userId,text).catch(e=>{console.log(e)})
                 await Functions.payment.alert(user)
             }

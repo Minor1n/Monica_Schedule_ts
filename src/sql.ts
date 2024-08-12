@@ -11,7 +11,7 @@ export type User = {
     groupName:string;
     userId:number;
     userName:string;
-    payment:string;
+    payment:number;
     price:number;
     name:string;
     role:string;
@@ -106,7 +106,7 @@ export const SQL= {
             connection.query(`INSERT INTO users (userId,userName,payment,name,refKey) values('${userId}','${userName}','${payment}','${name}','${refKey}')`)
         },
 
-        update_payment: async function (id:number,payment:string) {
+        update_payment: async function (id:number,payment:number) {
             connection.query(`UPDATE users SET payment = '${payment}' WHERE userId = '${id}'`)
         },
 

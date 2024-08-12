@@ -4,8 +4,6 @@ import * as payment from './payment'
 import * as callback_query from './callback_query'
 import * as hears from './hears'
 import * as duty from "./duty";
-import profile from "./profile";
-import * as settings from "./settings";
 import {bot} from "../index";
 
 
@@ -15,9 +13,7 @@ export const Functions= {
     payment,
     callback_query,
     hears,
-    duty,
-    profile,
-    settings
+    duty
 }
 
 export default ()=>{

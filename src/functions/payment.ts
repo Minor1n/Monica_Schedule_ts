@@ -1,25 +1,25 @@
 import {SQL, User} from "../sql";
 import {bot} from "../index";
+import {config} from "../config";
 
 
 export async function recount(){
     let users = await SQL.users.select_all()
     for(let user of users){
         let cost = user.price-((user.price/100)*(user.refAgents*6))
-        if(user.payment === "true"){
-            await SQL.users.update_payment(user.userId, "false")
-            await referral(user,'false')
-            await bot.telegram.sendMessage(user.userId, `Оплатите подписку <b>${Math.round(cost)}р</b>\nДля получения статуса VIP оплатите подписку на несколько месяцев(${Math.round(cost*2)}р, ${Math.round(cost*3)}р, ${Math.round(cost*4)}р, ${Math.round(cost*5)}р, ${Math.round(cost*6)}р)\nПри оплате, в комментарии указывайте ваш id (id можно узнать введя команду /profile)\nПосле оплаты пропишите /paid для оповещения администрации об оплате\n<a href="https://www.tinkoff.ru/rm/korop.aleksandr4/KHtiD43274">ссылка для оплаты</a>\n\nПри оплате за июнь вы получаете статус VIP2-3`, { parse_mode: 'HTML' }).catch(e=>{console.log(e)})
-        }
-        if(user.payment === "false"){
-            await SQL.users.update_payment(user.userId, "ban")
+        if(user.payment === 1){
             await referral(user,'false')
             await bot.telegram.sendMessage(user.userId, `Вы заблокированы за неуплату(обратитесь к администратору или оплатите подписку <b>${Math.round(cost*2)}р</b>)\n🔗<a href="https://www.tinkoff.ru/rm/korop.aleksandr4/KHtiD43274">ссылка для оплаты</a>`, { parse_mode: 'HTML' }).catch(e=>{console.log(e)})
+        }else
+        if(user.payment === 2){
+            await referral(user,'false')
+            await bot.telegram.sendMessage(user.userId, `Оплатите подписку <b>${Math.round(cost)}р</b>\nВы также можете оплатить подписку на несколько месяцев(${Math.round(cost*2)}р, ${Math.round(cost*3)}р, ${Math.round(cost*4)}р, ${Math.round(cost*5)}р, ${Math.round(cost*6)}р)\nПри оплате, в комментарии указывайте ваш id (id можно узнать введя команду /profile)\nПосле оплаты пропишите /paid для оповещения администрации об оплате\n<a href="https://www.tinkoff.ru/rm/korop.aleksandr4/KHtiD43274">ссылка для оплаты</a>\n\nПри оплате за июнь вы получаете статус Оплачен на 3 месяца`, { parse_mode: 'HTML' }).catch(e=>{console.log(e)})
+        }else
+        if(user.payment > 2){
+            await bot.telegram.sendMessage(user.userId, `Ваш статус изменен на ${config.payment.get(user.payment-1)}`, { parse_mode: 'HTML' }).catch(e=>{console.log(e)})
         }
-        if(user.payment.startsWith('vip')){
-            let status = user.payment.slice(3)!=='0' ? `vip${Number(user.payment.slice(3))-1}`:"true"
-            await SQL.users.update_payment(user.userId, status)
-            await bot.telegram.sendMessage(user.userId, `Ваш статус изменен на ${status==="true"?"оплачен":status}`, { parse_mode: 'HTML' }).catch(e=>{console.log(e)})
+        if(user.payment > 0){
+            await SQL.users.update_payment(user.userId, user.payment-1)
         }
     }
 }
@@ -29,7 +29,7 @@ export async function preAlert(){
     let date = dateArr[new Date().getMonth()]
     let users = await SQL.users.select_all()
     for(let user of users){
-        if(user.payment === 'false'){
+        if(user.payment === 1){
             await bot.telegram.sendMessage(user.userId, `Оплатите подписку до ${date}, иначе будете отключены от бота`).catch(e=>{console.log(e)})
             await alert(user)
         }
@@ -37,9 +37,9 @@ export async function preAlert(){
 }
 
 export async function alert(user:User){
-    if(user.payment === "false"){
+    if(user.payment === 1){
         let cost = user.price-((user.price/100)*(user.refAgents*6))
-        await bot.telegram.sendMessage(user.userId, `Оплатите подписку <b>${Math.round(cost)}р</b>\nДля получения статуса VIP оплатите подписку на несколько месяцев(${Math.round(cost*2)}р, ${Math.round(cost*3)}р, ${Math.round(cost*4)}р, ${Math.round(cost*5)}р, ${Math.round(cost*6)}р)\nПри оплате, в комментарии указывайте ваш id (id можно узнать введя команду /profile)\nПосле оплаты пропишите /paid для оповещения администрации об оплате\n<a href="https://www.tinkoff.ru/rm/korop.aleksandr4/KHtiD43274">ссылка для оплаты</a>\n\nПри оплате за июнь вы получаете статус VIP2-3`, { parse_mode: 'HTML' }).catch(e=>{console.log(e)})
+        await bot.telegram.sendMessage(user.userId, `Оплатите подписку <b>${Math.round(cost)}р</b>\nВы также можете оплатить подписку на несколько месяцев(${Math.round(cost*2)}р, ${Math.round(cost*3)}р, ${Math.round(cost*4)}р, ${Math.round(cost*5)}р, ${Math.round(cost*6)}р)\nПри оплате, в комментарии указывайте ваш id (id можно узнать введя команду /profile)\nПосле оплаты пропишите /paid для оповещения администрации об оплате\n<a href="https://www.tinkoff.ru/rm/korop.aleksandr4/KHtiD43274">ссылка для оплаты</a>\n\nПри оплате за июнь вы получаете статус Оплачен на 3 месяца`, { parse_mode: 'HTML' }).catch(e=>{console.log(e)})
     }
 }
 
@@ -76,4 +76,22 @@ export async function referral(user:User,status:string){
             await SQL.users.update_refAgents(referral.agentId, agents)
         }
     }
+}
+
+export async function groupTG(groupTG:User):Promise<boolean>{
+    if(groupTG.userId<0){
+        let users = await SQL.users.select_all()
+        let usersCount = 0
+        for(let user of users){
+            if(user.userId!==groupTG.userId){
+                if(-1<user.payment&&user.payment<2){
+                    let member = await bot.telegram.getChatMember(groupTG.userId, user.userId)
+                    if(member.status==='member'||member.status==='creator'||member.status==='administrator'){
+                        usersCount+=1
+                    }
+                }
+            }
+        }
+        return usersCount === Number(bot.telegram.getChatMembersCount(groupTG.userId));
+    }else return true
 }

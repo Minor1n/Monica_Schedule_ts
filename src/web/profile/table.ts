@@ -1,4 +1,5 @@
 import {SQL, User} from "../../sql";
+import {config} from "../../config";
 
 
 export default async function (userId:number):Promise<{table:string}>{
@@ -56,7 +57,7 @@ async function table(user:User):Promise<string>{
 <tr><td><b class="profileB">Имя:</b></td><td><b class="profileB">${surname}</b></td><td><b class="profileB">|</b><form name="myForm1"><input class="inputP" type="text" id="name" name="name" required/></form></td></tr>
 <tr><td><b class="profileB">День дежурства:</b></td><td><b class="profileB">${dutyDay.get(user.scheduleDate)}</b></td><td><b class="profileB"><form name="myForm2"><select class="selectP" name="selectDutyDay" id="selectDutyDay">${arr3.join('')}</select></form>▼</b></td></tr>
 <tr><td><b class="profileB">Телеграм id:</b></td><td><b class="profileB">${id}</b></td></tr>
-<tr><td><b class="profileB">Статус оплаты:</b></td><td><b class="profileB">${user.payment === 'true' ? 'Оплачен' : user.payment === 'false' ? 'Не оплачен' : user.payment}</b></td></tr>
+<tr><td><b class="profileB">Статус оплаты:</b></td><td><b class="profileB">${config.payment.get(user.payment)}</b></td></tr>
 <tr><td><b class="profileB">Сумма оплаты с учетом рефералки:</b></td><td><b class="profileB">${Math.floor(user.price - (user.price * (refBonus / 100)))}р</b></td></tr>
 <tr><td><b class="profileB">Реферальный ключ:</b></td><td><b class="profileB">${refKey}</b></td></tr>
 <tr><td><b class="profileB">Бонус рефералов:</b></td><td><b class="profileB">${refBonus}%</b></td></tr>

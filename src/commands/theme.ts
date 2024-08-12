@@ -7,7 +7,7 @@ export default async function(ctx:Context){
         let user = await SQL.users.select(ctx.chat?.id)
         let {text}=ctx
         let theme = text?.slice(7)
-        if(user.payment !== 'ban'){
+        if(user.payment !== 0){
             if(user&& theme && !theme.startsWith('monica_schedule_bot') && theme.match(/\.(jpeg|jpg|png)$/) != null){
                 await SQL.users.update_theme(user.userId,theme)
                 await ctx.reply(`Успешно установлена тема: ${theme}`)

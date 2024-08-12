@@ -8,7 +8,7 @@ export async function duty(ctx:Context){
         let author = await SQL.users.select(ctx.chat.id)
         let date = new Date().getTime()
         let day = new Date().getDay()
-        if(day !== 0 && author.payment !== "ban" && author.dutyDate + 43200000 <= date){
+        if(day !== 0 && author.payment !== 0 && author.dutyDate + 43200000 <= date){
             await SQL.duty.insert(author.groupName,date,author.userId,author.name)
             let users = await SQL.users.select_all_by_group(author.groupName)
 

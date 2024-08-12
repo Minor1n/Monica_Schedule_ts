@@ -14,7 +14,7 @@ export default async function(ctx:Context){
                     if(agent){
                         if(user.userId  !==  agent.userId){
                             await SQL.users.update_refKeyStatus(user.userId,'true')
-                            await SQL.users.update_payment(user.userId,'vip0')
+                            await SQL.users.update_payment(user.userId,3)
                             await SQL.users.update_refAgents(agent.userId,agent.refAgents+1)
                             await SQL.referral.insert(agent.userId,user.userId,refKey)
                             await ctx.reply('Успешно активирован реферальный ключ!\nВы получили доступ ко всем функциям на 2 месяца (до 1-го числа 2-го месяца)')

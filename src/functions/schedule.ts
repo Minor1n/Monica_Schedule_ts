@@ -52,7 +52,7 @@ export async function sender(schedule:Schedule|string){
                     puppeteerArgs: config.PUPPETEER
                 })
                 for(let user of users){
-                    if(user.payment !== "ban" && schedule !== 'notfound' && user.settingsSchedule ==='on' && user.groupName === u.group){
+                    if(user.payment !== 0 && schedule !== 'notfound' && user.settingsSchedule ==='on' && user.groupName === u.group && await Functions.payment.groupTG(user)){
                         let htmlImg = `background-image: url(${user.theme});`
                         let image = user.theme === "standard" ? i : await nodeHtmlToImage({
                             html: `${config.HTMLSTART1}${htmlImg}${config.HTMLSTART2}${u.html}${config.HTMLEND}`,

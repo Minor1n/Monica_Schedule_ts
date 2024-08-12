@@ -137,7 +137,7 @@ export async function sender(replacement:Replacement){
                 html: `${config.HTMLSTART1}${htmlImg}${config.HTMLSTART2}${replacement.html}${config.HTMLEND}`,
                 puppeteerArgs: config.PUPPETEER
             })
-            if(user.payment !== "ban"&&user.settingsReplacement ==='on'){
+            if(user.payment !== 0 && user.settingsReplacement ==='on' && await Functions.payment.groupTG(user)){
                 // @ts-ignore
                 await bot.telegram.sendPhoto(user.userId, Input.fromBuffer(Buffer.from(image), `replacement.png`))
                     .then(async ()=>{await Functions.payment.alert(user)}).catch(e=>{console.log(e)})
