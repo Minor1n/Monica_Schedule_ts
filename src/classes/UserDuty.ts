@@ -1,18 +1,19 @@
 import {connection} from "../index";
+import {UserDutyDay} from "./User";
 
 interface UserDutyI {
     id:number;
     count:number;
-    day:-1|1|2|3|4|5|6|number;
+    day:UserDutyDay|number;
     lastDate:number;
 }
 
 export class UserDuty implements UserDutyI{
     id:number;
     private _count: number;
-    private _day: -1 | 1 | 2 | 3 | 4 | 5 | 6|number;
+    private _day: UserDutyDay|number;
     private _lastDate: number;
-    constructor(id:number,count:number,day:-1|1|2|3|4|5|6|number,lastDate:number) {
+    constructor(id:number,count:number,day:UserDutyDay|number,lastDate:number) {
         this.id = id
         this._count = count
         this._day = day
@@ -29,14 +30,14 @@ export class UserDuty implements UserDutyI{
     }
     set count(value){
         this._count = value
-        connection.query(`UPDATE users SET duty = '${value}' WHERE userId = '${this.id}'`)
+        connection.query(`UPDATE users SET dutyCount = '${value}' WHERE userId = '${this.id}'`)
     }
     set day(value){
         this._day = value
-        connection.query(`UPDATE users SET scheduleDate = '${value}' WHERE userId = '${this.id}'`)
+        connection.query(`UPDATE users SET dutyDay = '${value}' WHERE userId = '${this.id}'`)
     }
     set lastDate(value){
         this._lastDate = value
-        connection.query(`UPDATE users SET dutyDate = '${value}' WHERE userId = '${this.id}'`)
+        connection.query(`UPDATE users SET dutyLastDate = '${value}' WHERE userId = '${this.id}'`)
     }
 }

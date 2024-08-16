@@ -6,6 +6,11 @@ import {UserSettings} from "./UserSettings";
 import {UserReferral} from "./UserReferral";
 import {MysqlError} from "mysql";
 
+export type UserRole = 'headman'|'user'|'support'|'admin'|'group'
+export type UserDutyDay = -1|1|2|3|4|5|6
+export type UserSettingsStatus = "on" | "off"
+export type UserLightMode = 0 | 1
+
 export type UserT = {
     groupName:string;
     userId:number;
@@ -13,20 +18,19 @@ export type UserT = {
     payment:number;
     price:number;
     name:string;
-    role:'headman'|'user'|'support'|'admin'|'group';
-    duty:number;
-    dutyDate:number;
-    scheduleDate:-1|1|2|3|4|5|6;
-    settingsMeme:"on" | "off" ;
-    settingsSchedule:"on" | "off" ;
-    settingsReplacement:"on" | "off" ;
-    settingsDuty:"on" | "off" ;
+    role:UserRole;
+    dutyCount:number;
+    dutyLastDate:number;
+    dutyDay:UserDutyDay;
+    settingsSchedule:UserSettingsStatus;
+    settingsReplacement:UserSettingsStatus;
+    settingsDuty:UserSettingsStatus;
     theme:string;
     refKey:string;
     refAgents:number;
     refKeyStatus:'true'|'false';
     paidWhenever:'true'|'false';
-    lightMode:0 | 1;
+    lightMode:UserLightMode;
     groupBots:number;
 }
 
@@ -72,7 +76,7 @@ export class User implements UserI{
         async function loadOptions(result:UserT):Promise<UserI>{
             let referral = await new UserReferral(userId,result.refAgents,result.refKey,result.refKeyStatus).load()
             return{
-                duty: new UserDuty(userId,result.duty,result.scheduleDate,result.dutyDate),
+                duty: new UserDuty(userId,result.dutyCount,result.dutyDay,result.dutyLastDate),
                 info: new UserInfo(result.groupBots,result.groupName,userId,result.name,result.userName,result.role),
                 payment: new Payment(userId,result.paidWhenever,result.price,result.payment,referral),
                 settings: new UserSettings(userId,result.settingsDuty,result.lightMode,result.settingsReplacement,result.settingsSchedule,result.theme)

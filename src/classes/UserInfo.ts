@@ -1,11 +1,12 @@
 import {connection} from "../index";
+import {UserRole} from "./User";
 
 interface UserInfoI{
     id:number;
     userName:string;
     name:string;
     groupName:string
-    role:'headman'|'user'|'support'|'admin'|'group'
+    role:UserRole
     bots:number
 }
 
@@ -14,9 +15,9 @@ export class UserInfo implements UserInfoI{
     private _groupName: string;
     private readonly _id: number;
     private _name: string;
-    private readonly _role: "headman" | "user" | "support" | "admin" | "group";
+    private readonly _role: UserRole;
     private _userName: string;
-    constructor(bots:number,groupName:string,id:number,name:string,userName:string,role:"headman" | "user" | "support" | "admin" | "group") {
+    constructor(bots:number,groupName:string,id:number,name:string,userName:string,role:UserRole) {
         this._bots = bots
         this._groupName = groupName
         this._id = id

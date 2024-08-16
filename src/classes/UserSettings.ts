@@ -1,22 +1,23 @@
 import {connection} from "../index";
+import {UserLightMode, UserSettingsStatus} from "./User";
 
 interface UserSettingsI{
     id:number;
-    schedule:'on'|'off';
-    replacement:'on'|'off';
-    duty:'on'|'off';
+    schedule:UserSettingsStatus;
+    replacement:UserSettingsStatus;
+    duty:UserSettingsStatus;
     theme:"standard"|string;
-    lightMode:0|1
+    lightMode:UserLightMode
 }
 
 export class UserSettings implements UserSettingsI{
     id:number;
-    private _duty: "on" | "off";
-    private _lightMode: 0 | 1;
-    private _replacement: "on" | "off";
-    private _schedule: "on" | "off";
+    private _duty: UserSettingsStatus;
+    private _lightMode: UserLightMode;
+    private _replacement: UserSettingsStatus;
+    private _schedule: UserSettingsStatus;
     private _theme:"standard"|string;
-    constructor(id:number,duty:"on" | "off",lightMode:0 | 1,replacement:"on" | "off",schedule:"on" | "off",theme:"standard"|string) {
+    constructor(id:number,duty:UserSettingsStatus,lightMode:UserLightMode,replacement:UserSettingsStatus,schedule:UserSettingsStatus,theme:"standard"|string) {
         this.id = id
         this._duty = duty
         this._lightMode = lightMode
@@ -27,16 +28,16 @@ export class UserSettings implements UserSettingsI{
     get theme(): string {
         return this._theme;
     }
-    get schedule(): "on" | "off" {
+    get schedule(): UserSettingsStatus {
         return this._schedule;
     }
-    get replacement(): "on" | "off" {
+    get replacement(): UserSettingsStatus {
         return this._replacement;
     }
-    get lightMode(): 0 | 1 {
+    get lightMode(): UserLightMode {
         return this._lightMode;
     }
-    get duty(): "on" | "off" {
+    get duty(): UserSettingsStatus {
         return this._duty;
     }
 
@@ -46,40 +47,40 @@ export class UserSettings implements UserSettingsI{
         this._theme = res
         connection.query(`UPDATE users SET theme = '${res}' WHERE userId = '${this.id}'`)
     }
-    set schedule(value: "on" | "off") {
+    set schedule(value: UserSettingsStatus) {
         this._schedule = value;
         connection.query(`UPDATE users SET settingsSchedule = '${value}' WHERE userId = '${this.id}'`)
     }
-    set replacement(value: "on" | "off") {
+    set replacement(value: UserSettingsStatus) {
         this._replacement = value;
         connection.query(`UPDATE users SET settingsReplacement = '${value}' WHERE userId = '${this.id}'`)
     }
-    set lightMode(value: 0 | 1) {
+    set lightMode(value: UserLightMode) {
         this._lightMode = value;
         connection.query(`UPDATE users SET lightMode = '${value}' WHERE userId = '${this.id}'`)
     }
-    set duty(value: "on" | "off") {
+    set duty(value: UserSettingsStatus) {
         this._duty = value;
         connection.query(`UPDATE users SET settingsDuty = '${value}' WHERE userId = '${this.id}'`)
     }
 
     switchSchedule() {
-        let status:'on'|'off' = this._schedule==='on'?'off':'on'
+        let status:UserSettingsStatus = this._schedule==='on'?'off':'on'
         this._schedule = status;
         connection.query(`UPDATE users SET settingsSchedule = '${status}' WHERE userId = '${this.id}'`)
     }
     switchReplacement() {
-        let status:'on'|'off' = this._replacement==='on'?'off':'on'
+        let status:UserSettingsStatus = this._replacement==='on'?'off':'on'
         this._replacement = status;
         connection.query(`UPDATE users SET settingsReplacement = '${status}' WHERE userId = '${this.id}'`)
     }
     switchLightMode() {
-        let status:0|1 = this._lightMode===0?1:0
+        let status: UserLightMode = this._lightMode===0?1:0
         this._lightMode = status;
         connection.query(`UPDATE users SET lightMode = '${status}' WHERE userId = '${this.id}'`)
     }
     switchDuty() {
-        let status:'on'|'off' = this._duty==='on'?'off':'on'
+        let status:UserSettingsStatus = this._duty==='on'?'off':'on'
         this._duty = status;
         connection.query(`UPDATE users SET settingsDuty = '${status}' WHERE userId = '${this.id}'`)
     }
