@@ -1,37 +1,30 @@
-import {SQL} from "../sql";
-import nodeHtmlToImage from "node-html-to-image";
-import {config} from "../config";
-import {bot} from "../index";
+import {gradients, bot} from "../index";
 import {Input} from "telegraf";
 import {Functions} from "./index";
+import {Users} from "../classes/User";
+import {Group} from "../classes/Group";
+import {HtmlToImage} from "../classes/HtmlToImage";
 
 export async function sender(){
-    let users = await SQL.users.select_all()
-    let gradients = await SQL.gradients.select_all_gradients()
-    let gradient = gradients[Math.floor(Math.random() * (gradients.length-1))]
+    let users = await new Users().load()
+    let gradient = gradients.light
     let groups = []
     let htmls = new Map()
-    for (let user of users) {
-        if (groups.indexOf(user.groupName) === -1 && user.groupName !== 'null') {
-            groups.push(user.groupName)
+    for (let user of users.all) {
+        if (groups.indexOf(user.info.groupName) === -1 && user.info.groupName !== 'null') {
+            groups.push(user.info.groupName)
         }
     }
     for(let group of groups){
         let html = await generateHTML(group,0)
-        let i = await nodeHtmlToImage({
-            html: `${config.HTMLSTART1}${gradient}${config.HTMLSTART2}${html}${config.HTMLEND}`,
-            puppeteerArgs: config.puppeteer
-        })
+        let i = await new HtmlToImage(gradient,html).getImage()
         htmls.set(group,{html:html,standard:i})
     }
-    for(let user of users){
-        if(user.payment !== 0 && user.settingsDuty ==='on' && await Functions.payment.groupTG(user)){
-            if(user.userId===6018898378){
-            let htmlImg = `background-image: url(${user.theme});`
-            let image = user.theme === "standard" ? htmls.get(user.groupName).standard : await nodeHtmlToImage({
-                html: `${config.HTMLSTART1}${htmlImg}${config.HTMLSTART2}${htmls.get(user.groupName).html}${config.HTMLEND}`,
-                puppeteerArgs: config.puppeteer
-            })
+    for(let user of users.all){
+        if(user.payment.status !== 0 && user.settings.duty ==='on' && await Functions.payment.groupTG(user)){
+            if(user.info.id===6018898378){
+            let htmlImg = `background-image: url(${user.settings.theme});`
+            let image = user.settings.theme === "standard" ? htmls.get(user.info.groupName).standard : await new HtmlToImage(htmlImg,htmls.get(user.info.groupName).html).getImage()
             // @ts-ignore
             await bot.telegram.sendPhoto(user.userId, Input.fromBuffer(Buffer.from(image), `duty.png`))
                 .then(async ()=>{await Functions.payment.alert(user)}).catch(e=>{console.log(e)})
@@ -39,23 +32,24 @@ export async function sender(){
     }
 }
 
-export async function generateHTML(group:string,num:number):Promise<string>{
-    let users = await SQL.users.select_all_by_group(group)
+export async function generateHTML(groupName:string,num:number):Promise<string>{
+    let group = await new Group().load(groupName)
+    let users = group.users
     let arr:string[][] =  [[],[],[],[],[],[]]
     let arr2:string[][] = [[],[],[],[],[],[]]
     let arr3:string[][] = [[],[],[],[],[],[]]
     let resSchedule = []
     let resDuty = []
     let resTop = []
-    let sortUsers = users.sort((a,b)=>b.duty-a.duty)
+    let sortUsers = users.sort((a,b)=>b.duty.count - a.duty.count)
     for(let user of users){
-        if(user.scheduleDate!==-1){
-            arr[user.scheduleDate-1].push(user.name)
+        if(user.duty.day!==-1){
+            arr[user.duty.day-1].push(user.info.name)
         }
     }
     for (let user of sortUsers){
-        if(user.scheduleDate!==-1){
-            arr3[user.scheduleDate-1].push(`${user.name}-${user.duty}`)
+        if(user.duty.day!==-1){
+            arr3[user.duty.day-1].push(`${user.info.name}-${user.duty.count}`)
         }
     }
     let curr = new Date(new Date().getTime()-604800000*num);
@@ -63,7 +57,7 @@ export async function generateHTML(group:string,num:number):Promise<string>{
     let last = first+6
     let firstDay = new Date(curr.setDate(first));
     let lastDay = new Date(curr.setDate(last))
-    let duties = await SQL.duty.select(group,firstDay.getTime(),lastDay.getTime())
+    let duties = group.getDuty(firstDay.getTime(),lastDay.getTime())
     for(let duty of duties){
         let day = new Date(duty.date).getDay()
         arr2[day-1].push(duty.name)

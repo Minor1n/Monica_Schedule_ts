@@ -1,14 +1,15 @@
 import {Context} from "telegraf";
 import {bot} from "../index";
-import {SQL} from "../sql";
 import {Functions} from "../functions";
+import {SettingsAll} from "../classes/Settings";
 
 
 export default async function(id:number,ctx?:Context){
     if(id === 6018898378){
+        let settings = await new SettingsAll().load()
         let dates=[]
-        let scheduleLink = (await SQL.settings.select('scheduleLink')).value
-        let replacementLink = (await SQL.settings.select('replacementLink')).value
+        let scheduleSettings = settings.getSettings('scheduleLink')
+        let replacementSettings = settings.getSettings('replacementLink')
         let response = await (await fetch('http://rgkript.ru/raspisanie-zanyatiy/')).text()
         let re = new RegExp('<a href="http:\\/\\/rgkript.ru\\/wp-content\\/uploads\\/\\/'+new Date().getFullYear()+'[0-9/.\\-A-Za-z_]+"','g')
         let links = Array.from(new Set(response.match(re))).map(x=>x.slice(9,-1))
@@ -18,8 +19,8 @@ export default async function(id:number,ctx?:Context){
             let t = i.match(/[0-9]+.[0-9]+.[0-9]+/g)
             if(t){dates.push(i[0])}
         }
-        if(links[0]!==scheduleLink){
-            await SQL.settings.update_value(links[0],'scheduleLink')
+        if(scheduleSettings && links[0]!==scheduleSettings?.value){
+            scheduleSettings.value = links[0]
             await bot.telegram.sendMessage(id,`Расписание: ${dates[0]} ${links[0].slice(36)}`)
                 .then(r=>{setTimeout(()=>{bot.telegram.deleteMessage(r.chat.id,r.message_id).catch(e=>{console.log(e)})},1000*30)})
                 .catch(e=>{console.log(e)})
@@ -31,8 +32,8 @@ export default async function(id:number,ctx?:Context){
                 .then(r=>{setTimeout(()=>{bot.telegram.deleteMessage(r.chat.id,r.message_id).catch(e=>{console.log(e)})},1000*30)})
                 .catch(e=>{console.log(e)})
         }
-        if(links[1]!==replacementLink){
-            await SQL.settings.update_value(links[1],'replacementLink')
+        if(replacementSettings&&links[1]!==replacementSettings?.value){
+            replacementSettings.value = links[1]
             await bot.telegram.sendMessage(id,`Замены: ${dates[1]} ${links[1].slice(36)}`)
                 .then(r=>{setTimeout(()=>{bot.telegram.deleteMessage(r.chat.id,r.message_id).catch(e=>{console.log(e)})},1000*30)})
                 .catch(e=>{console.log(e)})

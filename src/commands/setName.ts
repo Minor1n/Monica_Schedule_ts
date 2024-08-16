@@ -1,17 +1,17 @@
 import {Context} from "telegraf";
-import {SQL} from "../sql";
+import {User} from "../classes/User";
 
 
 export default async function(ctx:Context){
     if(ctx.chat?.id){
-        let user = await SQL.users.select(ctx.chat.id)
+        let user = await new User().load(ctx.chat.id)
         let {text}=ctx
         if(user){
             let surname = text?.slice(9)
             if(surname){
-                await SQL.users.update_name(user.userId,surname)
-                await ctx.reply(`Ваша фамилия - ${surname}`)
-            }else{ await ctx.reply('Вы не указали фамилию(/setname ваша фамилия)') }
+                user.info.name = surname
+                await ctx.reply(`Ваше имя - ${surname}`)
+            }else{ await ctx.reply('Вы не указали имя(/setname ваше имя)') }
         }else{ await ctx.reply('Зарегистрируйтесь в боте /start') }
     }
 }

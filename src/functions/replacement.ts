@@ -1,11 +1,12 @@
-import {SQL} from "../sql";
 import pdf from 'pdf-parse'
 import WordExtractor from 'word-extractor'
-import nodeHtmlToImage from "node-html-to-image";
 import {Input} from "telegraf";
-import {bot} from "../index";
+import {gradients, bot} from "../index";
 import {Functions} from "./index";
-import {config} from "../config";
+import {Groups} from "../classes/Group";
+import {Users} from "../classes/User";
+import {Replacements} from "../classes/Replacement";
+import {HtmlToImage} from "../classes/HtmlToImage";
 const extractor = new WordExtractor();
 
 type Replacement = {
@@ -35,7 +36,7 @@ export async function regenerate(url:string,date:string):Promise<Replacement>{
         if(res?.ok){
             let arrFile = []
             let data = result.typeFile === 'pdf' ? (await pdf(result.fileBuffer)).text : (await extractor.extract(result.fileBuffer)).getBody()
-            let groups = (await SQL.groups.select_all()).map(x => x.name)
+            let groups = (await new Groups().load()).all.map(x => x.name)
             let textArr = data.replace(/\t/g, ' ').split('\n').filter(x =>
                 !x.startsWith('Группа') && !x.startsWith('ПАРА') && x.replace(' ', '') !== '' && !x.startsWith('ПРЕПОДАВАТЕЛЬ') && !x.startsWith('ЗАМЕНА') && x.replace(' ', '') !== 'ПО' && !x.startsWith('РАСПИСАНИЮ')
             )
@@ -121,23 +122,17 @@ export async function regenerate(url:string,date:string):Promise<Replacement>{
 }
 
 export async function sender(replacement:Replacement){
-    let users = await SQL.users.select_all()
-    let oldReplacement = await SQL.replacement.select_by_index(0)
+    let users = await new Users().load()
+    let replacements = await new Replacements().load()
+    let oldReplacement = replacements.getReplacement(0)
     if(replacement.html !== 'null'&& replacement.html !== oldReplacement.html){
-        await SQL.replacement.insert(replacement.link,replacement.date,replacement.html)
-        let replGradients = await SQL.gradients.select_all_replGradients()
-        let gradient = replGradients[Math.floor(Math.random() * (replGradients.length-1))]
-        let i = await nodeHtmlToImage({
-            html: `${config.HTMLSTART1}${gradient}${config.HTMLSTART2}${replacement.html}${config.HTMLEND}`,
-            puppeteerArgs: config.puppeteer
-        })
-        for(let user of users){
-            let htmlImg = `background-image: url(${user.theme});`
-            let image = user.theme === 'standard' ? i : await nodeHtmlToImage({
-                html: `${config.HTMLSTART1}${htmlImg}${config.HTMLSTART2}${replacement.html}${config.HTMLEND}`,
-                puppeteerArgs: config.puppeteer
-            })
-            if(user.payment !== 0 && user.settingsReplacement ==='on' && await Functions.payment.groupTG(user)){
+        replacements.insertReplacement(replacement.link,replacement.date,replacement.html)
+        let gradient = gradients.dark
+        let i = await new HtmlToImage(gradient,replacement.html).getImage()
+        for(let user of users.all){
+            let htmlImg = `background-image: url(${user.settings.theme});`
+            let image = user.settings.theme === 'standard' ? i : await new HtmlToImage(htmlImg,replacement.html).getImage()
+            if(user.payment.status !== 0 && user.settings.replacement ==='on' && await Functions.payment.groupTG(user)){
                 // @ts-ignore
                 await bot.telegram.sendPhoto(user.userId, Input.fromBuffer(Buffer.from(image), `replacement.png`))
                     .then(async ()=>{await Functions.payment.alert(user)}).catch(e=>{console.log(e)})
@@ -198,6 +193,5 @@ async function generateHTML(arr:GenerateHTML):Promise<string>{
             }
         }
     }
-    await SQL.settings.update_value(finalArr.join(''),'replacement')
     return finalArr.join('')
 }

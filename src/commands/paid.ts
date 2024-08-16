@@ -1,18 +1,19 @@
 import {Context} from "telegraf";
 import {bot} from "../index";
-import {SQL} from "../sql";
+import {User} from "../classes/User";
+import {config} from "../config";
 
 
 export default async function(ctx:Context){
     if(ctx.chat?.id){
-        let user = await SQL.users.select(ctx.chat.id)
+        let user = await new User().load(ctx.chat.id)
         if(user){
-            if(user.userId>0){
-                await bot.telegram.sendMessage(6018898378,`${user.name}(${user.userId}) оповестил об оплате, статус: ${user.payment}`,{
+            if(user.info.id>0){
+                await bot.telegram.sendMessage(6018898378,`${user.info.name}(${user.info.id}) оповестил об оплате, статус: ${config.payment.get(user.payment.status)}`,{
                     reply_markup: {
                         inline_keyboard: [[
-                            { text: `Не оплачено`, callback_data: `paidStatus${user.userId}` },
-                            { text: `Оплачено`, callback_data: `userPaid${user.userId}` }
+                            { text: `Не оплачено`, callback_data: `paidStatus${user.info.id}` },
+                            { text: `Оплачено`, callback_data: `userPaid${user.info.id}` }
                         ]]
                     }
                 })

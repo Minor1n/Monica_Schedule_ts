@@ -1,23 +1,21 @@
 import {Context, Input} from "telegraf";
-import nodeHtmlToImage from "node-html-to-image";
-import {SQL} from "../sql";
 import {Functions} from "../functions";
-import {config} from "../config";
+import {User} from "../classes/User";
+import {Replacements} from "../classes/Replacement";
+import {gradients} from "../index";
+import {HtmlToImage} from "../classes/HtmlToImage";
 
 
 export default async function(ctx:Context){
     if(ctx.chat?.id){
-        let user = await SQL.users.select(ctx.chat?.id)
+        let user = await new User().load(ctx.chat.id)
         if(user){
-            if(user.payment !== 0){
+            if(user.payment.status !== 0){
                 if(await Functions.payment.groupTG(user)){
-                    let html = (await SQL.replacement.select_by_index(0)).html
-                    let replGradients = await SQL.gradients.select_all_replGradients()
-                    let htmlImg = user.theme === "standard" ? replGradients[Math.floor(Math.random() * (replGradients.length-1))] : `background-image: url(${user.theme});`
-                    let image = await nodeHtmlToImage({
-                        html: `${config.HTMLSTART1}${htmlImg}${config.HTMLSTART2}${html}${config.HTMLEND}`,
-                        puppeteerArgs: config.puppeteer
-                    })
+                    let html = (await new Replacements().load()).getReplacement(0).html
+                    if(!html)return
+                    let htmlImg = user.settings.theme === "standard" ? gradients.dark : `background-image: url(${user.settings.theme});`
+                    let image = await new HtmlToImage(htmlImg,html).getImage()
                     // @ts-ignore
                     await ctx.replyWithPhoto(Input.fromBuffer(Buffer.from(image), `schedule.png`))
                     await Functions.payment.alert(user)

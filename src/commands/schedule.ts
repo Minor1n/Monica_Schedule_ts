@@ -1,25 +1,23 @@
 import {Context, Input} from "telegraf";
-import {SQL} from "../sql";
-import {config} from "../config";
-import nodeHtmlToImage from "node-html-to-image";
 import {Functions} from "../functions";
+import {User} from "../classes/User";
+import {Group} from "../classes/Group";
+import {gradients} from "../index";
+import {HtmlToImage} from "../classes/HtmlToImage";
 
 
 export default async function(ctx:Context){
     if(ctx.chat?.id){
-        let user = await SQL.users.select(ctx.chat.id)
+        let user = await new User().load(ctx.chat.id)
         if(user){
-            if(user.payment !== 0){
-                if(user.groupName !== 'null'){
-                    let html = (await SQL.groups.select_schedule(user.groupName)).schedule
+            if(user.payment.status !== 0){
+                if(user.info.groupName !== 'null'){
+                    let group = await new Group().load(user.info.groupName)
+                    let html = group.schedule
                     if(html !== 'null'){
                         if(await Functions.payment.groupTG(user)){
-                            let gradients = await SQL.gradients.select_all_gradients()
-                            let htmlImg = user.theme === "standard" ? gradients[Math.floor(Math.random() * (gradients.length-1))] : `background-image: url(${user.theme});`
-                            let image = await nodeHtmlToImage({
-                                html: `${config.HTMLSTART1}${htmlImg}${config.HTMLSTART2}${html}${config.HTMLEND}`,
-                                puppeteerArgs: config.puppeteer
-                            })
+                            let htmlImg = user.settings.theme === "standard" ? gradients.light : `background-image: url(${user.settings.theme});`
+                            let image = await new HtmlToImage(htmlImg,html).getImage()
                             // @ts-ignore
                             await ctx.replyWithPhoto(Input.fromBuffer(Buffer.from(image), `schedule.png`))
                             await Functions.payment.alert(user)

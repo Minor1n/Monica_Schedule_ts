@@ -1,16 +1,17 @@
 import {Context} from "telegraf";
-import {SQL} from "../sql";
+import {User} from "../classes/User";
+import {Groups} from "../classes/Group";
 
 
 export default async function(ctx:Context){
     if(ctx.chat?.id){
-        let user = await SQL.users.select(ctx.chat.id)
+        let user = await new User().load(ctx.chat.id)
         if(user){
-            let groups = await SQL.groups.select_all()
+            let groups = await new Groups().load()
             let keyboard:{text:string,callback_data:string}[][] = [[]]
             let key = 0
             let key2 = 0
-            for (let group of groups){
+            for (let group of groups.all){
                 if(key % 5 === 0 && key !== 0){
                     key2 +=1
                     keyboard.push([])

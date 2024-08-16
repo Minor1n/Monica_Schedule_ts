@@ -1,10 +1,10 @@
-import {SQL} from "../sql";
 import {Functions} from "./index";
 import XLSX from 'xlsx'
-import nodeHtmlToImage from "node-html-to-image";
 import {Input} from "telegraf";
-import {bot} from "../index";
-import {config} from "../config";
+import {gradients, bot} from "../index";
+import {Users} from "../classes/User";
+import {Groups} from "../classes/Group";
+import {HtmlToImage} from "../classes/HtmlToImage";
 
 type Schedule={
     group:string;
@@ -21,10 +21,10 @@ export async function regenerate (url:string,date:string):Promise<Schedule|strin
         } else {
             let dateTo = new Date(`${date.slice(-4)}-${date.slice(3,5)}-${date.slice(0,2)}`).getTime()
             let groups = []
-            let users = await SQL.users.select_all()
-            for (let user of users) {
-                if (groups.indexOf(user.groupName) === -1 && user.groupName !== 'null') {
-                    groups.push(user.groupName)
+            let users = await new Users().load()
+            for (let user of users.all) {
+                if (groups.indexOf(user.info.groupName) === -1 && user.info.groupName !== 'null') {
+                    groups.push(user.info.groupName)
                 }
             }
             for (let group of groups) {
@@ -38,29 +38,25 @@ export async function regenerate (url:string,date:string):Promise<Schedule|strin
 
 
 export async function sender(schedule:Schedule|string){
-    let users = await SQL.users.select_all()
+    let groups = await new Groups().load()
     if(schedule === 'notfound'){
         await bot.telegram.sendMessage(6018898378, 'Расписание не найдено' ).catch(e=>{console.log(e)})
     }else{
-        let gradients = await SQL.gradients.select_all_gradients()
-        let gradient = gradients[Math.floor(Math.random() * (gradients.length-1))]
-        for (let u of schedule){
-            if(typeof u!=='string'&&u.html !== ''){
-                await SQL.groups.update_schedule(u.group,u.html)
-                let i = await nodeHtmlToImage({
-                    html: `${config.HTMLSTART1}${gradient}${config.HTMLSTART2}${u.html}${config.HTMLEND}`,
-                    puppeteerArgs: config.puppeteer
-                })
-                for(let user of users){
-                    if(user.payment !== 0 && schedule !== 'notfound' && user.settingsSchedule ==='on' && user.groupName === u.group && await Functions.payment.groupTG(user)){
-                        let htmlImg = `background-image: url(${user.theme});`
-                        let image = user.theme === "standard" ? i : await nodeHtmlToImage({
-                            html: `${config.HTMLSTART1}${htmlImg}${config.HTMLSTART2}${u.html}${config.HTMLEND}`,
-                            puppeteerArgs: config.puppeteer
-                        })
-                        // @ts-ignore
-                        await bot.telegram.sendPhoto(user.userId, Input.fromBuffer(Buffer.from(image), `schedule.png`))
-                            .then(async ()=>{await Functions.payment.alert(user)}).catch(e=>{console.log(e)})
+        for (let s of schedule){
+            if(typeof s!=='string'&&s.html !== ''){
+                let group = groups.getGroup(s.group)
+                if(group){
+                    group.schedule = s.html
+                    let gradient = gradients.light
+                    let i = await new HtmlToImage(gradient,s.html).getImage()
+                    for(let user of group.users){
+                        if(user.payment.status !== 0 && user.settings.schedule ==='on' && await Functions.payment.groupTG(user)){
+                            let htmlImg = `background-image: url(${user.settings.theme});`
+                            let image = user.settings.theme === "standard" ? i : await new HtmlToImage(htmlImg,s.html).getImage()
+                            //@ts-ignore
+                            await bot.telegram.sendPhoto(user.info.id, Input.fromBuffer(Buffer.from(image), `schedule.png`))
+                                .then(async ()=>{await Functions.payment.alert(user)}).catch(e=>{console.log(e)})
+                        }
                     }
                 }
             }

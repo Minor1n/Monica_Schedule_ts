@@ -1,11 +1,11 @@
 import {Context} from "telegraf";
-import {SQL} from "../sql";
 import {Functions} from "../functions";
+import {User} from "../classes/User";
 
 
 export default async function(ctx:Context){
     if(ctx.chat?.id){
-        let user = await SQL.users.select(ctx.chat?.id)
+        let user = await new User().load(ctx.chat.id)
         if(user){
             await ctx.reply(`Настройки:`, {
                 reply_markup: {

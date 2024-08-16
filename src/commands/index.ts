@@ -17,7 +17,6 @@ import setDutyDay from "./setDutyDay";
 import {bot} from "../index";
 
 
-
 export const Commands = {
     start,
     send,
