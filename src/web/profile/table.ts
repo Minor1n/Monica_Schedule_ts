@@ -67,8 +67,8 @@ async function tableGenerate(user:User):Promise<string>{
 <tr>
     <td><b class="profileB">Статус оплаты:</b></td>
     <td><b class="profileB">${config.payment.get(user.payment.status)}</b></td>
-    <td><b class="profileB">Расчитать сумму оплаты на \n<form name="myForm4">|
-        <input style="max-width: 5vw" class="inputP" type="text" id="monthPay" name="monthPay" required/>
+    <td><b class="profileB">Расчитать сумму оплаты на <br><form name="myForm4">|
+        <input style="max-width: 6vw" class="inputP" type="text" id="monthPay" name="monthPay" required/>
     </form>месяцев</b></td>
 </tr>
 <tr>

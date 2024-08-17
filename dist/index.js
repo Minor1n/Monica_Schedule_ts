@@ -67,9 +67,8 @@ Id: \u{1F517}<code>${a}</code>
 <tr>
     <td><b class="profileB">\u0421\u0442\u0430\u0442\u0443\u0441 \u043E\u043F\u043B\u0430\u0442\u044B:</b></td>
     <td><b class="profileB">${h.payment.get(t.payment.status)}</b></td>
-    <td><b class="profileB">\u0420\u0430\u0441\u0447\u0438\u0442\u0430\u0442\u044C \u0441\u0443\u043C\u043C\u0443 \u043E\u043F\u043B\u0430\u0442\u044B \u043D\u0430 
-<form name="myForm4">|
-        <input style="max-width: 5vw" class="inputP" type="text" id="monthPay" name="monthPay" required/>
+    <td><b class="profileB">\u0420\u0430\u0441\u0447\u0438\u0442\u0430\u0442\u044C \u0441\u0443\u043C\u043C\u0443 \u043E\u043F\u043B\u0430\u0442\u044B \u043D\u0430 <br><form name="myForm4">|
+        <input style="max-width: 6vw" class="inputP" type="text" id="monthPay" name="monthPay" required/>
     </form>\u043C\u0435\u0441\u044F\u0446\u0435\u0432</b></td>
 </tr>
 <tr>
