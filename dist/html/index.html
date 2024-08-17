@@ -316,11 +316,42 @@
         async function update(){
             let group = document.myForm.selectGroup
             let dutyDay = document.myForm2.selectDutyDay
-            let name = document.querySelector("input").value
+            let name = document.myForm1.nameUpdate.value
+            let refKey = document.myForm3.refKey.value
+            let monthPay = document.myForm4.monthPay.value
             const selectedGroup = group.options[group.selectedIndex].value
             const selectedDutyDay = dutyDay.options[dutyDay.selectedIndex].value
+            if(monthPay){
+                await fetch(`${u}/profile/monthPay/${user}/${monthPay}`).then(async req=>{
+                    req.json().then(res=>{
+                        alert(res.alert)
+                    })
+                })
+            }
             await fetch(`${u}/profile/editDutyDay/${user}/${selectedDutyDay}`).then(async ()=>{
                 await fetch(`${u}/profile/editGroup/${user}/${selectedGroup}`).then(async ()=>{
+                    if(refKey!==''){
+                        await fetch(`${u}/profile/setRefKey/${user}/${refKey}`).then(async (req1)=>{
+                            req1.json().then(res1=>{
+                                alert(res1.alert)
+                            })
+                        })
+                        if(name!==''){
+                            await fetch(`${u}/profile/editName/${user}/${name}`).then(async ()=>{
+                                fetch(`${u}/profile/${user}`).then(req=>{
+                                    req.json().then(res=>{
+                                        document.getElementById("profile").innerHTML = `<table>${res.table}</table>`
+                                    })
+                                })
+                            })
+                        }else{
+                            fetch(`${u}/profile/${user}`).then(req=>{
+                                req.json().then(res=>{
+                                    document.getElementById("profile").innerHTML = `<table>${res.table}</table>`
+                                })
+                            })
+                        }
+                    }else
                     if(name!==''){
                         await fetch(`${u}/profile/editName/${user}/${name}`).then(async ()=>{
                             fetch(`${u}/profile/${user}`).then(req=>{

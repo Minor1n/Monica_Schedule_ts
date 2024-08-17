@@ -65,7 +65,6 @@ export async function paid():Promise<{text:string,callback_data:string}[][]>{
     })
 }
 
-
 export async function groupTG(groupTG:User):Promise<boolean>{
     if(groupTG.info.id<0){
         let users = await new Users().load()
@@ -82,4 +81,19 @@ export async function groupTG(groupTG:User):Promise<boolean>{
         }
         return usersCount === Number(bot.telegram.getChatMembersCount(groupTG.info.id));
     }else return true
+}
+
+export async function setRefKey(user:User,refKey:string):Promise<string>{
+    if(user){
+        if(user.payment.paid === 'false'&&user.payment.referral.user){
+            let agent = await new User().load(0,{refKey:refKey})
+            if(agent){
+                if(user.info.id  !== agent.info.id){
+                    user.payment.status +=1
+                    agent.payment.referral.insertReferral(user.info.id)
+                    return `Успешно активирован реферальный ключ!\nВаш статус изменен на ${config.payment.get(user.payment.status)}`
+                }else{ return 'Вы не можете использовать свой же реферальный ключ' }
+            }else{ return `Не найден реферальный агент для ключа: ${refKey}` }
+        }else{ return 'Вы уже активировали реферальный ключ, либо оплачивали подписку ранее' }
+    }else { return 'Зарегистрируйтесь в боте /start' }
 }

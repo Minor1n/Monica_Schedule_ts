@@ -50,6 +50,14 @@ export const WebHandler = (dirname:string)=>{
         let nums = req.url.slice(18).match(/[0-9%A-Za-z\-]+/g)
         if (nums) { await profile.name(Number(nums[0]), nums[1]).then(() => res.send()) }
     })
+    app.get('/profile/setRefKey/[0-9]+/[A-Z]+', async (req, res) => {
+        let nums = req.url.slice(18).match(/[0-9A-Z]+/g)
+        if (nums) { await profile.refKey(Number(nums[0]), nums[1]).then(result=> res.send({alert: result})) }
+    })
+    app.get('/profile/monthPay/[0-9]+/[0-9]+', async (req, res) => {
+        let nums = req.url.slice(18).match(/[0-9A-Z]+/g)
+        if (nums) { await profile.monthPay(Number(nums[0]), Number(nums[1])).then(result=> res.send({alert: result})) }
+    })
 
     //SETTINGS
     app.get('/settings', async (_, res) => {
