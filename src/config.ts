@@ -2,11 +2,25 @@ import dotenv from "dotenv";
 
 dotenv.config();
 
-const {TOKEN, PASSWORD, SQLHOST, SQLUSER, SQLDATABASE, SQLPASSWORD, HTMLSTART1, HTMLSTART2, HTMLEND} = process.env;
+const {TOKEN, PASSWORD, SQLHOST, SQLUSER, SQLDATABASE, SQLPASSWORD} = process.env;
 
-if (!TOKEN||!PASSWORD||!SQLHOST||!SQLUSER||!SQLDATABASE||!SQLPASSWORD||!HTMLSTART1||!HTMLSTART2||!HTMLEND) {
+if (!TOKEN||!PASSWORD||!SQLHOST||!SQLUSER||!SQLDATABASE||!SQLPASSWORD) {
     throw new Error("Missing environment variables");
 }
+
+const htmlStart1 = [
+    `<html lang='ru-RUS'><head><meta charset='utf-8'/><title></title><style>`,
+    `body{`,`margin: 0;`,`font-family: Arial, sans-serif;`
+].join('')
+const htmlStart2 = [
+    `-moz-background-size: cover;`,`-o-background-size: cover;`,`background-size: cover;`,`height: fit-content;`,`width: fit-content;`,`}`,
+    `table{`,`background-color: rgb(0,0,0,0.2);`,`padding: 10px;`,`}`,
+    `td{`,`background-color: rgba(255,255,255,0.70);`,`padding: 0 3px;`,`text-align: center;`,`height: 25px;`,`min-width: 50px;`,`}`,
+    `.line{`,`background-color: rgb(0,0,0,0.0);`,`height: 10px;max-height: 10px`,`}`,
+    `</style></head><body><table>`,
+].join('')
+const htmlEnd = `</table></body></html>`
+
 
 let payment:Map<number,string> = new Map()
     .set(-1,'free')
@@ -57,8 +71,9 @@ const paymentMessages ={
 const fetchUrl = 'http://rgkript.ru/raspisanie-zanyatiy/'
 
 export const config = {
-    TOKEN, PASSWORD, SQLHOST, SQLUSER, SQLDATABASE, SQLPASSWORD, HTMLSTART1, HTMLSTART2, HTMLEND,
-    puppeteer,
+    TOKEN, PASSWORD,
+    SQLHOST, SQLUSER, SQLDATABASE, SQLPASSWORD,
+    htmlStart1,htmlStart2,htmlEnd, puppeteer,
     payment,
     paymentMessages,
     fetchUrl

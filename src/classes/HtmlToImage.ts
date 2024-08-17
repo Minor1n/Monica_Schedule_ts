@@ -12,7 +12,7 @@ export class HtmlToImage{
     }
     async getImage(): Promise<string | Buffer | (string | Buffer)[]>{
         let value: string | Buffer | (string | Buffer)[] = await nodeHtmlToImage({
-            html: `${config.HTMLSTART1}${this.gradient}${config.HTMLSTART2}${this.html}${config.HTMLEND}`,
+            html: `${config.htmlStart1}${this.gradient}${config.htmlStart2}${this.html}${config.htmlEnd}`,
             puppeteerArgs: config.puppeteer
         })
         this._image = value
