@@ -1,7 +1,6 @@
 import {Context} from "telegraf";
 import {bot} from "../index";
-import {User} from "../classes/User";
-import {Group} from "../classes/Group";
+import {User,Group} from "../classes";
 
 
 export async function duty(ctx:Context){

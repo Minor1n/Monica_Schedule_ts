@@ -1,4 +1,4 @@
-import {User} from "../../classes/User";
+import {User} from "../../classes";
 
 
 export async function group(userId:number,groupName:string){

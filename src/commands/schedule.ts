@@ -1,9 +1,7 @@
 import {Context, Input} from "telegraf";
 import {Functions} from "../functions";
-import {User} from "../classes/User";
-import {Group} from "../classes/Group";
+import {User,Group,HtmlToImage} from "../classes";
 import {gradients} from "../index";
-import {HtmlToImage} from "../classes/HtmlToImage";
 
 
 export default async function(ctx:Context){

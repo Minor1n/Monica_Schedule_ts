@@ -1,7 +1,8 @@
 import {Context} from "telegraf";
 import {bot} from "../index";
 import {Functions} from "../functions";
-import {SettingsAll} from "../classes/Settings";
+import {SettingsAll} from "../classes";
+import {config} from "../config";
 
 
 export default async function(id:number,ctx?:Context){
@@ -10,7 +11,7 @@ export default async function(id:number,ctx?:Context){
         let dates=[]
         let scheduleSettings = settings.getSettings('scheduleLink')
         let replacementSettings = settings.getSettings('replacementLink')
-        let response = await (await fetch('http://rgkript.ru/raspisanie-zanyatiy/')).text()
+        let response = await (await fetch(config.fetchUrl)).text()
         let re = new RegExp('<a href="http:\\/\\/rgkript.ru\\/wp-content\\/uploads\\/\\/'+new Date().getFullYear()+'[0-9/.\\-A-Za-z_]+"','g')
         let links = Array.from(new Set(response.match(re))).map(x=>x.slice(9,-1))
         let dateArr = response.match(/<strong>[А-Яа-я0-9. ]+/g)
@@ -45,6 +46,8 @@ export default async function(id:number,ctx?:Context){
                 .then(r=>{setTimeout(()=>{bot.telegram.deleteMessage(r.chat.id,r.message_id).catch(e=>{console.log(e)})},1000*30)})
                 .catch(e=>{console.log(e)})
         }
-    }else{ // @ts-ignore
-        await ctx.reply('Написано же ДЛЯ АДМИНОВ')}
+    }else{
+        if(!ctx)return
+        await ctx.reply('Написано же ДЛЯ АДМИНОВ')
+    }
 }

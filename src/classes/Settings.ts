@@ -1,7 +1,7 @@
 import {connection} from "../index";
 import {MysqlError} from "mysql";
 
-type SettingsType = 'meme'|'price'|'host'|'week'|'fixPrice'|'agentCost'|'scheduleLink'|'replacementLink'
+type SettingsType = 'scheduleLink'|'replacementLink'
 
 interface SettingsI{
     type:SettingsType
@@ -59,7 +59,7 @@ export class SettingsAll{
 
 const querySQL={
     settings: async(type:SettingsType):Promise<SettingsI>=>{
-        return new Promise(async function (resolve,reject){
+        return new Promise(async function (resolve){
             connection.query(`SELECT * FROM settings WHERE type = '${type}'`, (err:MysqlError|null, result:SettingsI[]) => {
                 if (err) {
                     throw new Error('SQL ERROR in Settings')
@@ -70,7 +70,7 @@ const querySQL={
         })
     },
     all: async():Promise<SettingsI[]>=>{
-        return new Promise(async function (resolve,reject){
+        return new Promise(async function (resolve){
             connection.query(`SELECT * FROM settings`, async (err:MysqlError|null, result:SettingsI[]) => {
                 if (err) {
                     throw new Error('SQL ERROR in Settings')

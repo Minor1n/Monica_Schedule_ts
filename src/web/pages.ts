@@ -1,6 +1,6 @@
 import {readFileSync} from "node:fs";
 import path from "node:path";
-import {User} from "../classes/User";
+import {User} from "../classes";
 
 
 export async function profile(dirname:string):Promise<{body:string}>{

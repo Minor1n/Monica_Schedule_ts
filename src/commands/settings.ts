@@ -1,6 +1,6 @@
 import {Context} from "telegraf";
 import {Functions} from "../functions";
-import {User} from "../classes/User";
+import {User} from "../classes";
 
 
 export default async function(ctx:Context){

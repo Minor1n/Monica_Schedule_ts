@@ -1,8 +1,8 @@
-import {Replacements} from "../../classes/Replacement";
+import {Replacements} from "../../classes";
 
 
-export default async function (index:number):Promise<{table:string}>{
+export const replacementTable = async(index:number):Promise<{table:string}>=>{
     let replacement = (await new Replacements().load()).getReplacement(index)
-    let table = replacement?.html ? replacement.html : `<tr><td><b>Замены не найдены!</b></td></tr>`
+    let table = replacement?.html ? replacement.html : `null`
     return {table: table}
 }

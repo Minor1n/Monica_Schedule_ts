@@ -1,7 +1,7 @@
 import {Context} from "telegraf";
 import {bot} from "../index";
 import {Functions} from "../functions";
-import {Users} from "../classes/User";
+import {Users} from "../classes";
 
 
 export default async function(ctx:Context){

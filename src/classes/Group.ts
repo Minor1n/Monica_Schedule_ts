@@ -12,41 +12,25 @@ interface DutyI{
 interface GroupI{
     name: string
     schedule: string
-    replacement: string
-    next: string
     users:User[]
     duties:DutyI[]
 }
 
 export class Group implements GroupI{
     name!: string;
-    next!: string;
-    private _replacement!: string;
     private _schedule!: string;
     private _users!:User[]
     private _duties!:DutyI[]
     constructor() {}
-    async load(groupName:string,next?:string,replacement?:string,schedule?:string):Promise<Group>{
-        if(next&&replacement&&schedule){
-            this.name = groupName
-            this.next = next
-            this._replacement = replacement
-            this._schedule = schedule
-        }else{
-            let q = await querySQL.groups(groupName)
-            this.name = q.name
-            this.next = q.next
-            this._replacement = q.replacement
-            this._schedule = q.schedule
-        }
+    async load(groupName:string,schedule?:string):Promise<Group>{
+        let q = !schedule ? await querySQL.groups(groupName) : {name:groupName,schedule:schedule}
+        this.name = q.name
+        this._schedule = q.schedule
         let users = await querySQL.users(groupName)
         let duty = await querySQL.duty(groupName)
         this._users = await Promise.all(users.map(async (x)=>new User().load(x.userId,x)))
         this._duties = duty
         return this
-    }
-    get replacement(){
-        return this._replacement
     }
     get schedule(){
         return this._schedule
@@ -83,14 +67,14 @@ export class Groups{
     }
     async load():Promise<Groups>{
         let q = await querySQL.all()
-        this.all = await Promise.all(q.map(async (x)=>new Group().load(x.name,x.next,x.replacement,x.schedule)))
+        this.all = await Promise.all(q.map(async (x)=>new Group().load(x.name,x.schedule)))
         return this
     }
 }
 
 const querySQL={
     groups:async (groupName:string):Promise<GroupI>=>{
-        return new Promise(async function (resolve,reject){
+        return new Promise(async function (resolve){
             connection.query(`SELECT * FROM groups WHERE name = '${groupName}'`, async (err:MysqlError|null, result:GroupI[]) => {
                 if (err) {
                     throw new Error('SQL ERROR in Group')
@@ -101,7 +85,7 @@ const querySQL={
         })
     },
     users:async (groupName:string):Promise<UserT[]>=>{
-        return new Promise(async function (resolve,reject){
+        return new Promise(async function (resolve){
             connection.query(`SELECT * FROM users WHERE groupName = '${groupName}'`, async (err:MysqlError|null, result:UserT[]) => {
                 if (err) {
                     throw new Error('SQL ERROR in Group Users')
@@ -112,7 +96,7 @@ const querySQL={
         })
     },
     duty:async (groupName:string):Promise<DutyI[]>=>{
-        return new Promise(async function (resolve,reject){
+        return new Promise(async function (resolve){
             connection.query(`SELECT * FROM duty WHERE \`group\` = '${groupName}'`, async (err:MysqlError|null, result:DutyI[]) => {
                 if (err) {
                     throw new Error('SQL ERROR in Group Duty')
@@ -123,7 +107,7 @@ const querySQL={
         })
     },
     all:async ():Promise<GroupI[]>=>{
-        return new Promise(async function (resolve,reject){
+        return new Promise(async function (resolve){
             connection.query('SELECT * FROM groups', async (err:MysqlError|null, result:GroupI[]) => {
                 if (err) {
                     throw new Error('SQL ERROR in Groups')

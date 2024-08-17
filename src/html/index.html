@@ -275,7 +275,7 @@
             else{
                 fetch(`${u}/home/replacementTable/${replacementPage+i}`).then(req=>{
                     req.json().then(res=>{
-                        if(res.table!==null){
+                        if(res.table!=='null'){
                             replacementPage += i
                             document.getElementById("replacement").innerHTML = `<table>${res.table}</table>`
                         }else{

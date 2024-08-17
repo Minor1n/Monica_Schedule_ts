@@ -1,9 +1,7 @@
 import {gradients, bot} from "../index";
 import {Input} from "telegraf";
 import {Functions} from "./index";
-import {Users} from "../classes/User";
-import {Group} from "../classes/Group";
-import {HtmlToImage} from "../classes/HtmlToImage";
+import {Users,Group,HtmlToImage} from "../classes";
 
 export async function sender(){
     let users = await new Users().load()
@@ -75,7 +73,7 @@ ${resSchedule.join('')}
 <tr><td colspan="6" class="line"></td></tr>
 <tr><td colspan="6"><b>Отдежурили</b></td></tr>
 <tr>
-<td><b>${new Date(firstDay.getTime() + (86400000 * 1)).getDate()}.${`0${new Date(firstDay.getTime() + (86400000 * 1)).getMonth() + 1}`.slice(-2)}</b></td>
+<td><b>${new Date(firstDay.getTime() + (86400000)).getDate()}.${`0${new Date(firstDay.getTime() + (86400000)).getMonth() + 1}`.slice(-2)}</b></td>
 <td><b>${new Date(firstDay.getTime() + (86400000 * 2)).getDate()}.${`0${new Date(firstDay.getTime() + (86400000 * 2)).getMonth() + 1}`.slice(-2)}</b></td>
 <td><b>${new Date(firstDay.getTime() + (86400000 * 3)).getDate()}.${`0${new Date(firstDay.getTime() + (86400000 * 3)).getMonth() + 1}`.slice(-2)}</b></td>
 <td><b>${new Date(firstDay.getTime() + (86400000 * 4)).getDate()}.${`0${new Date(firstDay.getTime() + (86400000 * 4)).getMonth() + 1}`.slice(-2)}</b></td>
@@ -90,22 +88,3 @@ ${resDuty.join('')}
 ${resTop.join('')}
 `)
 }
-//
-// export async function dutyPlus(author:User){
-//     let date = new Date().getTime()
-//     let day = new Date().getDay()
-//     if(day !== 0 && author.payment !== "ban" && author.dutyDate + 43200000 <= date){
-//         await SQL.duty.insert(author.groupName,date,author.userId,author.name)
-//         let users = await SQL.users.select_all_by_group(author.groupName)
-//
-//         await SQL.users.update_duty(author.userId,author.duty+1)//???????????
-//         await SQL.users.update_dutyDate(author.userId, date)
-//         for(let user of users){
-//             if((user.role === "admin"||user.scheduleDate === day)&&user.groupName===author.groupName){
-//                 console.log(user.scheduleDate)
-//                 //await bot.telegram.sendMessage(user.userId,`${author.name} отдежурил, если нет обратитесь к администратору`).catch(e=>{console.log(e)})
-//             }
-//         }
-//         return 'Успешно!'
-//     }else{return'Сегодня воскресенье, вы уже отдежурили или заблокированы'}
-// }

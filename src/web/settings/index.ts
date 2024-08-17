@@ -1,8 +1,2 @@
-import * as notification from "./notification";
-import * as theme from "./theme";
-
-
-export {
-    notification,
-    theme
-}
+export * from "./notification";
+export * from "./theme";

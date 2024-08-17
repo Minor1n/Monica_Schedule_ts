@@ -36,7 +36,7 @@ export class Replacements {
 
 const querySQL = {
     replacements: async ():Promise<ReplacementI[]>=>{
-        return new Promise(async function (resolve,reject){
+        return new Promise(async function (resolve){
             connection.query(`SELECT * FROM replacements`, (err: MysqlError | null, result:ReplacementI[]) => {
                 if (err) {
                     throw new Error('SQL ERROR in Replacements')

@@ -27,8 +27,6 @@ export type UserT = {
     settingsDuty:UserSettingsStatus;
     theme:string;
     refKey:string;
-    refAgents:number;
-    refKeyStatus:'true'|'false';
     paidWhenever:'true'|'false';
     lightMode:UserLightMode;
     groupBots:number;
@@ -74,7 +72,7 @@ export class User implements UserI{
             return this
         }
         async function loadOptions(result:UserT):Promise<UserI>{
-            let referral = await new UserReferral(userId,result.refAgents,result.refKey,result.refKeyStatus).load()
+            let referral = await new UserReferral(userId,result.refKey).load()
             return{
                 duty: new UserDuty(userId,result.dutyCount,result.dutyDay,result.dutyLastDate),
                 info: new UserInfo(result.groupBots,result.groupName,userId,result.name,result.userName,result.role),
@@ -109,7 +107,7 @@ export class Users{
 
 const querySQL={
     refKey: async (refKey:string):Promise<UserT>=>{
-        return new Promise(async function (resolve,reject){
+        return new Promise(async function (resolve){
             connection.query(`SELECT * FROM users WHERE refKey = '${refKey}'`, async (err: MysqlError | null, result:UserT[]) => {
                 if (err) {
                     throw new Error('SQL ERROR in Users')
@@ -122,7 +120,7 @@ const querySQL={
         })
     },
     userId: async (userId:number):Promise<UserT>=>{
-        return new Promise(async function (resolve,reject){
+        return new Promise(async function (resolve){
             connection.query(`SELECT * FROM users WHERE userId = '${userId}'`, async (err: MysqlError | null, result: UserT[]) => {
                 if (err) {
                     throw new Error('SQL ERROR in USER')
@@ -135,7 +133,7 @@ const querySQL={
         })
     },
     all: async ():Promise<UserT[]>=>{
-        return new Promise(async function (resolve,reject){
+        return new Promise(async function (resolve){
             connection.query('SELECT * FROM users', async (err: MysqlError | null, result:UserT[]) => {
                 if (err) {
                     throw new Error('SQL ERROR in Users')

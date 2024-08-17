@@ -2,9 +2,7 @@ import {Functions} from "./index";
 import XLSX from 'xlsx'
 import {Input} from "telegraf";
 import {gradients, bot} from "../index";
-import {Users} from "../classes/User";
-import {Groups} from "../classes/Group";
-import {HtmlToImage} from "../classes/HtmlToImage";
+import {Users,Groups,HtmlToImage} from "../classes";
 
 type Schedule={
     group:string;

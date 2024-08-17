@@ -1,7 +1,7 @@
-import {User} from "../../classes/User";
+import {User} from "../../classes";
 
 
-export default async function (userId:number):Promise<{table:string}>{
+export const theme = async(userId:number):Promise<{table:string}>=>{
     let user = await new User().load(userId)
     return {table: await table(user)}
 }

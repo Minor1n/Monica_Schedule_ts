@@ -1,6 +1,6 @@
 import {Context} from "telegraf";
 import {bot} from "../index";
-import {User} from "../classes/User";
+import {User} from "../classes";
 import {config} from "../config";
 
 

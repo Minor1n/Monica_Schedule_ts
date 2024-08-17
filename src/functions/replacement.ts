@@ -3,10 +3,7 @@ import WordExtractor from 'word-extractor'
 import {Input} from "telegraf";
 import {gradients, bot} from "../index";
 import {Functions} from "./index";
-import {Groups} from "../classes/Group";
-import {Users} from "../classes/User";
-import {Replacements} from "../classes/Replacement";
-import {HtmlToImage} from "../classes/HtmlToImage";
+import {Groups,Users,Replacements,HtmlToImage} from "../classes";
 const extractor = new WordExtractor();
 
 type Replacement = {

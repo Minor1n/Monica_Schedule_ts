@@ -1,8 +1,7 @@
-import {User} from "../../classes/User";
-import {Group, Groups} from "../../classes/Group";
+import {User,Group, Groups} from "../../classes";
 
 
-export default async function (userId:number):Promise<{table:string}>{
+export const scheduleTable = async(userId:number):Promise<{table:string}>=>{
     let user = await new User().load(userId)
     let group = await new Group().load(user.info.groupName)
     let table = group.schedule!=='null'?group.schedule:`<tr><td><b>Расписание еще не было сгенерировано!</b></td></tr>`

@@ -1,16 +1,14 @@
 import {config} from "../../config";
-import {User} from "../../classes/User";
-import {Functions} from "../../functions";
-import {Groups} from "../../classes/Group";
+import {User,Groups} from "../../classes";
 
 
-export default async function (userId:number):Promise<{table:string}>{
+export const table = async(userId:number):Promise<{table:string}>=>{
     let user = await new User().load(userId)
-    return {table: await table(user)}
+    return {table: await tableGenerate(user)}
 }
 
-async function table(user:User):Promise<string>{
-    let refBonus = await Functions.payment.refBonus(user)
+async function tableGenerate(user:User):Promise<string>{
+    let refBonus = config.paymentMessages.refBonus(user.info.id,user.payment.referral.agentsApprove)
     let dutyDay = new Map()
         .set(1,'Понедельник')
         .set(2,'Вторник')
