@@ -48,8 +48,8 @@ Id: \u{1F517}<code>${a}</code>
 <tr>
     <td><b class="profileB">\u0418\u043C\u044F:</b></td>
     <td><b class="profileB">${t.info.name}</b></td>
-    <td><b class="profileB">|</b><form name="myForm1">
-        <input class="inputP" type="text" id="nameUpdate" name="nameUpdate" required/>
+    <td><b class="profileB"></b><form name="myForm1">
+        |<input class="inputP" type="text" id="nameUpdate" name="nameUpdate" required/>
     </form></td>
 </tr>
 <tr>
@@ -79,8 +79,8 @@ Id: \u{1F517}<code>${a}</code>
 <tr>
     <td><b class="profileB">\u0420\u0435\u0444\u0435\u0440\u0430\u043B\u044C\u043D\u044B\u0439 \u043A\u043B\u044E\u0447:</b></td>
     <td><b class="profileB">${t.payment.referral.key}</b></td>
-    <td><b class="profileB">|</b><form name="myForm3">
-        <input class="inputP" type="text" id="refKey" name="refKey" required/>
+    <td><b class="profileB"></b><form name="myForm3">
+        |<input class="inputP" type="text" id="refKey" name="refKey" required/>
     </form></td>
 </tr>
 <tr>

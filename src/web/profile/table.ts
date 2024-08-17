@@ -48,8 +48,8 @@ async function tableGenerate(user:User):Promise<string>{
 <tr>
     <td><b class="profileB">Имя:</b></td>
     <td><b class="profileB">${user.info.name}</b></td>
-    <td><b class="profileB">|</b><form name="myForm1">
-        <input class="inputP" type="text" id="nameUpdate" name="nameUpdate" required/>
+    <td><b class="profileB"></b><form name="myForm1">
+        |<input class="inputP" type="text" id="nameUpdate" name="nameUpdate" required/>
     </form></td>
 </tr>
 <tr>
@@ -79,8 +79,8 @@ async function tableGenerate(user:User):Promise<string>{
 <tr>
     <td><b class="profileB">Реферальный ключ:</b></td>
     <td><b class="profileB">${user.payment.referral.key}</b></td>
-    <td><b class="profileB">|</b><form name="myForm3">
-        <input class="inputP" type="text" id="refKey" name="refKey" required/>
+    <td><b class="profileB"></b><form name="myForm3">
+        |<input class="inputP" type="text" id="refKey" name="refKey" required/>
     </form></td>
 </tr>
 <tr>
