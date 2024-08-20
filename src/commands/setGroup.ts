@@ -1,31 +1,33 @@
 import {Context} from "telegraf";
-import {User,Groups} from "../classes";
+import {groups, users} from "../index";
+import {config} from "../config";
 
 
 export default async function(ctx:Context){
-    if(ctx.chat?.id){
-        let user = await new User().load(ctx.chat.id)
-        if(user){
-            let groups = await new Groups().load()
-            let keyboard:{text:string,callback_data:string}[][] = [[]]
-            let key = 0
-            let key2 = 0
-            for (let group of groups.all){
-                if(key % 5 === 0 && key !== 0){
-                    key2 +=1
-                    keyboard.push([])
-                    keyboard[key2].push({ text: group.name, callback_data: `setGroup${group.name}` })
-                    key +=1
-                }else{
-                    keyboard[key2].push({ text: group.name, callback_data: `setGroup${group.name}` })
-                    key +=1
-                }
+    const chatId = ctx.chat?.id;
+    if (!chatId) {
+        return;
+    }
+    let user = users.getUser(chatId);
+    if (user) {
+        groups.all.sort((a, b) => a.name.localeCompare(b.name));
+        let keyboard: { text: string, callback_data: string }[][] = [];
+        groups.all.forEach((group, index) => {
+            let rowIndex = Math.floor(index / 5);
+            if (!keyboard[rowIndex]) {
+                keyboard[rowIndex] = [];
             }
-            await ctx.reply('Выберите группу:',{
-                reply_markup: {
-                    inline_keyboard: keyboard
-                }
-            })
-        }else{ await ctx.reply('Зарегистрируйтесь в боте /start') }
+            keyboard[rowIndex].push({
+                text: group.name,
+                callback_data: `setGroup${group.name}`
+            });
+        });
+        await ctx.reply('Выберите группу:', {
+            reply_markup: {
+                inline_keyboard: keyboard
+            }
+        });
+    } else {
+        await ctx.reply(config.notfoundMessages.user);
     }
 }

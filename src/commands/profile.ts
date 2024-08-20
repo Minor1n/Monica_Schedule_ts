@@ -1,18 +1,32 @@
 import {Context} from "telegraf";
 import {config} from "../config";
-import {User} from "../classes";
+import {users} from "../index";
 
 
 export default async function(ctx:Context){
-    if(ctx.chat?.id){
-        let user = await new User().load(ctx.chat.id)
-        if(user){
-            let group =  user.info.groupName,
-                id = user.info.id,
-                surname = user.info.name,
-                refKey = user.payment.referral.key
-            let refBonus = config.paymentMessages.refBonus(user.info.id,user.payment.referral.agentsApprove)
-            await ctx.reply(`Группа: <b>${group}</b>\nId: 🔗<code>${id}</code>\nФамилия: <b>${surname}</b>\nСтатус оплаты: <b>${config.payment.get(user.payment.status)}</b>\nСумма оплаты с учетом рефералки: <b>${Math.floor(user.payment.price-(user.payment.price*(refBonus/100)))}</b>\nРеферальный ключ: 🔗<code>${refKey}</code>\nБонус рефералов: <b>${refBonus}%</b>\nСвязь с админом: @a_korop`,{ parse_mode: 'HTML' })
-        }else{ await ctx.reply('Зарегистрируйтесь в боте /start') }
+    const chatId = ctx.chat?.id;
+    if (!chatId) {
+        return;
     }
+    const user = users.getUser(chatId)
+    if (!user) {
+        await ctx.reply(config.notfoundMessages.user);
+        return;
+    }
+    const { groupName, id, name } = user.info;
+    const refKey = user.payment.referral.key;
+    const refBonus = config.paymentMessages.refBonus(user.info.id, user.payment.referral.agentsApprove);
+    const paymentStatus = config.payment.get(user.payment.status);
+    const priceWithBonus = Math.floor(user.payment.price - (user.payment.price * (refBonus / 100)));
+    const message = `
+        Группа: <b>${groupName}</b>
+        Id: 🔗<code>${id}</code>
+        Фамилия: <b>${name}</b>
+        Статус оплаты: <b>${paymentStatus}</b>
+        Сумма оплаты с учетом рефералки: <b>${priceWithBonus}</b>
+        Реферальный ключ: 🔗<code>${refKey}</code>
+        Бонус рефералов: <b>${refBonus}%</b>
+        Связь с админом: @a_korop
+    `.replace(/\n +/g,'\n')
+    await ctx.reply(message, { parse_mode: 'HTML' });
 }

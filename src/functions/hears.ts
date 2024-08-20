@@ -1,26 +1,38 @@
 import {Context} from "telegraf";
-import {bot} from "../index";
-import {User,Group} from "../classes";
+import {bot, groups, users} from "../index";
+import {config} from "../config";
 
 
-export async function duty(ctx:Context){
-    if(ctx.chat?.id){
-        let author = await new User().load(ctx.chat.id)
-        let date = new Date().getTime()
-        let day = new Date().getDay()
-        if(day !== 0 && author.payment.status !== 0 && author.duty.lastDate + 43200000 <= date){
-            let group = await new Group().load(author.info.groupName)
-            group.insertDuty(date,author.info.id,author.info.name)
-            let users = group.users
-            author.duty.count +=1
-            author.duty.lastDate = date
-            for(let user of users){
-                if((user.info.role === "admin"||user.duty.day === day)&&user.info.groupName===author.info.groupName){
-                    console.log(user.duty.day)
-                    //await bot.telegram.sendMessage(user.userId,`${author.name} отдежурил, если нет обратитесь к администратору`).catch(e=>{console.log(e)})
-                }
+export async function duty(ctx: Context) {
+    const chatId = ctx.chat?.id;
+    if (!chatId) return;
+    try {
+        const author = users.getUser(chatId)
+        const currentDate = Date.now();
+        const currentDay = new Date().getDay();
+        if (!author) {
+            await ctx.reply(config.notfoundMessages.user);
+            return;
+        }
+        if (currentDay !== 0 && author.payment.status !== 0 && (author.duty.lastDate + 43200000 <= currentDate)) {
+            const group = groups.getGroup(author.info.groupName);
+            if(!group) {
+                await ctx.reply(config.notfoundMessages.group);
+                return
             }
-            await ctx.reply('Успешно')
-        }else{await bot.telegram.sendMessage(ctx.chat.id, 'Сегодня воскресенье, вы уже отдежурили или заблокированы').catch(e=>{console.log(e)});}
+            group.duty.insertDuty(currentDate, author.info.id, author.info.name);
+            author.duty.count += 1;
+            author.duty.lastDate = currentDate;
+            const adminOrDutyUsers = group.users.filter(user => (user.info.role === "admin" || user.duty.day === currentDay) && user.info.groupName === author.info.groupName);
+            for (const user of adminOrDutyUsers) {
+                user.sendText(`${author.info.name} отдежурил, если нет обратитесь к администратору`);
+            }
+            await ctx.reply('Успешно');
+        } else {
+            await ctx.reply('Сегодня воскресенье, вы уже отдежурили или заблокированы');
+        }
+    } catch (error) {
+        console.log(`Error processing duty: ${error}`);
+        await bot.telegram.sendMessage(chatId, 'Произошла ошибка при обработке вашего запроса.');
     }
 }

@@ -1,120 +1,115 @@
 import {connection} from "../index";
 import {MysqlError} from "mysql";
 import {User, UserT} from "./User";
+import {Functions} from "../functions";
+import {HtmlToImage} from "./HtmlToImage";
+import {GroupSchedule} from "./GroupSchedule";
+import {Settings} from "./Settings";
+import {GroupDuty} from "./GroupDuty";
 
-interface DutyI{
+export interface DutyI{
     group:string
     date:number
     user:number
     name:string
 }
 
-interface GroupI{
+export type GroupT = {
     name: string
     schedule: string
+}
+
+export interface GroupI{
+    name: string
+    schedule: GroupSchedule
     users:User[]
-    duties:DutyI[]
+    duty:GroupDuty
 }
 
 export class Group implements GroupI{
     name!: string;
-    private _schedule!: string;
+    schedule!: GroupSchedule;
     private _users!:User[]
-    private _duties!:DutyI[]
+    private _duty!:GroupDuty
     constructor() {}
     async load(groupName:string,schedule?:string):Promise<Group>{
         let q = !schedule ? await querySQL.groups(groupName) : {name:groupName,schedule:schedule}
         this.name = q.name
-        this._schedule = q.schedule
+        this.schedule = new GroupSchedule(this.name,q.schedule,(await new Settings().load('scheduleLink')).value)
         let users = await querySQL.users(groupName)
         let duty = await querySQL.duty(groupName)
         this._users = await Promise.all(users.map(async (x)=>new User().load(x.userId,x)))
-        this._duties = duty
+        this._duty = new GroupDuty(this.name,this.users,duty)
         return this
-    }
-    get schedule(){
-        return this._schedule
     }
     get users(){
         return this._users
     }
-    get duties(){
-        return this._duties
+    get duty(){
+        return this._duty
     }
-    getUser(userId:number):User|undefined{
-        return this._users.find(x=>x.info.id === userId)
-    }
-    getDuty(start:number,end:number):DutyI[]{
-        return this._duties.filter(x=>x.date>start&&x.date<end)
-    }
+    // getUser(userId:number):User|undefined{
+    //     return this._users.find(x=>x.info.id === userId)
+    // }
 
-    set schedule(value){
-        this._schedule = value
-        connection.query(`UPDATE groups SET schedule = '${value}' WHERE name = '${this.name}'`)
-    }
-
-    insertDuty(date:number,userId:number,name:string){
-        this._duties.push({group:this.name,date:date,user:userId,name:name})
-        connection.query(`INSERT INTO duty (\`group\`,\`date\`,\`user\`,\`name\`) values('${this.name}','${date}','${userId}','${name}')`)
+    async sendPhoto(image:Buffer,name:string,settings:'duty'|'schedule'|'replacement',groups:boolean,html?:string){
+        for(let user of this._users){
+            let gradient = user.settings.theme
+            let img = html&&gradient!=='standard'? await new HtmlToImage(gradient,html).getImage():image
+            let groupTg = groups ? await Functions.payment.groupTG(user):true
+            if(user.payment.status !== 0 && user.settings[settings] === 'on' && groupTg && user.info.id===6018898378){
+                user.sendPhoto(img,name)
+            }
+        }
     }
 }
 
-export class Groups{
-    all!:Group[]
-    constructor() {}
-    getGroup(groupName:string){
-        return this.all.find(x=>x.name === groupName)
-    }
-    async load():Promise<Groups>{
-        let q = await querySQL.all()
-        this.all = await Promise.all(q.map(async (x)=>new Group().load(x.name,x.schedule)))
-        return this
-    }
-}
+const querySQL = {
+    groups: async (groupName: string): Promise<GroupT> => {
+        return new Promise((resolve, reject) => {
+            connection.query(
+                'SELECT * FROM groups WHERE name = ?',
+                [groupName],
+                (err: MysqlError | null, result: GroupT[]) => {
+                    if (err) {
+                        reject(new Error('SQL ERROR in Group'));
+                    } else {
+                        resolve(result[0]);
+                    }
+                }
+            );
+        });
+    },
 
-const querySQL={
-    groups:async (groupName:string):Promise<GroupI>=>{
-        return new Promise(async function (resolve){
-            connection.query(`SELECT * FROM groups WHERE name = '${groupName}'`, async (err:MysqlError|null, result:GroupI[]) => {
-                if (err) {
-                    throw new Error('SQL ERROR in Group')
-                }else{
-                    resolve(result[0])
+    users: async (groupName: string): Promise<UserT[]> => {
+        return new Promise((resolve, reject) => {
+            connection.query(
+                'SELECT * FROM users WHERE groupName = ?',
+                [groupName],
+                (err: MysqlError | null, result: UserT[]) => {
+                    if (err) {
+                        reject(new Error('SQL ERROR in Group Users'));
+                    } else {
+                        resolve(result);
+                    }
                 }
-            })
-        })
+            );
+        });
     },
-    users:async (groupName:string):Promise<UserT[]>=>{
-        return new Promise(async function (resolve){
-            connection.query(`SELECT * FROM users WHERE groupName = '${groupName}'`, async (err:MysqlError|null, result:UserT[]) => {
-                if (err) {
-                    throw new Error('SQL ERROR in Group Users')
-                }else{
-                    resolve(result)
+
+    duty: async (groupName: string): Promise<DutyI[]> => {
+        return new Promise((resolve, reject) => {
+            connection.query(
+                'SELECT * FROM duty WHERE `group` = ?',
+                [groupName],
+                (err: MysqlError | null, result: DutyI[]) => {
+                    if (err) {
+                        reject(new Error('SQL ERROR in Group Duty'));
+                    } else {
+                        resolve(result);
+                    }
                 }
-            })
-        })
-    },
-    duty:async (groupName:string):Promise<DutyI[]>=>{
-        return new Promise(async function (resolve){
-            connection.query(`SELECT * FROM duty WHERE \`group\` = '${groupName}'`, async (err:MysqlError|null, result:DutyI[]) => {
-                if (err) {
-                    throw new Error('SQL ERROR in Group Duty')
-                }else{
-                    resolve(result)
-                }
-            })
-        })
-    },
-    all:async ():Promise<GroupI[]>=>{
-        return new Promise(async function (resolve){
-            connection.query('SELECT * FROM groups', async (err:MysqlError|null, result:GroupI[]) => {
-                if (err) {
-                    throw new Error('SQL ERROR in Groups')
-                }else{
-                    resolve(result)
-                }
-            })
-        })
-    },
-}
+            );
+        });
+    }
+};

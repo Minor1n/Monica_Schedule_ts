@@ -5,8 +5,12 @@
     <title>Monica Schedule</title>
     <script src="https://telegram.org/js/telegram-web-app.js"></script>
     <style>
-        html{width:100vw;min-height: 100vh;scrollbar-width: none;}
-        body{
+        html {
+            width: 100vw;
+            min-height: 100vh;
+            scrollbar-width: none;
+        }
+        body {
             margin: 0;
             font-family: Arial, sans-serif;
             background-position: center;
@@ -14,95 +18,66 @@
             background-size: cover;
             background-attachment: fixed;
         }
-        div{width:100%;}
-        .buf{
+        div {
+            width: 100%;
+        }
+        .buf {
             height: 12vw;
         }
-        .fill{
-            background-color: rgb(0,0,0,0.2);
+        .fill {
+            background-color: rgba(0, 0, 0, 0.2);
             min-height: 100%;
             width: 100%;
         }
-        table{
+        table {
             padding: 1vw;
             width: 100%;
         }
-        td{
-            background-color: rgba(255,255,255,0.70);
+        td {
+            background-color: rgba(255, 255, 255, 0.7);
             text-align: center;
             height: 3.5vw;
         }
-        b{font-size: 2vw; margin:0.5vw;}
-        .line{background-color: rgb(0,0,0,0.0); height: 1vw;}
-        .title{font-size: 5vw;}
-        .title b{font-size: 5vw;}
-        .profileB{font-size: 3vw}
-
-        button{
+        .fiveHeight{
+            height: 5vw;
+        }
+        b {
+            font-size: 2vw;
+            margin: 0.5vw;
+        }
+        .line {
+            background-color: rgba(0, 0, 0, 0);
+            height: 1vw;
+        }
+        .title {
+            font-size: 5vw;
+        }
+        .title b {
+            font-size: 5vw;
+        }
+        .profileB {
+            font-size: 3vw;
+        }
+        button {
             border: none;
             background: none;
-            padding:0;
+            padding: 0;
         }
         .arrow svg {
-            width:5vw;
+            width: 6.5vw;
             height: auto;
             margin: 0 2rem;
-            cursor: pointer;
-            overflow: visible;
         }
-        .arrow svg polygon,
-        .arrow svg path {
-            transition: all 0.5s cubic-bezier(0.2, 1, 0.3, 1);
-            fill: #000;
-        }
-        .arrow svg:hover polygon,
-        .arrow svg:hover path {
-            transition: all 1s cubic-bezier(0.2, 1, 0.3, 1);
-            fill: #000;
-        }
-        .arrow svg:hover .arrow-pl {
-            animation: arrow-anim 1s cubic-bezier(0.2, 1, 0.3, 1);
-        }
-        .arrow svg:hover .arrow-pl-fixed {
-            animation: arrow-fixed-anim 1s cubic-bezier(0.2, 1, 0.3, 1);
-        }
-
-        @keyframes arrow-anim {
-            0% {
-                opacity: 1;
-                transform: translateX(0);
-            }
-            5% {
-                transform: translateX(-0.1rem);
-            }
-            100% {
-                transform: translateX(1rem);
-                opacity: 0;
-            }
-        }
-        @keyframes arrow-fixed-anim {
-            5% {
-                opacity: 0;
-            }
-            20% {
-                opacity: 0.4;
-            }
-            100% {
-                opacity: 1;
-            }
-        }
-
-        select{
+        select {
             all: unset;
             scrollbar-width: none;
             font-size: 5vw;
         }
-        form{
+        form {
             display: inline;
         }
-
         .mobile-nav {
-            background: rgba(255,255,255,0.70);
+            background: rgba(255, 255, 255, 0.7);
             position: fixed;
             bottom: 0;
             height: 12vw;
@@ -119,9 +94,12 @@
             width: 8vw;
             height: auto;
         }
-
-        .inputP,.selectP{
+        /*input[type="text"] {*/
+        /*    box-sizing: border-box;*/
+        /*}*/
+        .inputP, .selectP {
             all: unset;
+            vertical-align: middle;
             scrollbar-width: none;
             font-size: 3vw;
         }
@@ -131,245 +109,177 @@
         let dutyPage = 0
         let u = 'https://www.minorin.ru'
         let tg = window.Telegram.WebApp;
-        let user = tg?.initDataUnsafe?.user?.id ? tg.initDataUnsafe.user.id:alert('Вы не можете использовать monica_schedule в браузере')
-        fetch(`${u}/randomGradient/${user}`).then(req=>{
-            req.json().then(res=>{
-                document.body.style.backgroundImage = String(res.gradient)
-            })
-        })
-        home()
+        let user = tg?.initDataUnsafe?.user?.id ? tg.initDataUnsafe.user.id: alert('Вы не можете использовать monica_schedule в браузере')
+
+        function updateBackground() {
+            fetch(`${u}/randomGradient/${user}`)
+                .then(req => req.json())
+                .then(res => {
+                    document.body.style.backgroundImage = res.gradient;
+                })
+                .catch(err => console.error('Ошибка при обновлении фона:', err));
+        }
+
+        function fetchAndUpdate(url, elementId) {
+            return fetch(url)
+                .then(req => req.json())
+                .then(res => {
+                    if (elementId) {
+                        document.getElementById(elementId).innerHTML = `<table>${res.table}</table>`;
+                    } else {
+                        document.body.innerHTML = res.body;
+                    }
+                });
+        }
+
         function profile() {
-            fetch(`${u}/profile`).then(req=>{
-                req.json().then(res=>{
-                    document.body.innerHTML = res.body
-                    fetch(`${u}/profile/${user}`).then(req=>{
-                        req.json().then(res=>{
-                            document.getElementById("profile").innerHTML = `<table>${res.table}</table>`
-                        })
-                    })
-                })
-            })
+            fetchAndUpdate(`${u}/profile`)
+                .then(() => fetchAndUpdate(`${u}/profile/${user}`, "profile"))
+                .catch(err => console.error('Ошибка при загрузке профиля:', err));
         }
+
         function settings() {
-            fetch(`${u}/settings`).then(req=>{
-                req.json().then(res=>{
-                    document.body.innerHTML  = res.body
-                    fetch(`${u}/settings/notification/${user}`).then(req=>{
-                        req.json().then(res=>{
-                            document.getElementById("settingsNotification").innerHTML = `<table>${res.table}</table>`
-                        })
-                    })
-                    fetch(`${u}/settings/theme/${user}`).then(req=>{
-                        req.json().then(res=>{
-                            document.getElementById("settingsTheme").innerHTML = `<table>${res.table}</table>`
-                        })
-                    })
+            fetchAndUpdate(`${u}/settings`)
+                .then(() => {
+                    return Promise.all([
+                        fetchAndUpdate(`${u}/settings/notification/${user}`, "settingsNotification"),
+                        fetchAndUpdate(`${u}/settings/theme/${user}`, "settingsTheme")
+                    ]);
                 })
-            })
+                .catch(err => console.error('Ошибка при загрузке настроек:', err));
         }
+
         function home() {
-            fetch(`${u}/home/${user}`).then(req=>{
-                req.json().then(res=>{
-                    document.body.innerHTML  = res.body
-
-                    fetch(`${u}/home/scheduleTable/${user}`).then(req=>{
-                        req.json().then(res=>{
-                            document.getElementById("schedule").innerHTML = `<table>${res.table}</table>`
-                        })
-                    })
-
-                    fetch(`${u}/home/replacementTable/${replacementPage}`).then(req=>{
-                        req.json().then(res=>{
-                            document.getElementById("replacement").innerHTML = `<table>${res.table}</table>`
-                        })
-                    })
-
-                    fetch(`${u}/home/dutyTable/${user}/${dutyPage}`).then(req=>{
-                        req.json().then(res=>{
-                            document.getElementById("duty").innerHTML = `<table>${res.table}</table>`
-                        })
-                    })
-
-                    fetch(`${u}/home/scheduleTable/selectGroup/${user}`).then(req=>{
-                        req.json().then(res=>{
-                            document.getElementById("selectGroup").innerHTML = `${res.table}`
-                        })
-                    })
+            fetchAndUpdate(`${u}/home/${user}`)
+                .then(() => {
+                    return Promise.all([
+                        fetchAndUpdate(`${u}/home/scheduleTable/${user}`, "schedule"),
+                        fetchAndUpdate(`${u}/home/replacementTable/${replacementPage}`, "replacement"),
+                        fetchAndUpdate(`${u}/home/dutyTable/${user}/${dutyPage}`, "duty"),
+                        fetchAndUpdate(`${u}/home/scheduleTable/selectGroup/${user}`, "selectGroup")
+                    ]);
                 })
-            })
+                .catch(err => console.error('Ошибка при загрузке домашней страницы:', err));
         }
-        function updateSettingsSchedule(){
-            fetch(`${u}/settings/notification/schedule/${user}`).then(req=>{
-                req.json().then(res=>{
-                    document.getElementById("settingsNotification").innerHTML = `<table>${res.table}</table>`
-                })
-            })
+
+        function fetchAndUpdateElement(url, elementId) {
+            return fetch(url)
+                .then(req => req.json())
+                .then(res => {
+                    document.getElementById(elementId).innerHTML = `<table>${res.table}</table>`;
+                });
         }
-        function updateSettingsReplacement(){
-            fetch(`${u}/settings/notification/replacement/${user}`).then(req=>{
-                req.json().then(res=>{
-                    document.getElementById("settingsNotification").innerHTML = `<table>${res.table}</table>`
-                })
-            })
+
+        function updateSettingsSchedule() {
+            fetchAndUpdateElement(`${u}/settings/notification/schedule/${user}`, "settingsNotification");
         }
-        function updateSettingsDuty(){
-            fetch(`${u}/settings/notification/duty/${user}`).then(req=>{
-                req.json().then(res=>{
-                    document.getElementById("settingsNotification").innerHTML = `<table>${res.table}</table>`
-                })
-            })
+
+        function updateSettingsReplacement() {
+            fetchAndUpdateElement(`${u}/settings/notification/replacement/${user}`, "settingsNotification");
         }
+
+        function updateSettingsDuty() {
+            fetchAndUpdateElement(`${u}/settings/notification/duty/${user}`, "settingsNotification");
+        }
+
         function updateSettingsTheme() {
-            let url = document.querySelector("input").value
-            console.log(url)
-            fetch(`${u}/settings/theme/bg?user=${user}&url=${url}`,{
-                method:'POST'
-            }).then(()=>{
-                fetch(`${u}/settings/theme/${user}`).then(req=>{
-                    req.json().then(res=>{
-                        document.getElementById("settingsTheme").innerHTML = `<table>${res.table}</table>`
-                        fetch(`${u}/randomGradient/${user}`).then(req=>{
-                            req.json().then(res=>{
-                                document.body.style.backgroundImage = String(res.gradient)
-                            })
-                        })
-                    })
-                })
-            })
+            updateThemeSettings(document.querySelector("input").value);
         }
+
         function updateSettingsThemeStandard() {
-            let url = document.querySelector("input").value
-            fetch(`${u}/settings/theme/bg?user=${user}&url=standard`,{
-                method:'POST'
-            }).then(()=>{
-                fetch(`${u}/settings/theme/${user}`).then(req=>{
-                    req.json().then(res=>{
-                        document.getElementById("settingsTheme").innerHTML = `<table>${res.table}</table>`
-                        fetch(`${u}/randomGradient/${user}`).then(req=>{
-                            req.json().then(res=>{
-                                document.body.style.backgroundImage = String(res.gradient)
-                            })
-                        })
-                    })
-                })
-            })
+            updateThemeSettings("standard");
         }
+
         function updateSettingsLightMode() {
-            fetch(`${u}/settings/theme/lightMode?user=${user}`,{
-                method:'POST'
-            }).then(()=>{
-                fetch(`${u}/settings/theme/${user}`).then(req=>{
-                    req.json().then(res=>{
-                        document.getElementById("settingsTheme").innerHTML = `<table>${res.table}</table>`
-                        fetch(`${u}/randomGradient/${user}`).then(req=>{
-                            req.json().then(res=>{
-                                document.body.style.backgroundImage = String(res.gradient)
-                            })
-                        })
-                    })
-                })
-            })
-        }
-        function changePage(i){
-            if(replacementPage+i<0){alert('Замены не найдены!')}
-            else{
-                fetch(`${u}/home/replacementTable/${replacementPage+i}`).then(req=>{
-                    req.json().then(res=>{
-                        if(res.table!=='null'){
-                            replacementPage += i
-                            document.getElementById("replacement").innerHTML = `<table>${res.table}</table>`
-                        }else{
-                            alert('Замены не найдены!')
-                        }
-                    })
-                })
-            }
+            fetch(`${u}/settings/theme/lightMode?user=${user}`, { method: 'POST' })
+                .then(updateThemeElements)
+                .catch(err => console.error('Ошибка при обновлении темы:', err));
         }
 
-        function changePageDuty(i){
-            if(dutyPage+i<0){alert('Дежурства не найдены!')}
-            else{
-                fetch(`${u}/home/dutyTable/${user}/${dutyPage+i}`).then(req=>{
-                    req.json().then(res=>{
-                        if(res.table!==null){
-                            dutyPage += i
-                            document.getElementById("duty").innerHTML = `<table>${res.table}</table>`
-                        }else{
-                            alert('Дежурства не найдены!')
-                        }
-                    })
-                })
-            }
+        function updateThemeSettings(themeUrl) {
+            fetch(`${u}/settings/theme/bg?user=${user}&url=${themeUrl}`, { method: 'POST' })
+                .then(updateThemeElements)
+                .catch(err => console.error('Ошибка при обновлении темы:', err));
         }
 
-        function changeOption(){
-            let sGroup = document.myForm.selectGroup
-            const selectedOption = sGroup.options[sGroup.selectedIndex];
-            console.log(selectedOption.value)
-            fetch(`${u}/home/scheduleTable/updateGroup/${selectedOption.value}`).then(req=>{
-                req.json().then(res=>{
-                    document.getElementById("schedule").innerHTML = `<table>${res.table}</table>`
-                })
-            })
+        function updateThemeElements() {
+            fetchAndUpdateElement(`${u}/settings/theme/${user}`, "settingsTheme")
+                .then(() => { updateBackground() })
+                .catch(err => console.error('Ошибка при обновлении элементов темы:', err));
         }
 
-        async function update(){
-            let group = document.myForm.selectGroup
-            let dutyDay = document.myForm2.selectDutyDay
-            let name = document.myForm1.nameUpdate.value
-            let refKey = document.myForm3.refKey.value
-            let monthPay = document.myForm4.monthPay.value
-            const selectedGroup = group.options[group.selectedIndex].value
-            const selectedDutyDay = dutyDay.options[dutyDay.selectedIndex].value
-            if(monthPay){
-                await fetch(`${u}/profile/monthPay/${user}/${monthPay}`).then(async req=>{
-                    req.json().then(res=>{
-                        alert(res.alert)
-                    })
-                })
+        function changePageA(type, page, increment, elementId, url) {
+            const newPage = page + increment;
+            if (newPage < 0) {
+                alert(`${type} не найдены!`);
+                return;
             }
-            await fetch(`${u}/profile/editDutyDay/${user}/${selectedDutyDay}`).then(async ()=>{
-                await fetch(`${u}/profile/editGroup/${user}/${selectedGroup}`).then(async ()=>{
-                    if(refKey!==''){
-                        await fetch(`${u}/profile/setRefKey/${user}/${refKey}`).then(async (req1)=>{
-                            req1.json().then(res1=>{
-                                alert(res1.alert)
-                            })
-                        })
-                        if(name!==''){
-                            await fetch(`${u}/profile/editName/${user}/${name}`).then(async ()=>{
-                                fetch(`${u}/profile/${user}`).then(req=>{
-                                    req.json().then(res=>{
-                                        document.getElementById("profile").innerHTML = `<table>${res.table}</table>`
-                                    })
-                                })
-                            })
-                        }else{
-                            fetch(`${u}/profile/${user}`).then(req=>{
-                                req.json().then(res=>{
-                                    document.getElementById("profile").innerHTML = `<table>${res.table}</table>`
-                                })
-                            })
-                        }
-                    }else
-                    if(name!==''){
-                        await fetch(`${u}/profile/editName/${user}/${name}`).then(async ()=>{
-                            fetch(`${u}/profile/${user}`).then(req=>{
-                                req.json().then(res=>{
-                                    document.getElementById("profile").innerHTML = `<table>${res.table}</table>`
-                                })
-                            })
-                        })
-                    }else{
-                        fetch(`${u}/profile/${user}`).then(req=>{
-                            req.json().then(res=>{
-                                document.getElementById("profile").innerHTML = `<table>${res.table}</table>`
-                            })
-                        })
+
+            fetch(`${u}/${url}/${newPage}`)
+                .then(req => req.json())
+                .then(res => {
+                    if (res.table && res.table!=='null') {
+                        elementId === 'replacement' ? replacementPage = newPage : dutyPage = newPage
+                        document.getElementById(elementId).innerHTML = `<table>${res.table}</table>`;
+                    } else {
+                        alert(`${type} не найдены!`);
                     }
                 })
-            })
+                .catch(err => console.error(`Ошибка при обновлении ${type}:`, err));
         }
+
+        function changePage(i) {
+            changePageA('Замены', replacementPage, i, "replacement", 'home/replacementTable');
+        }
+
+        function changePageDuty(i) {
+            changePageA('Дежурства', dutyPage, i, "duty", `home/dutyTable/${user}`);
+        }
+
+        function changeOption() {
+            const selectedValue = document.myForm.selectGroup.value;
+            fetch(`${u}/home/scheduleTable/updateGroup/${selectedValue}`)
+                .then(req => req.json())
+                .then(res => {
+                    document.getElementById("schedule").innerHTML = `<table>${res.table}</table>`;
+                })
+                .catch(err => console.error('Ошибка при обновлении расписания:', err));
+        }
+
+        async function update() {
+            const group = document.myForm.selectGroup.value;
+            const dutyDay = document.myForm2.selectDutyDay.value;
+            const name = document.myForm1.nameUpdate.value.trim();
+            const refKey = document.myForm3.refKey.value.trim();
+            const monthPay = document.myForm4.monthPay.value.trim();
+
+            if (monthPay) {
+                const monthPayRes = await fetch(`${u}/profile/monthPay/${user}/${monthPay}`);
+                const monthPayData = await monthPayRes.json();
+                alert(monthPayData.alert);
+            }
+
+            await fetch(`${u}/profile/editDutyDay/${user}/${dutyDay}`);
+            await fetch(`${u}/profile/editGroup/${user}/${group}`);
+
+            if (refKey) {
+                const refKeyRes = await fetch(`${u}/profile/setRefKey/${user}/${refKey}`);
+                const refKeyData = await refKeyRes.json();
+                alert(refKeyData.alert);
+            }
+
+            if (name) {
+                await fetch(`${u}/profile/editName/${user}/${name}`);
+            }
+
+            const profileRes = await fetch(`${u}/profile/${user}`);
+            const profileData = await profileRes.json();
+            document.getElementById("profile").innerHTML = `<table>${profileData.table}</table>`;
+        }
+        window.onload = () => {
+            updateBackground();
+            home();
+        };
     </script>
 </head>
 <body>

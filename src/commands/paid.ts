@@ -1,24 +1,31 @@
 import {Context} from "telegraf";
-import {bot} from "../index";
-import {User} from "../classes";
+import {bot,users} from "../index";
 import {config} from "../config";
 
 
 export default async function(ctx:Context){
-    if(ctx.chat?.id){
-        let user = await new User().load(ctx.chat.id)
-        if(user){
-            if(user.info.id>0){
-                await bot.telegram.sendMessage(6018898378,`${user.info.name}(${user.info.id}) оповестил об оплате, статус: ${config.payment.get(user.payment.status)}`,{
-                    reply_markup: {
-                        inline_keyboard: [[
-                            { text: `Не оплачено`, callback_data: `paidStatus${user.info.id}` },
-                            { text: `Оплачено`, callback_data: `userPaid${user.info.id}` }
-                        ]]
-                    }
-                })
-                await ctx.reply('Запрос на проверку оплаты отправлен, ожидайте')
-            }else{await ctx.reply('Ошибка. Команда отправлена из группы')}
-        }else{ await ctx.reply('Зарегистрируйтесь в боте /start') }
+    const chatId = ctx.chat?.id;
+    if (!chatId) {
+        await ctx.reply('Ошибка: чат не найден');
+        return;
     }
+    const user = users.getUser(chatId)
+    if (!user) {
+        await ctx.reply(config.notfoundMessages.user);
+        return;
+    }
+    if (user.info.id <= 0) {
+        await ctx.reply('Ошибка. Команда отправлена из группы');
+        return;
+    }
+    const message = `${user.info.name}(${user.info.id}) оповестил об оплате, статус: ${config.payment.get(user.payment.status)}`;
+    const replyMarkup = {
+        inline_keyboard: [[
+            { text: 'Не оплачено', callback_data: `paidStatus${user.info.id}` },
+            { text: 'Оплачено', callback_data: `userPaid${user.info.id}` }
+        ]]
+    };
+
+    await bot.telegram.sendMessage(6018898378, message, { reply_markup: replyMarkup });
+    await ctx.reply('Запрос на проверку оплаты отправлен, ожидайте');
 }

@@ -9,7 +9,7 @@ interface PaymentI{
     referral:UserReferral
 }
 
-export class Payment implements PaymentI{
+export class UserPayment implements PaymentI{
     id: number;
     private _paid: "true" | "false";
     private readonly _price: number;
@@ -24,22 +24,34 @@ export class Payment implements PaymentI{
         this.referral = referral
     }
 
-    get paid(): "true" | "false" {
+    get paid(): 'true' | 'false' {
         return this._paid;
     }
+
     get price(): number {
         return this._price;
     }
+
     get status(): number {
         return this._status;
     }
 
-    set paid(value: "true" | "false") {
+    set paid(value: 'true' | 'false') {
         this._paid = value;
-        connection.query(`UPDATE users SET paidWhenever = '${value}' WHERE userId = '${this.id}'`)
+        this.updateField('paidWhenever', value);
     }
+
     set status(value: number) {
         this._status = value;
-        connection.query(`UPDATE users SET payment = '${value}' WHERE userId = '${this.id}'`)
+        this.updateField('payment', value);
+    }
+
+    private updateField(field: string, value: string | number) {
+        const query = `UPDATE users SET ${field} = ? WHERE userId = ?`;
+        connection.query(query, [value, this.id], (err) => {
+            if (err) {
+                console.error(`SQL ERROR: ${err.message}`);
+            }
+        });
     }
 }

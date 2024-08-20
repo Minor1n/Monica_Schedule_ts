@@ -1,8 +1,9 @@
 import {Replacements} from "../../classes";
 
 
-export const replacementTable = async(index:number):Promise<{table:string}>=>{
-    let replacement = (await new Replacements().load()).getReplacement(index)
-    let table = replacement?.html ? replacement.html : `null`
-    return {table: table}
-}
+export const replacementTable = async (index: number): Promise<{ table: string }> => {
+    const replacements = await new Replacements().load();
+    const replacement = replacements.getReplacement(index);
+    const table = replacement?.html ?? 'null';
+    return { table };
+};

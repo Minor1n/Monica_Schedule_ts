@@ -1,28 +1,40 @@
-import {Context, Input} from "telegraf";
+import {Context} from "telegraf";
 import {Functions} from "../functions";
-import {User,Group,HtmlToImage} from "../classes";
-import {gradients} from "../index";
+import {HtmlToImage} from "../classes";
+import {gradients, groups, users} from "../index";
+import {config} from "../config";
 
 
 export default async function(ctx:Context){
-    if(ctx.chat?.id){
-        let user = await new User().load(ctx.chat.id)
-        if(user){
-            if(user.payment.status !== 0){
-                if(user.info.groupName !== 'null'){
-                    let group = await new Group().load(user.info.groupName)
-                    let html = group.schedule
-                    if(html !== 'null'){
-                        if(await Functions.payment.groupTG(user)){
-                            let htmlImg = user.settings.theme === "standard" ? gradients.light : `background-image: url(${user.settings.theme});`
-                            let image = await new HtmlToImage(htmlImg,html).getImage()
-                            // @ts-ignore
-                            await ctx.replyWithPhoto(Input.fromBuffer(Buffer.from(image), `schedule.png`))
-                            await Functions.payment.alert(user)
-                        }else {await ctx.reply('Не все участники группы оплатили подписку')}
-                    }else{await ctx.reply('Расписание еще не было сгенерировано')}
-                }else{await ctx.reply('Выберите группу /setgroup')}
-            }else{await ctx.reply('Вы заблокированы администратором')}
-        }else{await ctx.reply('Зарегистрируйтесь в боте /start')}
+    const chatId = ctx.chat?.id;
+    if (!chatId) {
+        return;
     }
+    const user = users.getUser(chatId);
+    if (!user) {
+        await ctx.reply(config.notfoundMessages.user);
+        return;
+    }
+    if (user.payment.status === 0) {
+        await ctx.reply('Вы заблокированы');
+        return;
+    }
+    const group = groups.getGroup(user.info.groupName);
+    if (user.info.groupName === 'null' || !group) {
+        await ctx.reply(config.notfoundMessages.group);
+        return;
+    }
+    const html = group.schedule.html;
+    if (html === 'null') {
+        await ctx.reply('Расписание еще не было сгенерировано');
+        return;
+    }
+    const isGroupPaid = await Functions.payment.groupTG(user);
+    if (!isGroupPaid) {
+        await ctx.reply('Не все участники группы оплатили подписку');
+        return;
+    }
+    const htmlImg = user.settings.theme === "standard" ? gradients.light : `background-image: url(${user.settings.theme});`;
+    const image = await new HtmlToImage(htmlImg, html).getImage();
+    user.sendPhoto(image, 'schedule.png');
 }

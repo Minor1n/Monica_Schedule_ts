@@ -1,5 +1,4 @@
 import {connection} from "../index";
-import {MysqlError} from "mysql";
 import {User} from "./User";
 
 type ReferralsT={
@@ -11,14 +10,14 @@ type ReferralsT={
 interface UserReferralI{
     id:number;
     key:string;
-    agents:ReferralsT[];
+    agents:Map<number,ReferralsT>;
     agentsApprove:number;
     user:ReferralsT;
 }
 
 export class UserReferral implements UserReferralI{
     id:number;
-    private _agents!: ReferralsT[];
+    private _agents: Map<number,ReferralsT> = new Map()
     private _agentsApprove!:number
     private _user!:ReferralsT;
     private readonly _key: string;
@@ -26,66 +25,85 @@ export class UserReferral implements UserReferralI{
         this.id = id
         this._key = key
     }
-    async load():Promise<UserReferral>{
-        let agents = await querySQL.agents(this.id)
-        let user = await querySQL.user(this.id)
-        this._agents = agents
-        let approve = 0
-        for(let agent of agents){
-            let user = await new User().load(agent.userId)
-            if(user.payment.status > 1 && user.payment.paid === 'true'){
-                approve+=1
-            }
+    async load(): Promise<UserReferral> {
+        try {
+            const [agents, user] = await Promise.all([
+                querySQL.agents(this.id),
+                querySQL.user(this.id)
+            ]);
+
+            agents.forEach(agent => this._agents.set(agent.userId, agent));
+
+            this._agentsApprove = await this.calculateApprovedAgents(agents);
+            this._user = user;
+
+            return this;
+        } catch (error) {
+            console.error('Error loading UserReferral:', error);
+            throw error;
         }
-        this._agentsApprove = approve
-        this._user = user
-        return this
     }
-    get agentsApprove():number {
+
+    get agentsApprove(): number {
         return this._agentsApprove;
     }
-    get agents():ReferralsT[] {
+
+    get agents(): Map<number, ReferralsT> {
         return this._agents;
     }
-    get user():ReferralsT {
+
+    get user(): ReferralsT {
         return this._user;
     }
-    get key():string {
+
+    get key(): string {
         return this._key;
     }
 
-    insertReferral(userId:number){
-        this._agents.push({agentId:this.id,userId:userId,refKey:this._key})
-        connection.query(`INSERT INTO referrals (agentId,userId,refKey) VALUES('${this.id}','${userId}','${this._key}')`)
+    insertReferral(userId: number): void {
+        this._agents.set(userId, { agentId: this.id, userId, refKey: this._key });
+
+        const query = `INSERT INTO referrals (agentId, userId, refKey) VALUES (?, ?, ?)`;
+        connection.query(query, [this.id, userId, this._key], (err) => {
+            if (err) {
+                console.error('SQL ERROR in insertReferral:', err.message);
+            }
+        });
     }
-    //
-    // set agentsApprove(value){
-    //     this._agentsApprove = value
-    //     connection.query(`UPDATE users SET refAgents = '${value}' WHERE userId = '${this.id}'`)
-    // }
+
+    private async calculateApprovedAgents(agents: ReferralsT[]): Promise<number> {
+        const approvalPromises = agents.map(async (agent) => {
+            const user = await new User().load(agent.userId);
+            return (user.payment.status > 1 && user.payment.paid === 'true') ? 1 : 0;
+        });
+
+        const approvals = await Promise.all(approvalPromises);
+        return approvals.reduce((sum:number, value) => sum + value, 0);
+    }
 }
 
-const querySQL={
-    agents:async (agentId:number):Promise<ReferralsT[]>=>{
-        return new Promise(async function (resolve){
-            connection.query(`SELECT * FROM referrals WHERE agentId = '${agentId}'`, (err:MysqlError|null, result:ReferralsT[]) => {
+const querySQL = {
+    agents: async (agentId: number): Promise<ReferralsT[]> => {
+        return new Promise((resolve, reject) => {
+            const query = 'SELECT * FROM referrals WHERE agentId = ?';
+            connection.query(query, [agentId], (err, results: ReferralsT[]) => {
                 if (err) {
-                    throw new Error('SQL ERROR in UserReferral')
-                }else{
-                    resolve(result)
+                    return reject(new Error('SQL ERROR in UserReferral - agents: ' + err.message));
                 }
-            })
-        })
+                resolve(results);
+            });
+        });
     },
-    user:async (userId:number):Promise<ReferralsT>=>{
-        return new Promise(async function (resolve){
-            connection.query(`SELECT * FROM referrals WHERE userId = '${userId}'`, (err:MysqlError|null, result:ReferralsT[]) => {
+
+    user: async (userId: number): Promise<ReferralsT> => {
+        return new Promise((resolve, reject) => {
+            const query = 'SELECT * FROM referrals WHERE userId = ?';
+            connection.query(query, [userId], (err, results: ReferralsT[]) => {
                 if (err) {
-                    throw new Error('SQL ERROR in UserReferral')
-                }else{
-                    resolve(result[0])
+                    return reject(new Error('SQL ERROR in UserReferral - user: ' + err.message));
                 }
-            })
-        })
+                resolve(results[0]);
+            });
+        });
     }
 }

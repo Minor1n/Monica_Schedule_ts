@@ -58,7 +58,7 @@ const paymentMessages ={
     },
     ban:(price:number):string=>{
         let arr = [
-            `Вы заблокированы за неуплату(обратитесь к администратору или оплатите подписку <b>${Math.round(price*2)}р</b>)`,
+            `Вы заблокированы за неуплату(обратитесь к администратору @a_korop или оплатите подписку <b>${Math.round(price*2)}р</b>)`,
             `🔗<a href="https://www.tinkoff.ru/rm/korop.aleksandr4/KHtiD43274">ссылка для оплаты</a>`
         ]
         return arr.join('\n')
@@ -66,6 +66,15 @@ const paymentMessages ={
     changeStatus:(status:number):string=>{
         return `Ваш статус изменен на ${payment.get(status)}`
     }
+}
+const notfoundMessagesSite = {
+    user: `<b class="profileB">Зарегистрируйтесь в боте /start</b>`,
+    group: `<b class="profileB">Укажите группу /setGroup</b>`
+}
+
+const notfoundMessages = {
+    user: `'Зарегистрируйтесь в боте /start'`,
+    group: `Выберите группу /setgroup`
 }
 
 const fetchUrl = 'http://rgkript.ru/raspisanie-zanyatiy/'
@@ -76,5 +85,7 @@ export const config = {
     htmlStart1,htmlStart2,htmlEnd, puppeteer,
     payment,
     paymentMessages,
-    fetchUrl
+    fetchUrl,
+    notfoundMessagesSite,
+    notfoundMessages
 };

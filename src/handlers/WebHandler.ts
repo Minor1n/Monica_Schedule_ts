@@ -11,16 +11,16 @@ export const WebHandler = (dirname:string)=>{
 
     //HOME
     app.get('/home/[0-9]+', async (req, res) => {
-        res.send(await pages.home(dirname,Number(req.url.slice(6))))
+        res.send(pages.home(dirname, Number(req.url.slice(6))))
     })
     app.get('/home/scheduleTable/[0-9]+', async (req, res) => {
-        res.send(await home.scheduleTable(Number(req.url.slice(20))));
+        res.send(home.scheduleTable(Number(req.url.slice(20))));
     })
     app.get('/home/scheduleTable/selectGroup/[0-9]+', async (req, res) => {
-        res.send(await home.select(Number(req.url.slice(32))));
+        res.send(home.select(Number(req.url.slice(32))));
     })
     app.get('/home/scheduleTable/updateGroup/[0-9\%A-Za-z\-]+', async (req, res) => {
-        res.send(await home.update(decodeURI(req.url.slice(32))));
+        res.send(home.update(decodeURI(req.url.slice(32))));
     })
     app.get('/home/replacementTable/[0-9]+', async (req, res) => {
         res.send(await home.replacementTable(Number(req.url.slice(23))));
@@ -28,27 +28,36 @@ export const WebHandler = (dirname:string)=>{
     app.get('/home/dutyTable/[0-9]+/[0-9]+', async (req, res) => {
         let nums = req.url.match(/[0-9]+/g)
         if(!nums)return
-        res.send(await home.dutyTable(Number(nums[0]),Number(nums[1])));
+        res.send(home.dutyTable(Number(nums[0]), Number(nums[1])));
     })
 
     //PROFILE
     app.get('/profile', async (_, res) => {
-        res.send(await pages.profile(dirname))
+        res.send(pages.profile(dirname))
     })
     app.get('/profile/[0-9]+', async (req, res) => {
-        res.send(await profile.table(Number(req.url.slice(9))));
+        res.send(profile.table(Number(req.url.slice(9))));
     })
     app.get('/profile/editGroup/[0-9]+/[0-9\%A-Za-z\-]+', async (req, res) => {
         let nums = req.url.slice(19).match(/[0-9%A-Za-z\-]+/g)
-        if (nums) { await profile.group(Number(nums[0]), nums[1]).then(()=>res.send()) }
+        if (nums) {
+            const table = profile.group(Number(nums[0]), nums[1])
+            table ? res.send(table) : res.send()
+        }
     })
     app.get('/profile/editDutyDay/[0-9]+/[0-9]+', async (req, res) => {
         let nums = req.url.slice(21).match(/[0-9]+/g)
-        if (nums) { await profile.dutyDay(Number(nums[0]), Number(nums[1])).then(() => res.send()) }
+        if (nums) {
+            const table = profile.dutyDay(Number(nums[0]), Number(nums[1]))
+            table ? res.send(table) : res.send()
+        }
     })
     app.get('/profile/editName/[0-9]+/[0-9\%A-Za-z\-]+', async (req, res) => {
         let nums = req.url.slice(18).match(/[0-9%A-Za-z\-]+/g)
-        if (nums) { await profile.name(Number(nums[0]), nums[1]).then(() => res.send()) }
+        if (nums) {
+            const table = profile.name(Number(nums[0]), nums[1])
+            table ? res.send(table) : res.send()
+        }
     })
     app.get('/profile/setRefKey/[0-9]+/[A-Z]+', async (req, res) => {
         let nums = req.url.slice(18).match(/[0-9A-Z]+/g)
@@ -56,40 +65,43 @@ export const WebHandler = (dirname:string)=>{
     })
     app.get('/profile/monthPay/[0-9]+/[0-9]+', async (req, res) => {
         let nums = req.url.slice(18).match(/[0-9A-Z]+/g)
-        if (nums) { await profile.monthPay(Number(nums[0]), Number(nums[1])).then(result=> res.send({alert: result})) }
+        if (nums) {
+            const table = profile.monthPay(Number(nums[0]), Number(nums[1]))
+            res.send({alert: table})
+        }
     })
 
     //SETTINGS
     app.get('/settings', async (_, res) => {
-        res.send(await pages.settings(dirname))
+        res.send(pages.settings(dirname))
     })
     app.get('/settings/notification/[0-9]+', async (req, res) => {
-        res.send(await settings.notification(Number(req.url.slice(23))));
+        res.send(settings.notification(Number(req.url.slice(23))));
     })
     app.get('/settings/notification/schedule/[0-9]+', async (req, res) => {
-        res.send(await settings.schedule(Number(req.url.slice(32))));
+        res.send(settings.schedule(Number(req.url.slice(32))));
     })
     app.get('/settings/notification/replacement/[0-9]+', async (req, res) => {
-        res.send(await settings.replacement(Number(req.url.slice(35))));
+        res.send(settings.replacement(Number(req.url.slice(35))));
     })
     app.get('/settings/notification/duty/[0-9]+', async (req, res) => {
-        res.send(await settings.duty(Number(req.url.slice(28))));
+        res.send(settings.duty(Number(req.url.slice(28))));
     })
     app.get('/settings/theme/[0-9]+', async (req, res) => {
-        res.send(await settings.theme(Number(req.url.slice(16))));
+        res.send(settings.theme(Number(req.url.slice(16))));
     })
     app.post('/settings/theme/bg', async (req, res) => {
-        res.send(await settings.bg(Number(req.query.user),String(req.query.url)));
+        res.send(settings.bg(Number(req.query.user), String(req.query.url)));
     })
     app.post('/settings/theme/lightMode', async (req, res) => {
-        res.send(await settings.lightMode(Number(req.query.user)));
+        res.send(settings.lightMode(Number(req.query.user)));
     })
 // app.get('/dutyPlus/[0-9]+', async (req, res) => {
 //     let user = await SQL.users.select(Number(req.url.slice(10)))
 //     res.send({message: await Functions.duty.dutyPlus(user)});
 // })
     app.get("/randomGradient/[0-9]+", async (req,res) => {
-        res.send(await gradient(Number(req.url.slice(16))));
+        res.send(gradient(Number(req.url.slice(16))));
     });
 
     const httpServer = http.createServer(app);

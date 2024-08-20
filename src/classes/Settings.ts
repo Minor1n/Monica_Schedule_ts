@@ -1,9 +1,9 @@
 import {connection} from "../index";
 import {MysqlError} from "mysql";
 
-type SettingsType = 'scheduleLink'|'replacementLink'
+export type SettingsType = 'scheduleLink'|'replacementLink'
 
-interface SettingsI{
+export interface SettingsI{
     type:SettingsType
     value:string
     number:number
@@ -13,71 +13,69 @@ export class Settings implements SettingsI{
     type!:SettingsType
     private _value!:string
     private _number!:number
-    constructor() {}
-    async load(type:SettingsType,res?:SettingsI):Promise<Settings>{
-        if(res){
-            this.type = type
-            this._value = res.value
-            this._number = res.number
-        }else{
-            let settings = await querySQL.settings(type)
-            this.type = settings.type
-            this._value = settings.value
-            this._number = settings.number
+    constructor(type?: SettingsType, value?: string, number?: number) {
+        if (type && value && number !== undefined) {
+            this.type = type;
+            this._value = value;
+            this._number = number;
         }
-        return this
-    }
-    get value(){
-        return this._value
-    }
-    get number(){
-        return this._number
     }
 
-    set value(value){
-        this._value = value
-        connection.query(`UPDATE settings SET value = '${value}' WHERE type = '${this.type}'`)
+    async load(type: SettingsType, res?: SettingsI): Promise<Settings> {
+        if (res) {
+            this.type = type;
+            this._value = res.value;
+            this._number = res.number;
+        } else {
+            const settings = await querySQL.settings(type);
+            this.type = settings.type;
+            this._value = settings.value;
+            this._number = settings.number;
+        }
+        return this;
     }
-    set number(value){
-        this._number = value
-        connection.query(`UPDATE settings SET number = '${value}' WHERE type = '${this.type}'`)
+
+    get value(): string {
+        return this._value;
+    }
+
+    set value(newValue: string) {
+        this._value = newValue;
+        this.updateSetting('value', newValue);
+    }
+
+    get number(): number {
+        return this._number;
+    }
+
+    set number(newNumber: number) {
+        this._number = newNumber;
+        this.updateSetting('number', newNumber);
+    }
+
+    private updateSetting(column: 'value' | 'number', newValue: string | number): void {
+        const query = `UPDATE settings SET ${column} = ? WHERE type = ?`;
+        connection.query(query, [newValue, this.type], (err) => {
+            if (err) {
+                throw new Error('SQL ERROR in Settings - update');
+            }
+        });
     }
 }
 
-export class SettingsAll{
-    all!:Settings[]
-    constructor() {}
-    async load():Promise<SettingsAll>{
-        let settings = await querySQL.all()
-        this.all = await Promise.all(settings.map(async (x)=>new Settings().load(x.type,x)))
-        return this
-    }
-    getSettings(type:SettingsType){
-        return this.all.find(x=>x.type === type)
-    }
-}
-
-const querySQL={
-    settings: async(type:SettingsType):Promise<SettingsI>=>{
-        return new Promise(async function (resolve){
-            connection.query(`SELECT * FROM settings WHERE type = '${type}'`, (err:MysqlError|null, result:SettingsI[]) => {
+const querySQL = {
+    settings: async (type: SettingsType): Promise<SettingsI> => {
+        return new Promise((resolve, reject) => {
+            const query = 'SELECT * FROM settings WHERE type = ?';
+            connection.query(query, [type], (err: MysqlError | null, result: SettingsI[]) => {
                 if (err) {
-                    throw new Error('SQL ERROR in Settings')
-                }else{
-                    resolve(result[0])
+                    reject(new Error('SQL ERROR in Settings - select'));
+                } else if (result.length > 0) {
+                    resolve(result[0]);
+                } else {
+                    reject(new Error('No settings found for the given type'));
                 }
-            })
-        })
-    },
-    all: async():Promise<SettingsI[]>=>{
-        return new Promise(async function (resolve){
-            connection.query(`SELECT * FROM settings`, async (err:MysqlError|null, result:SettingsI[]) => {
-                if (err) {
-                    throw new Error('SQL ERROR in Settings')
-                }else{
-                    resolve(result)
-                }
-            })
-        })
+            });
+        });
     }
-}
+};

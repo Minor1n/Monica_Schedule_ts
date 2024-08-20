@@ -1,99 +1,92 @@
-import {bot} from "../index";
+import {bot, users} from "../index";
 import {config} from "../config";
-import {User, Users} from "../classes";
+import {User} from "../classes";
 
 
 export async function recount(){
-    let users = await new Users().load()
-    for(let user of users.all){
-        let cost = config.paymentMessages.cost(user.info.id,user.payment.price,user.payment.referral.agentsApprove)
-        if(cost > 0){
-            if(user.payment.status === 1){
-                await bot.telegram.sendMessage(user.info.id, config.paymentMessages.ban(user.payment.price), { parse_mode: 'HTML' }).catch(e=>{console.log(e)})
-            }else
-            if(user.payment.status === 2){
-                await bot.telegram.sendMessage(user.info.id, config.paymentMessages.standard(cost,user.payment.price), { parse_mode: 'HTML' }).catch(e=>{console.log(e)})
-            }else
-            if(user.payment.status > 2){
-                await bot.telegram.sendMessage(user.info.id, config.paymentMessages.changeStatus(user.payment.status-1), { parse_mode: 'HTML' }).catch(e=>{console.log(e)})
-            }
-            if(user.payment.status > 0){
-                user.payment.status += -1
-            }
+    for (const user of users.all) {
+        const cost = config.paymentMessages.cost(
+            user.info.id,
+            user.payment.price,
+            user.payment.referral.agentsApprove
+        );
+        if (cost <= 0) continue;
+        switch (user.payment.status) {
+            case 1:
+                user.sendText(config.paymentMessages.ban(user.payment.price));
+                break;
+            case 2:
+                user.sendText(config.paymentMessages.standard(cost, user.payment.price));
+                break;
+            default:
+                if (user.payment.status > 2) {
+                    user.sendText(config.paymentMessages.changeStatus(user.payment.status - 1));
+                }
+                break;
+        }
+        if (user.payment.status > 0) {
+            user.payment.status--;
         }
     }
 }
 
-export async function preAlert(){
-    let dateArr = ['31.01','28.02','31.03','30.04','31.05','30.06','31.07','31.08','30.09','31.10','30.11','31.12']
-    let date = dateArr[new Date().getMonth()]
-    let users = await new Users().load()
-    for(let user of users.all){
-        if(user.payment.status === 1){
-            await bot.telegram.sendMessage(user.info.id, `Оплатите подписку до ${date}, иначе будете отключены от бота`).catch(e=>{console.log(e)})
-            await alert(user)
-        }
+export async function preAlert() {
+    const dueDate = ['31.01', '28.02', '31.03', '30.04', '31.05', '30.06', '31.07', '31.08', '30.09', '31.10', '30.11', '31.12'][new Date().getMonth()];
+    users.all
+        .filter(user => user.payment.status === 1)
+        .forEach(user => user.sendText(`Оплатите подписку до ${dueDate}, иначе будете отключены от бота`));
+}
+
+export async function alert(user: User) {
+    if (user.payment.status === 1) {
+        const cost = config.paymentMessages.cost(
+            user.info.id,
+            user.payment.price,
+            user.payment.referral.agentsApprove
+        );
+        await bot.telegram.sendMessage(user.info.id, config.paymentMessages.standard(cost, user.payment.price), { parse_mode: 'HTML' }).catch(console.log);
     }
 }
 
-export async function alert(user:User){
-    if(user.payment.status === 1){
-        let cost = config.paymentMessages.cost(user.info.id,user.payment.price,user.payment.referral.agentsApprove)
-        await bot.telegram.sendMessage(user.info.id, config.paymentMessages.standard(cost,user.payment.price), { parse_mode: 'HTML' }).catch(e=>{console.log(e)})
-    }
-}
-
-export async function paid():Promise<{text:string,callback_data:string}[][]>{
-    return new Promise(async function (resolve) {
-        let users = await new Users().load()
-        users.all.sort((a, b) => a.info.name.localeCompare(b.info.name))
-        let usersKeyboard:{text:string,callback_data:string}[][] = [[]]
-        let key = 0
-        let key2 = 0
-        for(let user of users.all){
-            if(key % 5 === 0 && key !== 0){
-                key2 +=1
-                usersKeyboard.push([])
-                usersKeyboard[key2].push({ text: user.info.name, callback_data: `userPaid${user.info.id}` })
-                key +=1
-            }else{
-                usersKeyboard[key2].push({ text: user.info.name, callback_data: `userPaid${user.info.id}` })
-                key +=1
-            }
-        }
-        resolve(usersKeyboard)
-    })
+export async function paid(): Promise<{ text: string; callback_data: string }[][]> {
+    const sortedUsers = users.all.sort((a, b) => a.info.name.localeCompare(b.info.name));
+    const usersKeyboard: { text: string; callback_data: string }[][] = [];
+    sortedUsers.forEach((user, index) => {
+        if (index % 5 === 0) usersKeyboard.push([]);
+        usersKeyboard[usersKeyboard.length - 1].push({ text: user.info.name, callback_data: `userPaid${user.info.id}` });
+    });
+    return usersKeyboard;
 }
 
 export async function groupTG(groupTG:User):Promise<boolean>{
-    if(groupTG.info.id<0){
-        let users = await new Users().load()
-        let usersCount = groupTG.info.bots
-        for(let user of users.all){
-            if(user.info.id!==groupTG.info.id){
-                if(user.payment.status===-1||user.payment.status>2){
-                    let member = await bot.telegram.getChatMember(groupTG.info.id, user.info.id)
-                    if(member.status==='member'||member.status==='creator'||member.status==='administrator'){
-                        usersCount+=1
-                    }
-                }
+    if (groupTG.info.id >= 0) return true;
+    const totalMembers = await bot.telegram.getChatMembersCount(groupTG.info.id);
+    let activeUsersCount = groupTG.info.bots;
+    const userChecks = users.all.map(async (user) => {
+        if (user.info.id !== groupTG.info.id && (user.payment.status === -1 || user.payment.status > 2)) {
+            const member = await bot.telegram.getChatMember(groupTG.info.id, user.info.id);
+            if (['member', 'creator', 'administrator'].includes(member.status)) {
+                activeUsersCount += 1;
             }
         }
-        return usersCount === Number(bot.telegram.getChatMembersCount(groupTG.info.id));
-    }else return true
+    });
+    await Promise.all(userChecks);
+    return activeUsersCount === totalMembers;
 }
 
-export async function setRefKey(user:User,refKey:string):Promise<string>{
-    if(user){
-        if(user.payment.paid === 'false'&&user.payment.referral.user){
-            let agent = await new User().load(0,{refKey:refKey})
-            if(agent){
-                if(user.info.id  !== agent.info.id){
-                    user.payment.status +=1
-                    agent.payment.referral.insertReferral(user.info.id)
-                    return `Успешно активирован реферальный ключ!\nВаш статус изменен на ${config.payment.get(user.payment.status)}`
-                }else{ return 'Вы не можете использовать свой же реферальный ключ' }
-            }else{ return `Не найден реферальный агент для ключа: ${refKey}` }
-        }else{ return 'Вы уже активировали реферальный ключ, либо оплачивали подписку ранее' }
-    }else { return 'Зарегистрируйтесь в боте /start' }
+export async function setRefKey(user: User, refKey: string): Promise<string> {
+    if (!user) { return 'Зарегистрируйтесь в боте /start' }
+    if (user.payment.paid !== 'false' || !user.payment.referral.user) {
+        return 'Вы уже активировали реферальный ключ, либо оплачивали подписку ранее';
+    }
+    const agent = users.getUserByRefKey(refKey)
+    if (!agent) {
+        return `Не найден реферальный агент для ключа: ${refKey}`;
+    }
+    if (user.info.id === agent.info.id) {
+        return 'Вы не можете использовать свой же реферальный ключ';
+    }
+    user.payment.status += 1;
+    agent.payment.referral.insertReferral(user.info.id);
+    return `Успешно активирован реферальный ключ!\nВаш статус изменен на ${config.payment.get(user.payment.status)}`;
 }

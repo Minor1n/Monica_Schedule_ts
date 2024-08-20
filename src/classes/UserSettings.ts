@@ -28,60 +28,80 @@ export class UserSettings implements UserSettingsI{
     get theme(): string {
         return this._theme;
     }
+
     get schedule(): UserSettingsStatus {
         return this._schedule;
     }
+
     get replacement(): UserSettingsStatus {
         return this._replacement;
     }
+
     get lightMode(): UserLightMode {
         return this._lightMode;
     }
+
     get duty(): UserSettingsStatus {
         return this._duty;
     }
 
-    set theme(value: string) {
-        let url = value.match(/\.(jpeg|jpg|png)$/) != null?value:this._theme
-        let res = value === 'standard'?'standard':url;
-        this._theme = res
-        connection.query(`UPDATE users SET theme = '${res}' WHERE userId = '${this.id}'`)
+    private updateField(field: string, value: string | number) {
+        const query = `UPDATE users SET ${field} = ? WHERE userId = ?`;
+        connection.query(query, [value, this.id], (err) => {
+            if (err) {
+                throw new Error('SQL ERROR in UserSettings');
+            }
+        });
     }
+
+    set theme(value: string) {
+        const isValidImage = /\.(jpeg|jpg|png)$/i.test(value);
+        const newValue = value === 'standard' ? 'standard' : (isValidImage ? value : this._theme);
+        this._theme = newValue;
+        this.updateField('theme', newValue);
+    }
+
     set schedule(value: UserSettingsStatus) {
         this._schedule = value;
-        connection.query(`UPDATE users SET settingsSchedule = '${value}' WHERE userId = '${this.id}'`)
+        this.updateField('settingsSchedule', value);
     }
+
     set replacement(value: UserSettingsStatus) {
         this._replacement = value;
-        connection.query(`UPDATE users SET settingsReplacement = '${value}' WHERE userId = '${this.id}'`)
+        this.updateField('settingsReplacement', value);
     }
+
     set lightMode(value: UserLightMode) {
         this._lightMode = value;
-        connection.query(`UPDATE users SET lightMode = '${value}' WHERE userId = '${this.id}'`)
+        this.updateField('lightMode', value);
     }
+
     set duty(value: UserSettingsStatus) {
         this._duty = value;
-        connection.query(`UPDATE users SET settingsDuty = '${value}' WHERE userId = '${this.id}'`)
+        this.updateField('settingsDuty', value);
+    }
+
+    private switchStatus(currentStatus: UserSettingsStatus): UserSettingsStatus {
+        return currentStatus === 'on' ? 'off' : 'on';
     }
 
     switchSchedule() {
-        let status:UserSettingsStatus = this._schedule==='on'?'off':'on'
-        this._schedule = status;
-        connection.query(`UPDATE users SET settingsSchedule = '${status}' WHERE userId = '${this.id}'`)
+        this._schedule = this.switchStatus(this._schedule);
+        this.updateField('settingsSchedule', this._schedule);
     }
+
     switchReplacement() {
-        let status:UserSettingsStatus = this._replacement==='on'?'off':'on'
-        this._replacement = status;
-        connection.query(`UPDATE users SET settingsReplacement = '${status}' WHERE userId = '${this.id}'`)
+        this._replacement = this.switchStatus(this._replacement);
+        this.updateField('settingsReplacement', this._replacement);
     }
+
     switchLightMode() {
-        let status: UserLightMode = this._lightMode===0?1:0
-        this._lightMode = status;
-        connection.query(`UPDATE users SET lightMode = '${status}' WHERE userId = '${this.id}'`)
+        this._lightMode = this._lightMode === 0 ? 1 : 0;
+        this.updateField('lightMode', this._lightMode);
     }
+
     switchDuty() {
-        let status:UserSettingsStatus = this._duty==='on'?'off':'on'
-        this._duty = status;
-        connection.query(`UPDATE users SET settingsDuty = '${status}' WHERE userId = '${this.id}'`)
+        this._duty = this.switchStatus(this._duty);
+        this.updateField('settingsDuty', this._duty);
     }
 }

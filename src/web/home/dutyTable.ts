@@ -1,9 +1,14 @@
-import {Functions} from "../../functions";
-import {User} from "../../classes";
+import {groups, users} from "../../index";
+import {config} from "../../config";
 
 
-export const dutyTable = async(userId:number,num:number):Promise<{table:string}>=>{
-    let user = await new User().load(userId)
-    let table = await Functions.duty.generateHTML(user.info.groupName,num)
-    return {table: table}
-}
+export const dutyTable = (userId: number, num: number): { table: string }=> {
+    const user = users.getUser(userId);
+    if (!user) return { table: config.notfoundMessagesSite.user };
+
+    const group = groups.getGroup(user.info.groupName);
+    if (!group) return { table: config.notfoundMessagesSite.group };
+
+    const table = group.duty.generateHTML(num);
+    return { table };
+};

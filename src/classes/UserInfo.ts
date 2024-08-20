@@ -25,33 +25,51 @@ export class UserInfo implements UserInfoI{
         this._role = role
         this._userName = userName
     }
-    get bots(){
-        return this._bots
+    get bots(): number {
+        return this._bots;
     }
-    get groupName(){
-        return this._groupName
+
+    get groupName(): string {
+        return this._groupName;
     }
-    get id(){
-        return this._id
+
+    get id(): number {
+        return this._id;
     }
-    get name(){
-        return this._name
+
+    get name(): string {
+        return this._name;
     }
-    get role(){
-        return this._role
+
+    get role(): UserRole {
+        return this._role;
     }
-    get userName(){
-        return this._userName
+
+    get userName(): string {
+        return this._userName;
     }
-    set groupName(value){
-        this._groupName = value
-        connection.query(`UPDATE users SET groupName = '${value}' WHERE userId = '${this.id}'`)
+
+    set groupName(value: string) {
+        this._groupName = value;
+        this.updateField('groupName', value);
     }
-    set name(value){
-        this._name = value
-        connection.query(`UPDATE users SET name = '${value}' WHERE userId = '${this._id}'`)
+
+    set name(value: string) {
+        this._name = value;
+        this.updateField('name', value);
     }
-    set userName(value){
-        this._userName = value
+
+    set userName(value: string) {
+        this._userName = value;
+        this.updateField('userName', value);
+    }
+
+    private updateField(field: string, value: string) {
+        const query = `UPDATE users SET ${field} = ? WHERE userId = ?`;
+        connection.query(query, [value, this._id], (err) => {
+            if (err) {
+                console.error(`SQL ERROR: ${err.message}`);
+            }
+        });
     }
 }

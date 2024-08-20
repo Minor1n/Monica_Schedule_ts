@@ -1,10 +1,12 @@
-import {gradients} from "../index";
-import {User} from "../classes";
+import {gradients, users} from "../index";
 
 
-export const gradient = async(userId:number):Promise<{gradient:string}>=>{
-    let user = await new User().load(userId)
-    let bgImage = user.settings.theme
-    let gradient = user.settings.lightMode === 0 ? gradients.light:gradients.dark
-    return {gradient: bgImage === 'standard' ? gradient.slice(11, -1):`url(${bgImage})`}
-}
+export const gradient = (userId: number): { gradient: string } => {
+    const user = users.getUser(userId);
+    if (!user) return { gradient: gradients.light.slice(11, -1) };
+
+    const { theme, lightMode } = user.settings;
+    const gradient = lightMode === 0 ? gradients.light : gradients.dark;
+
+    return { gradient: theme === 'standard' ? gradient.slice(11, -1) : `url(${theme})` };
+};
