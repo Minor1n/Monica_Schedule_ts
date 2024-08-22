@@ -1,8 +1,8 @@
 import {Context} from "telegraf";
-import {Functions} from "../functions";
 import {SettingsAll} from "../classes";
-import {users} from "../index";
+import {bot} from "../index";
 import {config} from "../config";
+import tables from "../tables";
 
 
 export default async function(id:number,ctx?:Context){
@@ -11,7 +11,7 @@ export default async function(id:number,ctx?:Context){
         return;
     }
 
-    const user = users.getUser(id)
+    const user = bot.users.getUser(id)
     if(!user)return
     const settings = await new SettingsAll().load();
     const scheduleSettings = settings.getSettings('scheduleLink');
@@ -36,8 +36,7 @@ export default async function(id:number,ctx?:Context){
         scheduleSettings.value = links[0];
         user.sendAutoDeleteText(`Расписание: ${dates[0]} ${links[0].slice(36)}`, 1000 * 30);
 
-        const schedule = await Functions.schedule.regenerate(links[0]);
-        await Functions.schedule.sender(schedule);
+        await tables.schedule(links[0])
     } else {
         user.sendAutoDeleteText('Расписание не найдено', 1000 * 30);
     }
@@ -46,8 +45,7 @@ export default async function(id:number,ctx?:Context){
         replacementSettings.value = links[1];
         user.sendAutoDeleteText(`Замены: ${dates[1]} ${links[1].slice(36)}`, 1000 * 30);
 
-        const replacement = await Functions.replacement.regenerate(links[1], dates[1]);
-        await Functions.replacement.sender(replacement);
+        await tables.replacement(links[1], dates[1])
     } else {
         user.sendAutoDeleteText('Замены не найдены', 1000 * 30);
     }

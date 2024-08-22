@@ -2,106 +2,115 @@ import express from "express";
 import cors from "cors";
 import path from "node:path";
 import http from "node:http";
-import {home,profile,settings,gradient,pages} from '../web'
+import web from "../web";
 
-export const WebHandler = (dirname:string)=>{
-    let app = express()
+export default (dirname:string)=>{
+    const app = express()
     app.use(cors());
-    app.get('/', (_, res) => {res.sendFile(path.join(dirname+'/html/index.html'))})
+    app.get('/', (_, res) => {res.sendFile(path.join(dirname+'/site/index.html'))})
 
     //HOME
-    app.get('/home/[0-9]+', async (req, res) => {
-        res.send(pages.home(dirname, Number(req.url.slice(6))))
+    app.get('/home', async (req, res) => {
+        res.send(web.pages.home(dirname, Number(req.query.user)))
     })
-    app.get('/home/scheduleTable/[0-9]+', async (req, res) => {
-        res.send(home.scheduleTable(Number(req.url.slice(20))));
+    app.get('/home/schedule/table', async (req, res) => {
+        res.send(web.home.schedule.table(Number(req.query.user)));
     })
-    app.get('/home/scheduleTable/selectGroup/[0-9]+', async (req, res) => {
-        res.send(home.select(Number(req.url.slice(32))));
+    app.get('/home/schedule/select', async (req, res) => {
+        res.send(web.home.schedule.select(Number(req.query.user)));
     })
-    app.get('/home/scheduleTable/updateGroup/[0-9\%A-Za-z\-]+', async (req, res) => {
-        res.send(home.update(decodeURI(req.url.slice(32))));
+    app.get('/home/schedule/update', async (req, res) => {
+        res.send(web.home.schedule.update(String(req.query.group)));
     })
-    app.get('/home/replacementTable/[0-9]+', async (req, res) => {
-        res.send(await home.replacementTable(Number(req.url.slice(23))));
+    app.get('/home/replacement/table', async (req, res) => {
+        res.send(await web.home.replacement.table(Number(req.query.page)));
     })
-    app.get('/home/dutyTable/[0-9]+/[0-9]+', async (req, res) => {
-        let nums = req.url.match(/[0-9]+/g)
-        if(!nums)return
-        res.send(home.dutyTable(Number(nums[0]), Number(nums[1])));
+
+    //DUTY
+    app.get('/duty', async (req, res) => {
+        res.send(web.pages.duty(dirname, Number(req.query.user)))
+    })
+    app.get('/duty/table', async (req, res) => {
+        res.send(web.duty.table(Number(req.query.user), Number(req.query.page)));
     })
 
     //PROFILE
     app.get('/profile', async (_, res) => {
-        res.send(pages.profile(dirname))
+        res.send(web.pages.profile(dirname))
     })
-    app.get('/profile/[0-9]+', async (req, res) => {
-        res.send(profile.table(Number(req.url.slice(9))));
+    app.get('/profile/info/table', async (req, res) => {
+        res.send(web.profile.info.table(Number(req.query.user)));
     })
-    app.get('/profile/editGroup/[0-9]+/[0-9\%A-Za-z\-]+', async (req, res) => {
-        let nums = req.url.slice(19).match(/[0-9%A-Za-z\-]+/g)
-        if (nums) {
-            const table = profile.group(Number(nums[0]), nums[1])
-            table ? res.send(table) : res.send()
-        }
+    app.get('/profile/settings/group', async (req, res) => {
+        const table = web.profile.settings.group(Number(req.query.user), String(req.query.group))
+        table ? res.send(table) : res.send()
     })
-    app.get('/profile/editDutyDay/[0-9]+/[0-9]+', async (req, res) => {
-        let nums = req.url.slice(21).match(/[0-9]+/g)
-        if (nums) {
-            const table = profile.dutyDay(Number(nums[0]), Number(nums[1]))
-            table ? res.send(table) : res.send()
-        }
+    app.get('/profile/settings/dutyDay', async (req, res) => {
+        const table = web.profile.settings.dutyDay(Number(req.query.user), Number(req.query.day))
+        table ? res.send(table) : res.send()
     })
-    app.get('/profile/editName/[0-9]+/[0-9\%A-Za-z\-]+', async (req, res) => {
-        let nums = req.url.slice(18).match(/[0-9%A-Za-z\-]+/g)
-        if (nums) {
-            const table = profile.name(Number(nums[0]), nums[1])
-            table ? res.send(table) : res.send()
-        }
+    app.get('/profile/settings/name', async (req, res) => {
+        const table = web.profile.settings.name(Number(req.query.user), String(req.query.name))
+        table ? res.send(table) : res.send()
     })
-    app.get('/profile/setRefKey/[0-9]+/[A-Z]+', async (req, res) => {
-        let nums = req.url.slice(18).match(/[0-9A-Z]+/g)
-        if (nums) { await profile.refKey(Number(nums[0]), nums[1]).then(result=> res.send({alert: result})) }
+    app.get('/profile/info/refKey', async (req, res) => {
+        const alert = await web.profile.info.refKey(Number(req.query.user), String(req.query.refKey))
+        res.send({alert})
     })
-    app.get('/profile/monthPay/[0-9]+/[0-9]+', async (req, res) => {
-        let nums = req.url.slice(18).match(/[0-9A-Z]+/g)
-        if (nums) {
-            const table = profile.monthPay(Number(nums[0]), Number(nums[1]))
-            res.send({alert: table})
-        }
+    app.get('/profile/info/monthPay', async (req, res) => {
+        const table = web.profile.info.monthPay(Number(req.query.user), Number(req.query.months))
+        res.send({alert: table})
     })
 
     //SETTINGS
     app.get('/settings', async (_, res) => {
-        res.send(pages.settings(dirname))
+        res.send(web.pages.settings(dirname))
     })
-    app.get('/settings/notification/[0-9]+', async (req, res) => {
-        res.send(settings.notification(Number(req.url.slice(23))));
+    app.get('/settings/notifications/table', async (req, res) => {
+        res.send(web.settings.notifications.table(Number(req.query.user)));
     })
-    app.get('/settings/notification/schedule/[0-9]+', async (req, res) => {
-        res.send(settings.schedule(Number(req.url.slice(32))));
+    app.get('/settings/notifications/schedule', async (req, res) => {
+        res.send(web.settings.notifications.schedule(Number(req.query.user)));
     })
-    app.get('/settings/notification/replacement/[0-9]+', async (req, res) => {
-        res.send(settings.replacement(Number(req.url.slice(35))));
+    app.get('/settings/notifications/replacement', async (req, res) => {
+        res.send(web.settings.notifications.replacement(Number(req.query.user)));
     })
-    app.get('/settings/notification/duty/[0-9]+', async (req, res) => {
-        res.send(settings.duty(Number(req.url.slice(28))));
+    app.get('/settings/notifications/duty', async (req, res) => {
+        res.send(web.settings.notifications.duty(Number(req.query.user)));
     })
-    app.get('/settings/theme/[0-9]+', async (req, res) => {
-        res.send(settings.theme(Number(req.url.slice(16))));
+    app.get('/settings/theme/table', async (req, res) => {
+        res.send(web.settings.theme.table(Number(req.query.user)));
     })
-    app.post('/settings/theme/bg', async (req, res) => {
-        res.send(settings.bg(Number(req.query.user), String(req.query.url)));
+    app.post('/settings/theme/background', async (req, res) => {
+        res.send(web.settings.theme.background(Number(req.query.user), String(req.query.url)));
     })
     app.post('/settings/theme/lightMode', async (req, res) => {
-        res.send(settings.lightMode(Number(req.query.user)));
+        res.send(web.settings.theme.lightMode(Number(req.query.user)));
     })
-// app.get('/dutyPlus/[0-9]+', async (req, res) => {
-//     let user = await SQL.users.select(Number(req.url.slice(10)))
-//     res.send({message: await Functions.duty.dutyPlus(user)});
-// })
-    app.get("/randomGradient/[0-9]+", async (req,res) => {
-        res.send(gradient(Number(req.url.slice(16))));
+
+
+    app.get("/gradient", async (req,res) => {
+        res.send(web.gradient(Number(req.query.user)));
+    });
+
+    app.get("/styles/main.css", async (req,res) => {
+        res.sendFile(path.join(dirname+'/site/styles/main.css'));
+    });
+
+    app.get("/scripts/index.js", async (req,res) => {
+        res.sendFile(path.join(dirname+'/site/scripts/index.js'));
+    });
+    app.get("/scripts/home.js", async (req,res) => {
+        res.sendFile(path.join(dirname+'/site/scripts/home.js'));
+    });
+    app.get("/scripts/profile.js", async (req,res) => {
+        res.sendFile(path.join(dirname+'/site/scripts/profile.js'));
+    });
+    app.get("/scripts/settings.js", async (req,res) => {
+        res.sendFile(path.join(dirname+'/site/scripts/settings.js'));
+    });
+    app.get("/scripts/duty.js", async (req,res) => {
+        res.sendFile(path.join(dirname+'/site/scripts/duty.js'));
     });
 
     const httpServer = http.createServer(app);

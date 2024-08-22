@@ -1,14 +1,9 @@
-import {connection} from "../index";
-import {UserDutyDay} from "./User";
+import {bot} from "../index";
+import {UserDutyDay} from "../interfaces/IUserQuery";
+import {IUserDuty} from "../interfaces/IUserDuty";
 
-interface UserDutyI {
-    id:number;
-    count:number;
-    day:UserDutyDay|number;
-    lastDate:number;
-}
 
-export class UserDuty implements UserDutyI {
+export class UserDuty implements IUserDuty {
     id: number;
     private _count: number;
     private _day: UserDutyDay | number;
@@ -50,7 +45,7 @@ export class UserDuty implements UserDutyI {
 
     private updateDatabase(field: string, value: number | UserDutyDay) {
         const query = `UPDATE users SET ${field} = ? WHERE userId = ?`;
-        connection.query(query, [value, this.id], (err) => {
+        bot.connection.query(query, [value, this.id], (err) => {
             if (err) {
                 console.error(`SQL ERROR: ${err.message}`);
             }

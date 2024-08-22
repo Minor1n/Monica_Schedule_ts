@@ -1,5 +1,5 @@
 import {Context} from "telegraf";
-import {users} from "../index";
+import {bot} from "../index";
 
 
 export default async function(ctx:Context){
@@ -9,5 +9,5 @@ export default async function(ctx:Context){
         await ctx.reply('Написано же ДЛЯ АДМИНОВ');
         return;
     }
-    users.sendText(text)
+    bot.users.sendText(text)
 }

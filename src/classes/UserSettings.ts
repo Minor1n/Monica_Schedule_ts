@@ -1,16 +1,8 @@
-import {connection} from "../index";
-import {UserLightMode, UserSettingsStatus} from "./User";
+import {bot} from "../index";
+import {IUserSettings} from "../interfaces/IUserSettings";
+import {UserLightMode, UserSettingsStatus} from "../interfaces/IUserQuery";
 
-interface UserSettingsI{
-    id:number;
-    schedule:UserSettingsStatus;
-    replacement:UserSettingsStatus;
-    duty:UserSettingsStatus;
-    theme:"standard"|string;
-    lightMode:UserLightMode
-}
-
-export class UserSettings implements UserSettingsI{
+export class UserSettings implements IUserSettings{
     id:number;
     private _duty: UserSettingsStatus;
     private _lightMode: UserLightMode;
@@ -47,7 +39,7 @@ export class UserSettings implements UserSettingsI{
 
     private updateField(field: string, value: string | number) {
         const query = `UPDATE users SET ${field} = ? WHERE userId = ?`;
-        connection.query(query, [value, this.id], (err) => {
+        bot.connection.query(query, [value, this.id], (err) => {
             if (err) {
                 throw new Error('SQL ERROR in UserSettings');
             }

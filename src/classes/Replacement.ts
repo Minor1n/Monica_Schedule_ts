@@ -1,13 +1,6 @@
-import {Group} from "./Group";
-import {groups} from "../index";
+import {bot} from "../index";
+import {IReplacementParse} from "../interfaces/IReplacementParse";
 
-
-export type ReplacementParseText = {
-    text: string;
-    group: Group|null;
-    pair: string|undefined;
-    auditorium: string;
-}
 
 export class Replacement{
     private readonly _date:number
@@ -30,21 +23,21 @@ export class Replacement{
         return this._html
     }
 
-    private async parseText():Promise<ReplacementParseText[]>{
-        const parseText: ReplacementParseText[] = [];
+    private async parseText():Promise<IReplacementParse[]>{
+        const parseText: IReplacementParse[] = [];
         let i = 0;
 
         while (i < this.text.length) {
             const currentText = this.text[i];
 
             if (!currentText?.match(/ЗАМЕНЫ/g)) {
-                const group = groups.isGroupInText(currentText);
+                const group = bot.groups.isGroupInText(currentText);
 
                 if (group) {
                     let textParts = [currentText];
                     let index = 1;
 
-                    while (this.text[i + index] && !groups.isGroupInText(String(this.text[i + index])) && !this.text[i + index].match(/ЗАМЕНЫ/g)) {
+                    while (this.text[i + index] && !bot.groups.isGroupInText(String(this.text[i + index])) && !this.text[i + index].match(/ЗАМЕНЫ/g)) {
                         textParts.push(this.text[i + index]);
                         index++;
                     }
@@ -73,16 +66,15 @@ export class Replacement{
         return parseText;
     }
 
-    private async generateHTML(){
+    private async generateHTML(): Promise<string>{
         const parseText = await this.parseText();
-        console.log(parseText);
         const finalArr: string[] = [];
 
         const checkBracket = (words: string[], index: number): boolean => {
             return !!(words[index + 1] && words[index + 1].startsWith('('));
         };
 
-        const generateRow = (field: ReplacementParseText, wordsGen: string): string => {
+        const generateRow = (field: IReplacementParse, wordsGen: string): string => {
             return `<tr><td><b>${field.group?.name || ''}</b></td><td><b>${field.pair || ''}</b></td>${wordsGen}<td><b>${field.auditorium || ''}</b></td></tr>`;
         };
 
@@ -140,7 +132,6 @@ export class Replacement{
             }
         }
 
-        console.log(finalArr);
         return finalArr.join('');
     }
 }

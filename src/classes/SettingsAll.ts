@@ -1,6 +1,7 @@
-import {Settings, SettingsI, SettingsType} from "./Settings";
-import {connection} from "../index";
+import {Settings} from "./Settings";
+import {bot} from "../index";
 import {MysqlError} from "mysql";
+import {ISettings, SettingsType} from "../interfaces/ISettings";
 
 
 export class SettingsAll {
@@ -24,10 +25,10 @@ export class SettingsAll {
 }
 
 const querySQL = {
-    all: (): Promise<SettingsI[]> => {
+    all: (): Promise<ISettings[]> => {
         return new Promise((resolve, reject) => {
             const query = 'SELECT * FROM settings';
-            connection.query(query, (err: MysqlError | null, result: SettingsI[]) => {
+            bot.connection.query(query, (err: MysqlError | null, result: ISettings[]) => {
                 if (err) {
                     reject(new Error('SQL ERROR in Settings'));
                 } else {

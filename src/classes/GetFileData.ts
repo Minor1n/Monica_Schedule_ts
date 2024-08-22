@@ -1,10 +1,10 @@
 import pdf from "pdf-parse";
 import WordExtractor from "word-extractor";
-const extractor = new WordExtractor();
 
 
 export type fileType = 'pdf'|'doc'
 
+const extractor = new WordExtractor();
 
 export class GetFileData{
     private readonly buffer: Buffer

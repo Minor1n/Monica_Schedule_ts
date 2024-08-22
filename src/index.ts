@@ -1,18 +1,17 @@
-import {Bot, Gradients, Groups, Users} from "./classes";
-import {CommandsHandler, CronHandler, FunctionsHandler, WebHandler} from "./handlers";
+import {Bot} from "./classes";
+import handlers from "./handlers";
 
-const app = new Bot()
-export const {bot,connection} = app
-export let gradients:Gradients, users:Users, groups:Groups;
+export const bot = new Bot()
 
-(async () => {
-    gradients = await app.addGradients();
-    users = await app.addUsers();
-    groups = await app.addGroups();
-    WebHandler(__dirname)
-    CommandsHandler()
-    FunctionsHandler()
-    CronHandler()
-    app.launchBot()
+;(async () => {
+    await bot.addGradients();
+    await bot.addUsers();
+    await bot.addGroups();
+    handlers.WebHandler(__dirname)
+    handlers.CommandsHandler()
+    handlers.CallbackQueryHandler()
+    handlers.HearsHandler()
+    handlers.CronHandler()
+    bot.launchBot()
 })();
 

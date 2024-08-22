@@ -1,15 +1,9 @@
 import {UserReferral} from "./UserReferral";
-import {connection} from "../index";
+import {bot} from "../index";
+import {IPayment} from "../interfaces/IPayment";
 
-interface PaymentI{
-    id:number;
-    status:number;
-    price:number;
-    paid:'true'|'false'
-    referral:UserReferral
-}
 
-export class UserPayment implements PaymentI{
+export class UserPayment implements IPayment{
     id: number;
     private _paid: "true" | "false";
     private readonly _price: number;
@@ -48,7 +42,7 @@ export class UserPayment implements PaymentI{
 
     private updateField(field: string, value: string | number) {
         const query = `UPDATE users SET ${field} = ? WHERE userId = ?`;
-        connection.query(query, [value, this.id], (err) => {
+        bot.connection.query(query, [value, this.id], (err) => {
             if (err) {
                 console.error(`SQL ERROR: ${err.message}`);
             }

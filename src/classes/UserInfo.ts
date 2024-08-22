@@ -1,16 +1,9 @@
-import {connection} from "../index";
-import {UserRole} from "./User";
+import {bot} from "../index";
+import {IUserInfo} from "../interfaces/IUserInfo";
+import {UserRole} from "../interfaces/IUserQuery";
 
-interface UserInfoI{
-    id:number;
-    userName:string;
-    name:string;
-    groupName:string
-    role:UserRole
-    bots:number
-}
 
-export class UserInfo implements UserInfoI{
+export class UserInfo implements IUserInfo{
     private readonly _bots: number;
     private _groupName: string;
     private readonly _id: number;
@@ -66,7 +59,7 @@ export class UserInfo implements UserInfoI{
 
     private updateField(field: string, value: string) {
         const query = `UPDATE users SET ${field} = ? WHERE userId = ?`;
-        connection.query(query, [value, this._id], (err) => {
+        bot.connection.query(query, [value, this._id], (err) => {
             if (err) {
                 console.error(`SQL ERROR: ${err.message}`);
             }

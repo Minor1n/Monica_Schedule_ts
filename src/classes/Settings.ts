@@ -1,15 +1,9 @@
-import {connection} from "../index";
+import {bot} from "../index";
 import {MysqlError} from "mysql";
+import {ISettings, SettingsType} from "../interfaces/ISettings";
 
-export type SettingsType = 'scheduleLink'|'replacementLink'
 
-export interface SettingsI{
-    type:SettingsType
-    value:string
-    number:number
-}
-
-export class Settings implements SettingsI{
+export class Settings implements ISettings{
     type!:SettingsType
     private _value!:string
     private _number!:number
@@ -21,7 +15,7 @@ export class Settings implements SettingsI{
         }
     }
 
-    async load(type: SettingsType, res?: SettingsI): Promise<Settings> {
+    async load(type: SettingsType, res?: ISettings): Promise<Settings> {
         if (res) {
             this.type = type;
             this._value = res.value;
@@ -55,7 +49,7 @@ export class Settings implements SettingsI{
 
     private updateSetting(column: 'value' | 'number', newValue: string | number): void {
         const query = `UPDATE settings SET ${column} = ? WHERE type = ?`;
-        connection.query(query, [newValue, this.type], (err) => {
+        bot.connection.query(query, [newValue, this.type], (err) => {
             if (err) {
                 throw new Error('SQL ERROR in Settings - update');
             }
@@ -64,10 +58,10 @@ export class Settings implements SettingsI{
 }
 
 const querySQL = {
-    settings: async (type: SettingsType): Promise<SettingsI> => {
+    settings: async (type: SettingsType): Promise<ISettings> => {
         return new Promise((resolve, reject) => {
             const query = 'SELECT * FROM settings WHERE type = ?';
-            connection.query(query, [type], (err: MysqlError | null, result: SettingsI[]) => {
+            bot.connection.query(query, [type], (err: MysqlError | null, result: ISettings[]) => {
                 if (err) {
                     reject(new Error('SQL ERROR in Settings - select'));
                 } else if (result.length > 0) {

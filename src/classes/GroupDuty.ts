@@ -1,31 +1,25 @@
-import {connection} from "../index";
+import {bot} from "../index";
 import {User} from "./User";
-
-export interface DutyI{
-    group:string
-    date:number
-    user:number
-    name:string
-}
+import {IDuty} from "../interfaces/IDuty";
 
 
 export class GroupDuty{
     private readonly groupName: string
-    private _duties: DutyI[]
+    private _duties: IDuty[]
     private readonly _users: User[]
-    constructor(groupName:string,users:User[],duties:DutyI[]) {
+    constructor(groupName:string,users:User[],duties:IDuty[]) {
         this._duties = duties
         this.groupName = groupName
         this._users = users
     }
-    getDuty(start:number,end:number):DutyI[]{
+    getDuty(start:number,end:number):IDuty[]{
         return this._duties.filter(x=>x.date>start&&x.date<end)
     }
     insertDuty(date:number,userId:number,name:string){
         this._duties.push({group:this.groupName,date:date,user:userId,name:name})
-        connection.query(`INSERT INTO duty (\`group\`,\`date\`,\`user\`,\`name\`) values('${this.groupName}','${date}','${userId}','${name}')`)
+        bot.connection.query(`INSERT INTO duty (\`group\`,\`date\`,\`user\`,\`name\`) values('${this.groupName}','${date}','${userId}','${name}')`)
     }
-    generateHTML(page:number){
+    generateHTML(page:number):string{
         const users = this._users;
         const scheduleByDay: string[][] = Array(6).fill(null).map(() => []);
         const dutiesByDay: string[][] = Array(6).fill(null).map(() => []);
@@ -86,7 +80,6 @@ ${[1, 2, 3, 4, 5, 6].map(offset => `<td><b>${formatDay(offset)}</b></td>`).join(
 ${resDuty.join('')}
 <tr><td colspan="6" class="line"></td></tr>
 <tr><td colspan="6"><b>Количество дежурств</b></td></tr>
-<tr><td colspan="6" class="line"></td></tr>
 ${resTop.join('')}
 `;
     }

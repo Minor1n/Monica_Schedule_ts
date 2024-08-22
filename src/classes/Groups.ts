@@ -1,6 +1,7 @@
-import {Group, GroupI} from "./Group";
-import {connection} from "../index";
+import {Group} from "./Group";
+import {bot} from "../index";
 import {MysqlError} from "mysql";
+import {IGroup} from "../interfaces/IGroup";
 
 
 export class Groups {
@@ -30,9 +31,9 @@ export class Groups {
 }
 
 const querySQL = {
-    all: async (): Promise<GroupI[]> => {
+    all: async (): Promise<IGroup[]> => {
         return new Promise((resolve, reject) => {
-            connection.query('SELECT * FROM groups', (err: MysqlError | null, result: GroupI[]) => {
+            bot.connection.query('SELECT * FROM groups', (err: MysqlError | null, result: IGroup[]) => {
                 if (err) {
                     reject(new Error('SQL ERROR in Groups'));
                 } else {

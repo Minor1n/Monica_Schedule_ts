@@ -1,26 +1,26 @@
 import {bot} from "../index";
-import {Commands} from "../commands";
+import commands from "../commands";
 
 const commandHandlers: Record<string, (ctx: any) => Promise<void>> = {
-    'start': Commands.start,
-    'fetch': (ctx) => Commands.fetch(ctx.chat.id, ctx),
-    'send': Commands.send,
-    'schedule': Commands.schedule,
-    'theme': Commands.theme,
-    'status': Commands.status,
-    'settings': Commands.settings,
-    'profile': Commands.profile,
-    'setname': Commands.setName,
-    'setgroup': Commands.setGroup,
-    'referral': Commands.referral,
-    'paid': Commands.paid,
-    'replacement': Commands.replacement,
-    'restart': Commands.restart,
-    'duty': Commands.duty,
-    'setdutydate': Commands.setDutyDay
+    'start': commands.start,
+    'fetch': (ctx) => commands.fetch(ctx.chat.id, ctx),
+    'send': commands.send,
+    'schedule': commands.schedule,
+    'theme': commands.theme,
+    'status': commands.status,
+    'settings': commands.settings,
+    'profile': commands.profile,
+    'setname': commands.setName,
+    'setgroup': commands.setGroup,
+    'referral': commands.referral,
+    'paid': commands.paid,
+    'replacement': commands.replacement,
+    'restart': commands.restart,
+    'duty': commands.duty,
+    'setdutydate': commands.setDutyDay
 };
 
-export const CommandsHandler = () => {
+export default () => {
     Object.entries(commandHandlers).forEach(([command, handler]) => {
         bot.command(command, async (ctx) => {
             await handler(ctx);

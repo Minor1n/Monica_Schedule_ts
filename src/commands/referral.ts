@@ -1,7 +1,7 @@
 import {Context} from "telegraf";
-import {Functions} from "../functions";
-import {users} from "../index";
+import {bot} from "../index";
 import {config} from "../config";
+import payments from "../payments";
 
 
 export default async function(ctx:Context){
@@ -10,7 +10,7 @@ export default async function(ctx:Context){
     if (!chatId) {
         return;
     }
-    const user = users.getUser(chatId)
+    const user = bot.users.getUser(chatId)
     if (!user) {
         await ctx.reply(config.notfoundMessages.user);
         return;
@@ -19,6 +19,6 @@ export default async function(ctx:Context){
         await ctx.reply('Вы не указали реферальный ключ(/referral реферальный ключ)');
         return;
     }
-    const responseMessage = await Functions.payment.setRefKey(user, refKey);
+    const responseMessage = await payments.setReferralKey(user, refKey);
     await ctx.reply(responseMessage);
 }

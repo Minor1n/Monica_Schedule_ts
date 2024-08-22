@@ -1,5 +1,5 @@
 import {Context} from "telegraf";
-import {users} from "../index";
+import {bot} from "../index";
 import {config} from "../config";
 
 
@@ -8,7 +8,7 @@ export default async function (ctx:Context){
     if (!chatId) {
         return;
     }
-    const user = users.getUser(chatId);
+    const user = bot.users.getUser(chatId);
     if (!user) {
         await ctx.reply(config.notfoundMessages.user);
         return;

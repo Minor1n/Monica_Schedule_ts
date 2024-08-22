@@ -1,8 +1,8 @@
 import {Context} from "telegraf";
-import {Functions} from "../functions";
 import {Replacements,HtmlToImage} from "../classes";
-import {gradients,users} from "../index";
+import {bot} from "../index";
 import {config} from "../config";
+import payments from "../payments";
 
 
 export default async function(ctx:Context){
@@ -10,7 +10,7 @@ export default async function(ctx:Context){
     if (!chatId) {
         return;
     }
-    const user = users.getUser(chatId)
+    const user = bot.users.getUser(chatId)
     if (!user) {
         await ctx.reply(config.notfoundMessages.user);
         return;
@@ -19,7 +19,7 @@ export default async function(ctx:Context){
         await ctx.reply('Вы заблокированы');
         return;
     }
-    const isGroupPaid = await Functions.payment.groupTG(user);
+    const isGroupPaid = await payments.groupIsPaid(user);
     if (!isGroupPaid) {
         await ctx.reply('Не все участники группы оплатили подписку');
         return;
@@ -30,7 +30,7 @@ export default async function(ctx:Context){
         await ctx.reply('Замены не найдены');
         return;
     }
-    const htmlImg = user.settings.theme === "standard" ? gradients.dark : `background-image: url(${user.settings.theme});`;
+    const htmlImg = user.settings.theme === "standard" ? bot.gradients.dark : `background-image: url(${user.settings.theme});`;
     const image = await new HtmlToImage(htmlImg, replacement.html).getImage();
     user.sendPhoto(image, 'schedule.png');
 }

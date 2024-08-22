@@ -1,25 +1,10 @@
-import {connection} from "../index";
+import {bot} from "../index";
 import {MysqlError} from "mysql";
-
-type GradientType = 'light'|'dark'
-
-interface GradientI{
-    css: string
-    type: GradientType
-}
-
-class Gradient implements GradientI{
-    css: string;
-    type: GradientType
-    constructor(res:GradientI) {
-        this.css = res.css
-        this.type = res.type
-    }
-}
+import {IGradient} from "../interfaces/IGradient";
 
 export class Gradients{
-    private _light: GradientI[] = []
-    private _dark: GradientI[] = []
+    private _light: IGradient[] = []
+    private _dark: IGradient[] = []
     constructor() {}
     get light(): string {
         return this.getRandomGradient(this._light);
@@ -29,7 +14,7 @@ export class Gradients{
         return this.getRandomGradient(this._dark);
     }
 
-    private getRandomGradient(gradients: Gradient[]): string {
+    private getRandomGradient(gradients: IGradient[]): string {
         if (gradients.length === 0) return '';
         const index = Math.floor(Math.random() * gradients.length);
         return gradients[index].css;
@@ -39,9 +24,9 @@ export class Gradients{
         const gradients = await querySQL.gradients();
         gradients.forEach(gradient => {
             if (gradient.type === 'light') {
-                this._light.push(new Gradient(gradient));
+                this._light.push(gradient);
             } else {
-                this._dark.push(new Gradient(gradient));
+                this._dark.push(gradient);
             }
         });
         return this;
@@ -49,9 +34,9 @@ export class Gradients{
 }
 
 const querySQL = {
-    gradients: async (): Promise<GradientI[]> => {
+    gradients: async (): Promise<IGradient[]> => {
         return new Promise((resolve, reject) => {
-            connection.query('SELECT * FROM gradients', (err: MysqlError | null, result: GradientI[]) => {
+            bot.connection.query('SELECT * FROM gradients', (err: MysqlError | null, result: IGradient[]) => {
                 if (err) {
                     reject(new Error('SQL ERROR in Gradients'));
                 } else {

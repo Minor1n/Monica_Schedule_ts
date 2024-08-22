@@ -1,8 +1,9 @@
-import {connection} from "../index";
-import {User, UserT} from "./User";
+import {bot} from "../index";
+import {User} from "./User";
 import {MysqlError} from "mysql";
 import {HtmlToImage} from "./HtmlToImage";
-import {Functions} from "../functions";
+import {IUserQuery} from "../interfaces/IUserQuery";
+import payments from "../payments";
 
 
 export class Users{
@@ -21,10 +22,10 @@ export class Users{
 
     async createUser(userId: number, userName: string, payment: number, name: string, refKey: string): Promise<void> {
         return new Promise((resolve, reject) => {
-            connection.query(
+            bot.connection.query(
                 'INSERT INTO users (userId, userName, payment, name, refKey) VALUES (?, ?, ?, ?, ?)',
                 [userId, userName, payment, name, refKey],
-                async (err: MysqlError | null, result: UserT[]) => {
+                async (err: MysqlError | null, result: IUserQuery[]) => {
                     if (err) {
                         return reject(new Error('SQL ERROR in Users'));
                     }
@@ -57,7 +58,7 @@ export class Users{
         await Promise.all(this._all.map(async (user) => {
             const gradient = user.settings.theme;
             const img = html && gradient !== 'standard' ? await new HtmlToImage(gradient, html).getImage() : image;
-            const groupTg = groups ? await Functions.payment.groupTG(user) : true;
+            const groupTg = groups ? await payments.groupIsPaid(user) : true;
 
             if (user.payment.status !== 0 && user.settings[settings] === 'on' && groupTg && user.info.id === 6018898378) {
                 user.sendPhoto(img, name);
@@ -75,9 +76,9 @@ export class Users{
 }
 
 const querySQL = {
-    all: async (): Promise<UserT[]> => {
+    all: async (): Promise<IUserQuery[]> => {
         return new Promise((resolve, reject) => {
-            connection.query('SELECT * FROM users', (err: MysqlError | null, result: UserT[]) => {
+            bot.connection.query('SELECT * FROM users', (err: MysqlError | null, result: IUserQuery[]) => {
                 if (err) {
                     return reject(new Error('SQL ERROR in Users'));
                 }

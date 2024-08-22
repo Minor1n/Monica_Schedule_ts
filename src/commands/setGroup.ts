@@ -1,5 +1,5 @@
 import {Context} from "telegraf";
-import {groups, users} from "../index";
+import {bot} from "../index";
 import {config} from "../config";
 
 
@@ -8,11 +8,11 @@ export default async function(ctx:Context){
     if (!chatId) {
         return;
     }
-    let user = users.getUser(chatId);
+    let user = bot.users.getUser(chatId);
     if (user) {
-        groups.all.sort((a, b) => a.name.localeCompare(b.name));
+        bot.groups.all.sort((a, b) => a.name.localeCompare(b.name));
         let keyboard: { text: string, callback_data: string }[][] = [];
-        groups.all.forEach((group, index) => {
+        bot.groups.all.forEach((group, index) => {
             let rowIndex = Math.floor(index / 5);
             if (!keyboard[rowIndex]) {
                 keyboard[rowIndex] = [];

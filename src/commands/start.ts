@@ -1,4 +1,4 @@
-import {bot, users} from "../index";
+import {bot} from "../index";
 import {Context} from "telegraf";
 
 
@@ -6,8 +6,8 @@ export default async function(ctx: Context) {
     if (!ctx.chat?.id || !ctx.from?.username) return;
     const userId = ctx.chat.id;
     const username = ctx.from.username;
-    if (!users.getUser(userId)) {
-        await users.createUser(userId, username, 2, username, await generateRefKey(userId));
+    if (!bot.users.getUser(userId)) {
+        await bot.users.createUser(userId, username, 2, username, await generateRefKey(userId));
         await bot.telegram.sendMessage(6018898378, `${userId} ${username}, подключился к боту`);
     }
     await ctx.reply(

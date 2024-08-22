@@ -1,9 +1,10 @@
 import { Telegraf } from "telegraf";
 import { config } from "../config";
-import mysql from "mysql";
+import { createPool, Pool } from "mysql";
 import { Gradients } from "./Gradients";
 import { Groups } from "./Groups";
 import { Users } from "./Users";
+import { IBot } from "../interfaces/IBot";
 
 const databaseConfig = {
     host: config.SQLHOST,
@@ -12,51 +13,47 @@ const databaseConfig = {
     password: config.SQLPASSWORD,
 };
 
-export class Bot {
-    bot: Telegraf;
-    connection: mysql.Pool;
+export class Bot extends Telegraf implements IBot{
+    connection: Pool;
     gradients!: Gradients;
     groups!: Groups;
     users!: Users;
 
     constructor() {
-        this.bot = new Telegraf(config.TOKEN);
-        this.connection = mysql.createPool(databaseConfig);
-
-        //this.launchBot();
+        super(config.TOKEN);
+        this.connection = createPool(databaseConfig);
     }
 
     launchBot() {
-        this.bot.launch();
+        this.launch();
         this.sendTemporaryMessage(6018898378, 'Бот запущен!');
+        console.log('Бот запущен')
     }
 
     private async loadData<T>(dataLoader: () => Promise<T>, message: string): Promise<T> {
         const data = await dataLoader();
         await this.sendTemporaryMessage(6018898378, message);
+        console.log(message)
         return data;
     }
 
-    async addGradients(): Promise<Gradients> {
+    async addGradients(){
         this.gradients = await this.loadData(() => new Gradients().load(), 'Градиенты подключены');
-        return this.gradients;
     }
 
-    async addGroups(): Promise<Groups> {
+    async addGroups(){
         this.groups = await this.loadData(() => new Groups().load(), 'Группы подключены');
-        return this.groups;
     }
 
-    async addUsers(): Promise<Users> {
+    async addUsers(){
         this.users = await this.loadData(() => new Users().load(), 'Пользователи подключены');
-        return this.users;
     }
 
     private async sendTemporaryMessage(chatId: number, message: string) {
         try {
-            const msg = await this.bot.telegram.sendMessage(chatId, message);
+            const msg = await this.telegram.sendMessage(chatId, message);
             setTimeout(() => {
-                this.bot.telegram.deleteMessage(msg.chat.id, msg.message_id).catch(console.error);
+                this.telegram.deleteMessage(msg.chat.id, msg.message_id).catch(console.error);
             }, 30 * 1000);
         } catch (error) {
             console.error(error);

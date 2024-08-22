@@ -16,7 +16,7 @@ import theme from './theme'
 import setDutyDay from "./setDutyDay";
 
 
-export const Commands = {
+export default {
     start,
     send,
     duty,

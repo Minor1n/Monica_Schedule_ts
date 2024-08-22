@@ -1,5 +1,5 @@
 import XLSX from "xlsx";
-import {connection} from "../index";
+import {bot} from "../index";
 
 
 export class GroupSchedule{
@@ -15,10 +15,10 @@ export class GroupSchedule{
     private setSchedule(html:string,link:string){
         this.html = html
         this.link = link
-        connection.query(`UPDATE groups SET schedule = '${html}' WHERE name = '${this.groupName}'`)
+        bot.connection.query(`UPDATE groups SET schedule = '${html}' WHERE name = '${this.groupName}'`)
     }
 
-    async generateSchedule(response:Response,link:string){
+    async generateSchedule(response:Response,link:string): Promise<string>{
         const workbook = XLSX.read(Buffer.from(await response.clone().arrayBuffer()));
         const sheetNameList = workbook.SheetNames;
         const worksheet = workbook.Sheets[sheetNameList[1]];
@@ -44,7 +44,6 @@ export class GroupSchedule{
         const formattedArr = arr.map(x => x.replace(/ +/g, ' '));
         const result = formattedArr.join('');
 
-        console.log(formattedArr);
         this.setSchedule(result, link);
 
         return result;

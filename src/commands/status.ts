@@ -1,5 +1,5 @@
 import {Context} from "telegraf";
-import {Functions} from "../functions";
+import payments from "../payments";
 
 
 export default async function (ctx:Context){
@@ -7,7 +7,7 @@ export default async function (ctx:Context){
         await ctx.reply('Написано же ДЛЯ АДМИНОВ');
         return;
     }
-    const usersKeyboard = await Functions.payment.paid();
+    const usersKeyboard = await payments.generateUsersKeyboard();
     await ctx.reply('Изменить статус для:', {
         reply_markup: {
             inline_keyboard: usersKeyboard

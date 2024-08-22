@@ -1,25 +1,14 @@
-import {connection} from "../index";
+import {bot} from "../index";
 import {User} from "./User";
+import {IUserReferral} from "../interfaces/IUserReferral";
+import {IReferral} from "../interfaces/IReferral";
 
-type ReferralsT={
-    agentId:number
-    userId:number
-    refKey:string
-}
 
-interface UserReferralI{
+export class UserReferral implements IUserReferral{
     id:number;
-    key:string;
-    agents:Map<number,ReferralsT>;
-    agentsApprove:number;
-    user:ReferralsT;
-}
-
-export class UserReferral implements UserReferralI{
-    id:number;
-    private _agents: Map<number,ReferralsT> = new Map()
+    private _agents: Map<number,IReferral> = new Map()
     private _agentsApprove!:number
-    private _user!:ReferralsT;
+    private _user!:IReferral;
     private readonly _key: string;
     constructor(id:number,key:string) {
         this.id = id
@@ -48,11 +37,11 @@ export class UserReferral implements UserReferralI{
         return this._agentsApprove;
     }
 
-    get agents(): Map<number, ReferralsT> {
+    get agents(): Map<number, IReferral> {
         return this._agents;
     }
 
-    get user(): ReferralsT {
+    get user(): IReferral {
         return this._user;
     }
 
@@ -64,14 +53,14 @@ export class UserReferral implements UserReferralI{
         this._agents.set(userId, { agentId: this.id, userId, refKey: this._key });
 
         const query = `INSERT INTO referrals (agentId, userId, refKey) VALUES (?, ?, ?)`;
-        connection.query(query, [this.id, userId, this._key], (err) => {
+        bot.connection.query(query, [this.id, userId, this._key], (err) => {
             if (err) {
                 console.error('SQL ERROR in insertReferral:', err.message);
             }
         });
     }
 
-    private async calculateApprovedAgents(agents: ReferralsT[]): Promise<number> {
+    private async calculateApprovedAgents(agents: IReferral[]): Promise<number> {
         const approvalPromises = agents.map(async (agent) => {
             const user = await new User().load(agent.userId);
             return (user.payment.status > 1 && user.payment.paid === 'true') ? 1 : 0;
@@ -83,10 +72,10 @@ export class UserReferral implements UserReferralI{
 }
 
 const querySQL = {
-    agents: async (agentId: number): Promise<ReferralsT[]> => {
+    agents: async (agentId: number): Promise<IReferral[]> => {
         return new Promise((resolve, reject) => {
             const query = 'SELECT * FROM referrals WHERE agentId = ?';
-            connection.query(query, [agentId], (err, results: ReferralsT[]) => {
+            bot.connection.query(query, [agentId], (err, results: IReferral[]) => {
                 if (err) {
                     return reject(new Error('SQL ERROR in UserReferral - agents: ' + err.message));
                 }
@@ -95,10 +84,10 @@ const querySQL = {
         });
     },
 
-    user: async (userId: number): Promise<ReferralsT> => {
+    user: async (userId: number): Promise<IReferral> => {
         return new Promise((resolve, reject) => {
             const query = 'SELECT * FROM referrals WHERE userId = ?';
-            connection.query(query, [userId], (err, results: ReferralsT[]) => {
+            bot.connection.query(query, [userId], (err, results: IReferral[]) => {
                 if (err) {
                     return reject(new Error('SQL ERROR in UserReferral - user: ' + err.message));
                 }

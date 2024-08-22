@@ -1,32 +1,22 @@
-import {connection} from "../index";
+import {bot} from "../index";
 import {MysqlError} from "mysql";
-import {User, UserT} from "./User";
-import {Functions} from "../functions";
+import {User} from "./User";
 import {HtmlToImage} from "./HtmlToImage";
 import {GroupSchedule} from "./GroupSchedule";
 import {Settings} from "./Settings";
 import {GroupDuty} from "./GroupDuty";
+import {IGroup} from "../interfaces/IGroup";
+import {IDuty} from "../interfaces/IDuty";
+import payments from "../payments";
+import {IUserQuery} from "../interfaces/IUserQuery";
 
-export interface DutyI{
-    group:string
-    date:number
-    user:number
-    name:string
-}
 
-export type GroupT = {
+interface IGroupQuery {
     name: string
     schedule: string
 }
 
-export interface GroupI{
-    name: string
-    schedule: GroupSchedule
-    users:User[]
-    duty:GroupDuty
-}
-
-export class Group implements GroupI{
+export class Group implements IGroup{
     name!: string;
     schedule!: GroupSchedule;
     private _users!:User[]
@@ -56,7 +46,7 @@ export class Group implements GroupI{
         for(let user of this._users){
             let gradient = user.settings.theme
             let img = html&&gradient!=='standard'? await new HtmlToImage(gradient,html).getImage():image
-            let groupTg = groups ? await Functions.payment.groupTG(user):true
+            let groupTg = groups ? await payments.groupIsPaid(user):true
             if(user.payment.status !== 0 && user.settings[settings] === 'on' && groupTg && user.info.id===6018898378){
                 user.sendPhoto(img,name)
             }
@@ -65,12 +55,12 @@ export class Group implements GroupI{
 }
 
 const querySQL = {
-    groups: async (groupName: string): Promise<GroupT> => {
+    groups: async (groupName: string): Promise<IGroupQuery> => {
         return new Promise((resolve, reject) => {
-            connection.query(
+            bot.connection.query(
                 'SELECT * FROM groups WHERE name = ?',
                 [groupName],
-                (err: MysqlError | null, result: GroupT[]) => {
+                (err: MysqlError | null, result: IGroupQuery[]) => {
                     if (err) {
                         reject(new Error('SQL ERROR in Group'));
                     } else {
@@ -81,12 +71,12 @@ const querySQL = {
         });
     },
 
-    users: async (groupName: string): Promise<UserT[]> => {
+    users: async (groupName: string): Promise<IUserQuery[]> => {
         return new Promise((resolve, reject) => {
-            connection.query(
+            bot.connection.query(
                 'SELECT * FROM users WHERE groupName = ?',
                 [groupName],
-                (err: MysqlError | null, result: UserT[]) => {
+                (err: MysqlError | null, result: IUserQuery[]) => {
                     if (err) {
                         reject(new Error('SQL ERROR in Group Users'));
                     } else {
@@ -97,12 +87,12 @@ const querySQL = {
         });
     },
 
-    duty: async (groupName: string): Promise<DutyI[]> => {
+    duty: async (groupName: string): Promise<IDuty[]> => {
         return new Promise((resolve, reject) => {
-            connection.query(
+            bot.connection.query(
                 'SELECT * FROM duty WHERE `group` = ?',
                 [groupName],
-                (err: MysqlError | null, result: DutyI[]) => {
+                (err: MysqlError | null, result: IDuty[]) => {
                     if (err) {
                         reject(new Error('SQL ERROR in Group Duty'));
                     } else {
