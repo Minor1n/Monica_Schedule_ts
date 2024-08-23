@@ -3,8 +3,6 @@ import {bot} from "../index";
 import {MysqlError} from "mysql";
 import {IGroup} from "../interfaces/IGroup";
 import XLSX from "xlsx";
-import {IUserQuery} from "../interfaces/IUserQuery";
-import {User} from "./User";
 
 
 export class Groups {
@@ -54,7 +52,7 @@ export class Groups {
             bot.connection.query(
                 'INSERT INTO groups (name) VALUES (?)',
                 [groupName],
-                async (err: MysqlError | null, result: IGroup[]) => {
+                async (err: MysqlError | null) => {
                     if (err) {
                         return reject(new Error('SQL ERROR in setGroup'));
                     }
