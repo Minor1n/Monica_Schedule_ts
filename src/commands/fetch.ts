@@ -31,7 +31,7 @@ export default async function(id:number,ctx?:Context){
     }
 
     const dates = <string[]> dateMatches.map(match => match.match(/[0-9]+.[0-9]+.[0-9]+/g)?.[0]).filter(Boolean);
-    console.log(links)
+
     if (scheduleSettings && links[0] !== scheduleSettings.value) {
         scheduleSettings.value = links[0];
         user.sendAutoDeleteText(`Расписание: ${dates[0]} ${links[0].slice(36)}`, 1000 * 30);
