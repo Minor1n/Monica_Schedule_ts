@@ -1,8 +1,16 @@
 import {bot} from "../../../index";
-import {config} from "../../../config";
-import generateTable from "./generateTable";
+interface ISettings{
+    duty:'on'|'off'
+    replacement:'on'|'off'
+    schedule:'on'|'off'
+}
 
-export default (userId: number): { table: string } => {
+export default (userId: number): ISettings|void => {
     const user = bot.users.getUser(userId);
-    return user ? { table: generateTable(user) } : { table: config.notfoundMessagesSite.user };
+    if (!user) return;
+    return {
+        duty:user.settings.duty,
+        schedule:user.settings.schedule,
+        replacement:user.settings.replacement
+    };
 }

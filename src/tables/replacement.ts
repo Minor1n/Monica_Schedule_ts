@@ -1,5 +1,5 @@
 import {bot} from "../index";
-import {fileType, GetFileData, HtmlToImage, Replacement, Replacements} from "../classes";
+import {fileType, GetFileData, HtmlToImage, Replacement} from "../classes";
 
 
 export default async(url: string, date: string): Promise<void> => {
@@ -21,12 +21,11 @@ export default async(url: string, date: string): Promise<void> => {
             link: url,
         });
 
-        const replacements = await new Replacements().load();
-        const oldReplacement = replacements.getReplacement(0);
+        const oldReplacement = bot.replacements.getReplacement(0);
         const html = await replacement.getHtml();
 
         if (html !== oldReplacement?.html) {
-            replacements.insertReplacement(replacement.link, replacement.date, html);
+            bot.replacements.insertReplacement(replacement.link, replacement.date, html);
 
             const gradient = bot.gradients.dark;
             const image = await new HtmlToImage(gradient, html).getImage();

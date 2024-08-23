@@ -1,5 +1,5 @@
 import {Context} from "telegraf";
-import {Replacements,HtmlToImage} from "../classes";
+import {HtmlToImage} from "../classes";
 import {bot} from "../index";
 import {config} from "../config";
 import payments from "../payments";
@@ -24,8 +24,7 @@ export default async function(ctx:Context){
         await ctx.reply('Не все участники группы оплатили подписку');
         return;
     }
-    const replacements = await new Replacements().load();
-    const replacement = replacements.getReplacement(0);
+    const replacement = bot.replacements.getReplacement(0);
     if (!replacement) {
         await ctx.reply('Замены не найдены');
         return;

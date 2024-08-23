@@ -43,6 +43,7 @@ export class User implements IUser{
     }
 
     sendText(text:string){
+        if(bot.devMode&&this.info.id !== 6018898378)return;
         bot.telegram.sendMessage(this.info.id,text,{ parse_mode: 'HTML' }).catch(e=>{console.log(e)})
         payments.alert(this).catch(e=>{console.log(e)})
     }

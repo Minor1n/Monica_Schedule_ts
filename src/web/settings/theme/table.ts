@@ -1,8 +1,7 @@
 import {bot} from "../../../index";
-import {config} from "../../../config";
-import generateTable from "./generateTable";
 
-export default (userId: number): { table: string } => {
+export default (userId: number):{lightMode:0|1}|void => {
     const user = bot.users.getUser(userId);
-    return { table: user ? generateTable(user) : config.notfoundMessagesSite.user };
+    if (!user) return;
+    return {lightMode:user.settings.lightMode};
 };
