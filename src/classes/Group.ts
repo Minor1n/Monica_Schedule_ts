@@ -1,6 +1,5 @@
 import {bot} from "../index";
 import {MysqlError} from "mysql";
-import {User} from "./User";
 import {HtmlToImage} from "./HtmlToImage";
 import {GroupSchedule} from "./GroupSchedule";
 import {Settings} from "./Settings";
@@ -8,7 +7,6 @@ import {GroupDuty} from "./GroupDuty";
 import {IGroup} from "../interfaces/IGroup";
 import {IDuty} from "../interfaces/IDuty";
 import payments from "../payments";
-import {IUserQuery} from "../interfaces/IUserQuery";
 
 
 interface IGroupQuery {
@@ -19,21 +17,18 @@ interface IGroupQuery {
 export class Group implements IGroup{
     name!: string;
     schedule!: GroupSchedule;
-    private _users!:User[]
     private _duty!:GroupDuty
     constructor() {}
     async load(groupName:string,schedule?:string):Promise<Group>{
         let q = !schedule ? await querySQL.groups(groupName) : {name:groupName,schedule:schedule}
         this.name = q.name
         this.schedule = new GroupSchedule(this.name,q.schedule,(await new Settings().load('scheduleLink')).value)
-        let users = await querySQL.users(groupName)
         let duty = await querySQL.duty(groupName)
-        this._users = await Promise.all(users.map(async (x)=>new User().load(x.userId,x)))
         this._duty = new GroupDuty(this.name,this.users,duty)
         return this
     }
     get users(){
-        return this._users
+        return bot.users.getGroupUsers(this.name)
     }
     get duty(){
         return this._duty
@@ -43,7 +38,7 @@ export class Group implements IGroup{
     // }
 
     async sendPhoto(image:Buffer,name:string,settings:'duty'|'schedule'|'replacement',groups:boolean,html?:string){
-        for(let user of this._users){
+        for(let user of bot.users.getGroupUsers(this.name)){
             let gradient = user.settings.theme
             let img = html&&gradient!=='standard'? await new HtmlToImage(gradient,html).getImage():image
             let groupTg = groups ? await payments.groupIsPaid(user):true
@@ -65,22 +60,6 @@ const querySQL = {
                         reject(new Error('SQL ERROR in Group'));
                     } else {
                         resolve(result[0]);
-                    }
-                }
-            );
-        });
-    },
-
-    users: async (groupName: string): Promise<IUserQuery[]> => {
-        return new Promise((resolve, reject) => {
-            bot.connection.query(
-                'SELECT * FROM users WHERE groupName = ?',
-                [groupName],
-                (err: MysqlError | null, result: IUserQuery[]) => {
-                    if (err) {
-                        reject(new Error('SQL ERROR in Group Users'));
-                    } else {
-                        resolve(result);
                     }
                 }
             );
