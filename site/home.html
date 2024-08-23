@@ -1,0 +1,46 @@
+<div class="fill">
+    <table>
+        <tr class="line"></tr>
+        <tr>
+            <td class="title">
+                <b>Расписание</b>
+                <form name="myForm">
+                    <select onchange="changeSchedule()" name="selectGroup" id="selectGroup"></select>▼
+                </form>
+            </td>
+        </tr>
+    </table>
+    <div id="schedule"></div>
+
+    <table>
+        <tr>
+            <td>
+                <button onclick="changeReplacementPage(1)" class="arrow">
+                    <img src="assets/images/arrowLeft.svg" alt="arrowLeft"/>
+                </button>
+            </td>
+            <td class="title"><b>Замены</b></td>
+            <td>
+                <button onclick="changeReplacementPage(-1)" class="arrow">
+                    <img src="assets/images/arrowRight.svg" alt="arrowRight"/>
+                </button>
+            </td>
+        </tr>
+    </table>
+    <div id="replacement"></div>
+    <div class="buf"></div>
+</div>
+<nav class="mobile-nav">
+    <button class="bloc-icon">
+        <img src="assets/images/home.svg" alt="home"/>
+    </button>
+    <button onclick="duty()" class="bloc-icon">
+        <img src="assets/images/duty.svg" alt="duty" style="width: 10vw"/>
+    </button>
+    <button onclick="profile()" class="bloc-icon">
+        <img src="assets/images/profile.svg" alt="profile"/>
+    </button>
+    <button onclick="settings()" class="bloc-icon">
+        <img src="assets/images/settings.svg" alt="home"/>
+    </button>
+</nav>

@@ -5,6 +5,7 @@ import { Gradients } from "./Gradients";
 import { Groups } from "./Groups";
 import { Users } from "./Users";
 import { IBot } from "../interfaces/IBot";
+import {Replacements} from "./Replacements";
 
 const databaseConfig = {
     host: config.SQLHOST,
@@ -14,10 +15,12 @@ const databaseConfig = {
 };
 
 export class Bot extends Telegraf implements IBot{
+    devMode:boolean = false
     connection: Pool;
     gradients!: Gradients;
     groups!: Groups;
     users!: Users;
+    replacements!:Replacements
 
     constructor() {
         super(config.TOKEN);
@@ -47,6 +50,10 @@ export class Bot extends Telegraf implements IBot{
 
     async addUsers(){
         this.users = await this.loadData(() => new Users().load(), 'Пользователи подключены');
+    }
+
+    async addReplacements(){
+        this.replacements = await this.loadData(() => new Replacements().load(), 'Замены подключены');
     }
 
     private async sendTemporaryMessage(chatId: number, message: string) {

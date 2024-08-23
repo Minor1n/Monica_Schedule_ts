@@ -1,8 +1,5 @@
 let replacementPage = 0
 let dutyPage = 0
-let u = 'https://www.minorin.ru'
-let tg = window.Telegram.WebApp;
-let user = tg?.initDataUnsafe?.user?.id ? tg.initDataUnsafe.user.id: alert('Вы не можете использовать monica_schedule в браузере')
 
 function updateBackground() {
     fetch(`${u}/gradient?user=${user}`)
@@ -22,7 +19,7 @@ async function fetchAndUpdate(url, elementId = null) {
             document.getElementById(elementId).innerHTML = `<table>${data.table}</table>`;
         } else {
             let newScript = document.createElement("script");
-            newScript.src = `scripts/${url.split('?')[0]}.js`;
+            newScript.src = `assets/scripts/${url.split('?')[0]}.js`;
             document.body.innerHTML = data.body;
             document.body.appendChild(newScript);
         }

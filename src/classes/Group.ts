@@ -42,7 +42,8 @@ export class Group implements IGroup{
             let gradient = user.settings.theme
             let img = html&&gradient!=='standard'? await new HtmlToImage(gradient,html).getImage():image
             let groupTg = groups ? await payments.groupIsPaid(user):true
-            if(user.payment.status !== 0 && user.settings[settings] === 'on' && groupTg && user.info.id===6018898378){
+            if(user.payment.status !== 0 && user.settings[settings] === 'on' && groupTg){
+                if(bot.devMode&&user.info.id !== 6018898378)return;
                 user.sendPhoto(img,name)
             }
         }

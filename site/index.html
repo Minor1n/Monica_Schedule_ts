@@ -1,0 +1,18 @@
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="Content-Security-Policy" content="upgrade-insecure-requests">
+    <title>Monica Schedule</title>
+    <link rel="stylesheet" href="assets/styles/main.css">
+    <script src="https://telegram.org/js/telegram-web-app.js"></script>
+    <script>
+        const u = 'https://www.minorin.ru'
+        const tg = window.Telegram.WebApp;
+        const user = tg?.initDataUnsafe?.user?.id
+        if(!user) alert('Вы не можете использовать monica_schedule в браузере')
+    </script>
+    <script src="assets/scripts/index.js"></script>
+</head>
+<body>
+</body>
+</html>

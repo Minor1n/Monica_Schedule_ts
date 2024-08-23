@@ -1,9 +1,8 @@
-import {Replacements} from "../../../classes";
+import {bot} from "../../../index";
 
 
 export default async (index: number): Promise<{ table: string }> => {
-    const replacements = await new Replacements().load();
-    const replacement = replacements.getReplacement(index);
+    const replacement = bot.replacements.getReplacement(index);
     const table = replacement?.html ?? 'null';
     return { table };
 };

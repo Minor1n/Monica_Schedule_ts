@@ -3,11 +3,20 @@ import cors from "cors";
 import path from "node:path";
 import http from "node:http";
 import web from "../web";
+import {bot} from "../index";
 
 export default (dirname:string)=>{
     const app = express()
     app.use(cors());
-    app.get('/', (_, res) => {res.sendFile(path.join(dirname+'/site/index.html'))})
+    app.use('/assets',express.static(dirname+'/site/assets'))
+    app.get('/', (_, res) => {
+        if(bot.devMode) {
+            console.log(1)
+            res.sendFile(path.join(dirname+'/site/index.dev.html'))
+        }else{
+            res.sendFile(path.join(dirname+'/site/index.html'))
+        }
+    })
 
     //HOME
     app.get('/home', async (req, res) => {
@@ -32,6 +41,9 @@ export default (dirname:string)=>{
     })
     app.get('/duty/table', async (req, res) => {
         res.send(web.duty.table(Number(req.query.user), Number(req.query.page)));
+    })
+    app.get('/duty/checkin', async (req, res) => {
+        res.send(web.duty.checkin(Number(req.query.user)))
     })
 
     //PROFILE
@@ -88,29 +100,8 @@ export default (dirname:string)=>{
         res.send(web.settings.theme.lightMode(Number(req.query.user)));
     })
 
-
     app.get("/gradient", async (req,res) => {
         res.send(web.gradient(Number(req.query.user)));
-    });
-
-    app.get("/styles/main.css", async (req,res) => {
-        res.sendFile(path.join(dirname+'/site/styles/main.css'));
-    });
-
-    app.get("/scripts/index.js", async (req,res) => {
-        res.sendFile(path.join(dirname+'/site/scripts/index.js'));
-    });
-    app.get("/scripts/home.js", async (req,res) => {
-        res.sendFile(path.join(dirname+'/site/scripts/home.js'));
-    });
-    app.get("/scripts/profile.js", async (req,res) => {
-        res.sendFile(path.join(dirname+'/site/scripts/profile.js'));
-    });
-    app.get("/scripts/settings.js", async (req,res) => {
-        res.sendFile(path.join(dirname+'/site/scripts/settings.js'));
-    });
-    app.get("/scripts/duty.js", async (req,res) => {
-        res.sendFile(path.join(dirname+'/site/scripts/duty.js'));
     });
 
     const httpServer = http.createServer(app);

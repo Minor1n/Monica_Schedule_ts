@@ -1,0 +1,40 @@
+<div class="fill">
+    <table>
+        <tr class="line"></tr>
+        <tr>
+            <td>
+                <button onclick="changeDutyPage(1)" class="arrow">
+                    <img src="assets/images/arrowLeft.svg" alt="arrowLeft"/>
+                </button>
+            </td>
+            <td class="title"><b>Дежурства</b></td>
+            <td>
+                <button onclick="changeDutyPage(-1)" class="arrow">
+                    <img src="assets/images/arrowRight.svg" alt="arrowRight"/>
+                </button>
+            </td>
+        </tr>
+    </table>
+    <div id="duty"></div>
+    <div class="buf"></div>
+    <div class="buf"></div>
+</div>
+<nav class="mobile-nav" style="bottom: 12vw;background: rgba(255, 255, 255, 0.7);">
+    <button onclick="dutyCheckIn()" class="bloc-icon">
+        <b class="title">Отдежурил</b>
+    </button>
+</nav>
+<nav class="mobile-nav">
+    <button onclick="home()" class="bloc-icon">
+        <img src="assets/images/home.svg" alt="home"/>
+    </button>
+    <button class="bloc-icon">
+        <img src="assets/images/duty.svg" alt="duty" style="width: 10vw"/>
+    </button>
+    <button onclick="profile()" class="bloc-icon">
+        <img src="assets/images/profile.svg" alt="profile"/>
+    </button>
+    <button onclick="settings()" class="bloc-icon">
+        <img src="assets/images/settings.svg" alt="home"/>
+    </button>
+</nav>

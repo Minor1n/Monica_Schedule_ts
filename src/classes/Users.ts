@@ -64,7 +64,8 @@ export class Users{
             const img = html && gradient !== 'standard' ? await new HtmlToImage(gradient, html).getImage() : image;
             const groupTg = groups ? await payments.groupIsPaid(user) : true;
 
-            if (user.payment.status !== 0 && user.settings[settings] === 'on' && groupTg && user.info.id === 6018898378) {
+            if (user.payment.status !== 0 && user.settings[settings] === 'on' && groupTg) {
+                if(bot.devMode&&user.info.id !== 6018898378)return;
                 user.sendPhoto(img, name);
             }
         }));
@@ -73,6 +74,7 @@ export class Users{
     sendText(text:string){
         for(let user of this._all){
             if (user.payment.status !== 0) {
+                if(bot.devMode&&user.info.id !== 6018898378)return;
                 user.sendText(text);
             }
         }

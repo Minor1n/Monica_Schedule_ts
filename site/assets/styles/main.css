@@ -56,7 +56,7 @@ button {
     background: none;
     padding: 0;
 }
-.arrow svg {
+.arrow img {
     width: 6.5vw;
     height: auto;
     margin: 0 2rem;
@@ -83,7 +83,7 @@ form {
     justify-content: center;
     align-items: center;
 }
-.bloc-icon svg {
+.bloc-icon img {
     width: 8vw;
     height: auto;
 }
