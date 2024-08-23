@@ -14,6 +14,7 @@ import settings from './settings'
 import status from './status'
 import theme from './theme'
 import setDutyDay from "./setDutyDay";
+import parseGroups from "./parseGroups";
 
 
 export default {
@@ -32,5 +33,6 @@ export default {
     settings,
     status,
     theme,
-    setDutyDay
+    setDutyDay,
+    parseGroups
 }

@@ -13,5 +13,7 @@ export const bot = new Bot()
     handlers.HearsHandler()
     handlers.CronHandler()
     bot.launchBot()
+    await bot.groups.parseGroups('http://rgkript.ru/wp-content/uploads//2024/06/28.06.2024-dlya-sai-ta_crd.xls')
 })();
+
 

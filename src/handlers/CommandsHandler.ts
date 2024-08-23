@@ -17,7 +17,8 @@ const commandHandlers: Record<string, (ctx: any) => Promise<void>> = {
     'replacement': commands.replacement,
     'restart': commands.restart,
     'duty': commands.duty,
-    'setdutydate': commands.setDutyDay
+    'setdutydate': commands.setDutyDay,
+    'parsegroups': commands.parseGroups
 };
 
 export default () => {
