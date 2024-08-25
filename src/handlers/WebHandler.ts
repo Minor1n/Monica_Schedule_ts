@@ -87,5 +87,5 @@ export default ()=>{
     });
 
     const httpServer = http.createServer(app);
-    httpServer.listen(5000,'104.249.40.163');
+    httpServer.listen(5000,'localhost');
 }
