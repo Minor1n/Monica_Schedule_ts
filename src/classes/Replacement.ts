@@ -19,7 +19,8 @@ export class Replacement{
         return this._link
     }
     async getHtml():Promise<string>{
-        this._html = await this.generateHTML()
+        let date = new Date(this._date)
+        this._html = await this.generateHTML(`${date.getDate()}.${date.getMonth()}.${date.getFullYear()}`)
         return this._html
     }
 
@@ -66,9 +67,10 @@ export class Replacement{
         return parseText;
     }
 
-    private async generateHTML(): Promise<string>{
+    private async generateHTML(date:string): Promise<string>{
         const parseText = await this.parseText();
         const finalArr: string[] = [];
+        const groupArr = new Map<string,string[]>()
 
         const checkBracket = (words: string[], index: number): boolean => {
             return !!(words[index + 1] && words[index + 1].startsWith('('));
@@ -125,13 +127,23 @@ export class Replacement{
                 const nextField = parseText[parseText.indexOf(field) + 1];
                 const addLine = nextField?.group === null;
 
-                finalArr.push(generateRow(field, generatedWords));
+                const finalRow = generateRow(field, generatedWords)
+                finalArr.push(finalRow);
+
+                if(groupArr.has(field.group.name)){
+                    groupArr.get(field.group.name)?.push(finalRow)
+                }else{
+                    groupArr.set(field.group.name,[finalRow])
+                }
+
                 if (addLine) {
                     finalArr.push(`<tr><td colspan="8" class="line"></td></tr>`);
                 }
             }
         }
-
+        groupArr.forEach((fields,groupName)=>{
+            bot.groups.getGroup(groupName)?.setReplacement(fields,date)
+        })
         return finalArr.join('');
     }
 }

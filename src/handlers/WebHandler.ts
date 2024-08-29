@@ -20,6 +20,9 @@ export default ()=>{
     app.get('/home/replacement/table', async (req, res) => {
         res.send(await web.home.replacement.table(Number(req.query.page)));
     })
+    app.get('/home/schedule/groupTable', async (req, res) => {
+        res.send(web.home.replacement.groupTable(Number(req.query.user)));
+    })
 
     //DUTY
     app.get('/duty/table', async (req, res) => {

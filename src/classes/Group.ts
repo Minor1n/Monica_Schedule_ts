@@ -7,22 +7,21 @@ import {GroupDuty} from "./GroupDuty";
 import {IGroup} from "../interfaces/IGroup";
 import {IDuty} from "../interfaces/IDuty";
 import payments from "../payments";
+import {GroupReplacement} from "./GroupReplacement";
+import {IGroupQuery} from "../interfaces/IGroupQuery";
 
-
-interface IGroupQuery {
-    name: string
-    schedule: string
-}
 
 export class Group implements IGroup{
     name!: string;
     schedule!: GroupSchedule;
+    replacement!:GroupReplacement;
     private _duty!:GroupDuty
     constructor() {}
-    async load(groupName:string,schedule?:string):Promise<Group>{
-        let q = !schedule ? await querySQL.groups(groupName) : {name:groupName,schedule:schedule}
+    async load(groupName:string,schedule?:string,replacement?:string):Promise<Group>{
+        let q = !schedule||!replacement ? await querySQL.groups(groupName):{schedule,replacement,name:groupName}
         this.name = q.name
         this.schedule = new GroupSchedule(this.name,q.schedule,(await new Settings().load('scheduleLink')).value)
+        this.replacement = new GroupReplacement(this.name,q.replacement,(await new Settings().load('replacementLink')).value)
         let duty = await querySQL.duty(groupName)
         this._duty = new GroupDuty(this.name,this.users,duty)
         return this
@@ -47,6 +46,11 @@ export class Group implements IGroup{
                 user.sendPhoto(img,name)
             }
         }
+    }
+
+    async setReplacement(fields:string[],date:string){
+        fields.unshift(`<tr><td colspan="8">ЗАМЕНЫ ${date}</td></tr>`)
+        this.replacement.setReplacement(fields.join(''),(await new Settings().load('replacementLink')).value)
     }
 }
 

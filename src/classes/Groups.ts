@@ -1,8 +1,8 @@
 import {Group} from "./Group";
 import {bot} from "../index";
 import {MysqlError} from "mysql";
-import {IGroup} from "../interfaces/IGroup";
 import XLSX from "xlsx";
+import {IGroupQuery} from "../interfaces/IGroupQuery";
 
 
 export class Groups {
@@ -14,7 +14,7 @@ export class Groups {
     async load(): Promise<Groups> {
         const groups = await querySQL.all();
         this.all = await Promise.all(groups.map(async (group) => {
-            const newGroup = await new Group().load(group.name, group.schedule.html)
+            const newGroup = await new Group().load(group.name, group.schedule, group.replacement)
             this.map.set(group.name, newGroup);
             return newGroup
         }));
@@ -71,9 +71,9 @@ export class Groups {
 }
 
 const querySQL = {
-    all: async (): Promise<IGroup[]> => {
+    all: async (): Promise<IGroupQuery[]> => {
         return new Promise((resolve, reject) => {
-            bot.connection.query('SELECT * FROM groups', (err: MysqlError | null, result: IGroup[]) => {
+            bot.connection.query('SELECT * FROM groups', (err: MysqlError | null, result: IGroupQuery[]) => {
                 if (err) {
                     reject(new Error('SQL ERROR in Groups'));
                 } else {
