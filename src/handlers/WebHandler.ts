@@ -20,7 +20,7 @@ export default ()=>{
     app.get('/home/replacement/table', async (req, res) => {
         res.send(await web.home.replacement.table(Number(req.query.page)));
     })
-    app.get('/home/schedule/groupTable', async (req, res) => {
+    app.get('/home/replacement/groupTable', async (req, res) => {
         res.send(web.home.replacement.groupTable(Number(req.query.user)));
     })
 
@@ -90,5 +90,5 @@ export default ()=>{
     });
 
     const httpServer = http.createServer(app);
-    httpServer.listen(5000,'localhost');
+    httpServer.listen(5000,'104.249.40.163');
 }

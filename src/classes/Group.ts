@@ -49,7 +49,10 @@ export class Group implements IGroup{
     }
 
     async setReplacement(fields:string[],date:string){
-        fields.unshift(`<tr><td colspan="8">ЗАМЕНЫ ${date}</td></tr>`)
+        fields.unshift(`
+<tr><td colspan="8"><b>ЗАМЕНЫ ${date}</b></td></tr>
+<tr><td><b>Группа</b></td><td><b>Пара</b></td><td colspan="2"><b>По расписанию</b></td><td><b><===></b></td><td colspan="2"><b>Замена</b></td><td><b>Аудитория</b></td></tr>
+<tr><td colspan="8" class="line"></td></tr>`)
         this.replacement.setReplacement(fields.join(''),(await new Settings().load('replacementLink')).value)
     }
 }
