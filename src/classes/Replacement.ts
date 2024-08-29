@@ -20,7 +20,7 @@ export class Replacement{
     }
     async getHtml():Promise<string>{
         let date = new Date(this._date)
-        this._html = await this.generateHTML(`${date.getDate()}.${date.getMonth()}.${date.getFullYear()}`)
+        this._html = await this.generateHTML(`${`0${date.getDate()}`.slice(-2)}.${`0${date.getMonth()+1}`.slice(-2)}.${date.getFullYear()}`)
         return this._html
     }
 
