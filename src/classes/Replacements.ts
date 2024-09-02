@@ -14,7 +14,7 @@ export class Replacements {
 
     insertReplacement(link: string, date: number, html: string): void {
         const replacement = { link, date, html }
-        this.all.push(replacement);
+        this.all.unshift(replacement);
 
         const query = 'INSERT INTO replacements (link, date, html) VALUES (?, ?, ?)';
         bot.connection.query(query, [link, date, html], (err) => {
