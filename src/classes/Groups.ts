@@ -34,7 +34,7 @@ export class Groups {
         const response = await fetch(link)
         const workbook = XLSX.read(Buffer.from(await response.clone().arrayBuffer()));
         const sheetNameList = workbook.SheetNames;
-        const worksheet = workbook.Sheets[sheetNameList[1]];
+        const worksheet = workbook.Sheets[sheetNameList[0]];
         const arr: string[] = []
         for (let key in worksheet) {
             if (key.startsWith('B') && worksheet[key].v.trim().match(/^[А-Я]+-[0-9][0-9]$|^[А-Я]+-[0-9][0-9][а-я]$/ig)){

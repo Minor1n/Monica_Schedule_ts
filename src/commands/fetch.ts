@@ -24,7 +24,7 @@ export default async function(id:number,ctx?:Context){
     const dateRegex = /<strong>[А-Яа-я0-9. ]+/g;
     const links = Array.from(new Set(responseText.match(linkRegex))).map(link => link.slice(9, -1));
     const dateMatches = responseText.match(dateRegex);
-
+    console.log(links)
     if (!dateMatches) {
         user.sendText('DateArr not found');
         return;
@@ -41,11 +41,11 @@ export default async function(id:number,ctx?:Context){
         user.sendAutoDeleteText('Расписание не найдено', 1000 * 30);
     }
 
-    if (replacementSettings && links[1] !== replacementSettings.value) {
-        replacementSettings.value = links[1];
-        user.sendAutoDeleteText(`Замены: ${dates[1]} ${links[1].slice(36)}`, 1000 * 30);
+    if (replacementSettings && links[2] !== replacementSettings.value) {
+        replacementSettings.value = links[2];
+        user.sendAutoDeleteText(`Замены: ${dates[1]} ${links[2].slice(36)}`, 1000 * 30);
 
-        await tables.replacement(links[1], dates[1])
+        await tables.replacement(links[2], dates[1])
     } else {
         user.sendAutoDeleteText('Замены не найдены', 1000 * 30);
     }
