@@ -141,8 +141,16 @@ export class Replacement{
                 }
             }
         }
-        groupArr.forEach((fields,groupName)=>{
-            bot.groups.getGroup(groupName)?.setReplacement(fields,date)
+        bot.groups.all.forEach(group=>{
+            if(groupArr.has(group.name)){
+                const fields = groupArr.get(group.name)
+                if(fields){
+                    group.setReplacement(fields,date)
+                }
+            }else{
+                const fields = ['<tr><td><b>Замены для вашей группы не найдены</b></td></tr>']
+                group.setReplacement(fields,date)
+            }
         })
         return finalArr.join('');
     }
