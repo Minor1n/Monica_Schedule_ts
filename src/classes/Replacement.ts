@@ -148,7 +148,7 @@ export class Replacement{
                     group.setReplacement(fields,date)
                 }
             }else{
-                const fields = ['<tr><td colspan="6"><b>Замены для вашей группы не найдены</b></td></tr>']
+                const fields = ['<tr><td colspan="8"><b>Замены для вашей группы не найдены</b></td></tr>']
                 group.setReplacement(fields,date)
             }
         })
