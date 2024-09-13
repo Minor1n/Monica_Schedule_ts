@@ -33,6 +33,14 @@ export default () => {
         }
         else if (data.startsWith('setDutyDay')) {
             await callbackQueries.setDutyDay(ctx,data);
+        }else if (data.startsWith('fetch')){
+            if(data.startsWith('fetchSchedules')){
+                await callbackQueries.fetch.schedule(data, ctx.from.id)
+                await ctx.deleteMessage()
+            }else if(data.startsWith('fetchReplacements')){
+                await callbackQueries.fetch.replacement(data, ctx.from.id)
+                await ctx.deleteMessage()
+            }
         }
     });
 };

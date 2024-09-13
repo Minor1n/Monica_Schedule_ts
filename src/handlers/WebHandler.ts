@@ -2,6 +2,7 @@ import express from "express";
 import cors from "cors";
 import http from "node:http";
 import web from "../web";
+import {bot} from "../index";
 
 export default ()=>{
     const app = express()
@@ -90,5 +91,5 @@ export default ()=>{
     });
 
     const httpServer = http.createServer(app);
-    httpServer.listen(5000,'104.249.40.163');
+    httpServer.listen(5000,bot.devMode?'localhost':'104.249.40.163');
 }

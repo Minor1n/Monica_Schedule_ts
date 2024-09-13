@@ -6,6 +6,7 @@ import {UserSettings} from "./UserSettings";
 import {UserReferral} from "./UserReferral";
 import {MysqlError} from "mysql";
 import {Input} from "telegraf";
+import {InlineKeyboardButton} from '@telegraf/types'
 import {IUserQuery} from "../interfaces/IUserQuery";
 import {IUser} from "../interfaces/IUser";
 import payments from "../payments";
@@ -56,6 +57,13 @@ export class User implements IUser{
     sendPhoto(image:Buffer,name:string){
         bot.telegram.sendPhoto(this.info.id, Input.fromBuffer(image,name)).catch(e=>{console.log(e)})
         payments.alert(this).catch(e=>{console.log(e)})
+    }
+    sendButtons(text:string,keyboard:InlineKeyboardButton[][]){
+        bot.telegram.sendMessage(this.info.id,text,{
+            reply_markup: {
+                inline_keyboard: keyboard,
+            },
+        }).catch(e=>{console.log(e)})
     }
 }
 
