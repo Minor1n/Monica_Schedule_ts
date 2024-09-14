@@ -21,7 +21,7 @@ export class GroupSchedule{
     async generateSchedule(response:Response,link:string): Promise<string>{
         const workbook = XLSX.read(Buffer.from(await response.clone().arrayBuffer()));
         const sheetNameList = workbook.SheetNames;
-        const worksheet = workbook.Sheets[sheetNameList[0]];
+        const worksheet = workbook.Sheets[sheetNameList[1]];
         const arr: string[] = [];
 
         for (let key in worksheet) {
