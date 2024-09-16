@@ -27,10 +27,10 @@ export default async (data:string,userId:number)=>{
     const dates = <string[]> dateMatches.map(match => match.match(/[0-9]+.[0-9]+.[0-9]+/g)?.[0]).filter(Boolean);
 
     if (scheduleSettings && links[index] !== scheduleSettings.value) {
-        scheduleSettings.value = links[index];
         user.sendAutoDeleteText(`Расписание: ${dates[0]} ${links[index].slice(36)}`, 1000 * 30);
 
         await tables.schedule(links[index])
+        scheduleSettings.value = links[index];
     } else {
         user.sendAutoDeleteText('Расписание не найдено', 1000 * 30);
     }

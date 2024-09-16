@@ -27,10 +27,10 @@ export default async (data:string,userId:number)=>{
     const dates = <string[]> dateMatches.map(match => match.match(/[0-9]+.[0-9]+.[0-9]+/g)?.[0]).filter(Boolean);
 
     if (replacementSettings && links[index] !== replacementSettings.value) {
-        replacementSettings.value = links[index];
         user.sendAutoDeleteText(`Замены: ${dates[1]} ${links[index].slice(36)}`, 1000 * 30);
 
         await tables.replacement(links[index], dates[1])
+        replacementSettings.value = links[index];
     } else {
         user.sendAutoDeleteText('Замены не найдены', 1000 * 30);
     }

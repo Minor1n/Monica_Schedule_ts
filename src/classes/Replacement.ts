@@ -30,29 +30,26 @@ export class Replacement{
 
         while (i < this.text.length) {
             const currentText = this.text[i];
-
             if (!currentText?.match(/ЗАМЕНЫ/g)) {
-                const group = bot.groups.isGroupInText(currentText);
+                const group = bot.groups.isGroupInText(currentText)||null;
 
-                if (group) {
-                    let textParts = [currentText];
-                    let index = 1;
+                let textParts = [currentText];
+                let index = 1;
 
-                    while (this.text[i + index] && !bot.groups.isGroupInText(String(this.text[i + index])) && !this.text[i + index].match(/ЗАМЕНЫ/g)) {
-                        textParts.push(this.text[i + index]);
-                        index++;
-                    }
-
-                    const textLine = textParts.join(' ').slice(group.name.length + 1).replace(/ +/g, ' ');
-                    const [auditorium] = textLine.split(/\. (?=[А-Яа-я0-9(])|\) (?=[А-Яа-я0-9(])/g).reverse();
-                    const pairMatch = textLine.match(/[0-9]п([,\-])[0-9]п|[0-9]([,\-])[0-9]п|[0-9]п|[0-9]/);
-                    const pair = pairMatch ? pairMatch[0] : undefined;
-
-                    const cleanedTextLine = pair ? textLine.replace(pair, '').replace(auditorium, '').trim() : textLine.trim();
-
-                    parseText.push({ text: cleanedTextLine, group, pair, auditorium });
-                    i += textParts.length;
+                while (this.text[i + index] && !bot.groups.isGroupInText(String(this.text[i + index])) && !this.text[i + index].match(/ЗАМЕНЫ/g)) {
+                    textParts.push(this.text[i + index]);
+                    index++;
                 }
+
+                const textLine = textParts.join(' ').slice(group?.name.length ? group.name.length+1 : 0).replace(/ +/g, ' ');
+                const [auditorium] = textLine.split(/\. (?=[А-Яа-я0-9(])|\) (?=[А-Яа-я0-9(])/g).reverse();
+                const pairMatch = textLine.match(/[0-9]п([,\-])[0-9]п|[0-9]([,\-])[0-9]п|[0-9]п|[0-9]/);
+                const pair = pairMatch ? pairMatch[0] : undefined;
+
+                const cleanedTextLine = pair ? textLine.replace(pair, '').replace(auditorium, '').trim() : textLine.trim();
+
+                parseText.push({ text: cleanedTextLine, group, pair, auditorium });
+                i += textParts.length;
             } else {
                 parseText.push({
                     text: `${currentText} ${this.text[i + 1]}`,
