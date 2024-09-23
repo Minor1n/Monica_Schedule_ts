@@ -3,6 +3,7 @@ import cors from "cors";
 import http from "node:http";
 import web from "../web";
 import {bot} from "../index";
+import {Server} from 'socket.io';
 
 export default ()=>{
     const app = express()
@@ -86,10 +87,142 @@ export default ()=>{
         res.send();
     })
 
+    //Games
+
+    //Mafia
+    app.get('/games/mafia/sessions',async (req,res)=>{
+        const sessions = bot.mafiaSessions.games.map(session=>{
+            return {
+                authorId: session.sessionId,
+                authorName: bot.users.getUser(session.sessionId)?.info.name,
+                users: session.players.length
+            }
+        })
+        res.send(sessions)
+    })
+
+    app.get('/games/mafia/exit',async (req,res)=>{
+        const session = bot.mafiaSessions.getSession(Number(req.query.user))
+        if(session){
+            session.players.forEach((player)=>{
+                session.removePlayer(player.id)
+            })
+            bot.mafiaSessions.removeSession(session.sessionId)
+        }
+        const newSessions = bot.mafiaSessions.games.map(session=>{
+            return {
+                authorId: session.sessionId,
+                authorName: bot.users.getUser(session.sessionId)?.info.name,
+                users: session.players.length
+            }
+        })
+        res.send(newSessions)
+    })
+
+    app.get('/games/mafia/players',async (req,res)=>{
+        const players = bot.mafiaSessions.getSession(Number(req.query.user))?.players.map(player=>({
+            userId: player.id,
+            userName: bot.users.getUser(player.id)?.info.name,
+            role: player.role,
+            isDeath: player.isDeath
+        }))
+        res.send(players)
+    })
+
+    //Other
+
     app.get("/gradient", async (req,res) => {
         res.send(web.gradient(Number(req.query.user)));
     });
 
     const httpServer = http.createServer(app);
+
+    const io = new Server(httpServer, {
+        cors: {
+            origin: bot.devMode?"http://localhost:3000":"http://104.249.40.163:3000",
+            methods: ["GET", "POST"]
+        }
+    });
+
+    interface IHost{
+        userId:number;
+        socketId:string;
+    }
+
+    interface IJoin{
+        userId:number;
+        socketId:string;
+        sessionId:number;
+    }
+
+    interface IPlayer {
+        userId: string;
+        userName: string;
+        role: string;
+        isDeath: 'true'|'false';
+    }
+
+    io.on('connection',(socket)=>{
+        socket.on('setHost', async (newState:IHost) => {
+            const session = await bot.mafiaSessions.createSession(newState.userId,newState.socketId)
+            const newPlayers = session.players.map(player=>({
+                userId: player.id,
+                userName: bot.users.getUser(player.id)?.info.name,
+                role: player.role,
+                isDeath: player.isDeath
+            }))
+            io.emit('updatePlayers', {newPlayers,sessionId:newState.userId})
+        })
+
+        socket.on('joinPlayer', (newState:IJoin) => {
+            const session = bot.mafiaSessions.getSession(newState.sessionId)
+            const player = session?.addPlayer(newState.userId,socket.id)
+            const newPlayers = session?.players.map(player=>({
+                userId: player.id,
+                userName: bot.users.getUser(player.id)?.info.name,
+                role: player.role,
+                isDeath: player.isDeath
+            }))
+            if(newPlayers){
+                io.emit('updatePlayers',{newPlayers,sessionId:newState.userId})
+                io.emit('updatePlayer',{
+                    userId: newState.userId,
+                    userName: bot.users.getUser(newState.userId)?.info.name,
+                    role: player?.role,
+                    isDeath: player?.isDeath,
+                })
+            }
+        })
+
+        socket.on('setPlayers', (options:{newPlayers: IPlayer[],sessionId:number})=>{
+            io.emit('updatePlayers',options)
+            options.newPlayers.forEach(player=>{
+                io.emit('updatePlayer',{
+                    userId: player.userId,
+                    userName: player.userName,
+                    role: player.role,
+                    isDeath: player.isDeath,
+                })
+            })
+
+        })
+
+        socket.on('disconnect',()=>{
+            const session = bot.mafiaSessions.games.find(session=>session.socketId===socket.id)
+            if(session){
+                session.players.forEach(player=>{
+                    session.removePlayer(player.id)
+                })
+                bot.mafiaSessions.removeSession(session.sessionId)
+            }else{
+                const sessionPlayer = bot.mafiaSessions.games.find(session=>session.players.find(player=>player.socketId === socket.id))
+                const player = sessionPlayer?.players.find(player=>player.socketId===socket.id)
+                if(sessionPlayer&&player){
+                    sessionPlayer.removePlayer(player.id)
+                }
+            }
+        })
+    })
+
     httpServer.listen(5000,bot.devMode?'localhost':'104.249.40.163');
 }

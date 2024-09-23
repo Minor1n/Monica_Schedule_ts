@@ -6,6 +6,7 @@ import { Groups } from "./Groups";
 import { Users } from "./Users";
 import { IBot } from "../interfaces/IBot";
 import {Replacements} from "./Replacements";
+import {MafiaSessions} from "./games/MafiaSessions";
 
 const databaseConfig = {
     host: config.SQLHOST,
@@ -14,17 +15,27 @@ const databaseConfig = {
     password: config.SQLPASSWORD,
 };
 
+const gamesDB = {
+    host: config.SQLHOST,
+    user: config.SQLUSER,
+    database: config.SQLDATABASE_MAFIA,
+    password: config.SQLPASSWORD,
+};
+
 export class Bot extends Telegraf implements IBot{
     devMode:boolean = false
     connection: Pool;
+    gamesConnection: Pool;
     gradients!: Gradients;
     groups!: Groups;
     users!: Users;
     replacements!:Replacements
+    mafiaSessions!: MafiaSessions;
 
     constructor() {
         super(config.TOKEN);
         this.connection = createPool(databaseConfig);
+        this.gamesConnection = createPool(gamesDB);
     }
 
     launchBot() {
@@ -54,6 +65,10 @@ export class Bot extends Telegraf implements IBot{
 
     async addReplacements(){
         this.replacements = await this.loadData(() => new Replacements().load(), 'Замены подключены');
+    }
+
+    async addMafiaSessions(){
+        this.mafiaSessions = await this.loadData(() => new MafiaSessions().load(), 'Мафия подключена');
     }
 
     private async sendTemporaryMessage(chatId: number, message: string) {

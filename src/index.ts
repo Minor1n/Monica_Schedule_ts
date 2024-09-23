@@ -9,6 +9,7 @@ export const bot = new Bot()
     await bot.addUsers();
     await bot.addGroups();
     await bot.addReplacements()
+    await bot.addMafiaSessions()
     handlers.WebHandler()
     handlers.CommandsHandler()
     handlers.CallbackQueryHandler()

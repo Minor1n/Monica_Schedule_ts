@@ -2,9 +2,9 @@ import dotenv from "dotenv";
 
 dotenv.config();
 
-const {TOKEN, PASSWORD, SQLHOST, SQLUSER, SQLDATABASE, SQLPASSWORD} = process.env;
+const {TOKEN, PASSWORD, SQLHOST, SQLUSER, SQLDATABASE, SQLPASSWORD, SQLDATABASE_MAFIA} = process.env;
 
-if (!TOKEN||!PASSWORD||!SQLHOST||!SQLUSER||!SQLDATABASE||!SQLPASSWORD) {
+if (!TOKEN||!PASSWORD||!SQLHOST||!SQLUSER||!SQLDATABASE||!SQLPASSWORD||!SQLDATABASE_MAFIA) {
     throw new Error("Missing environment variables");
 }
 
@@ -81,7 +81,7 @@ const fetchUrl = 'http://rgkript.ru/raspisanie-zanyatiy/'
 
 export const config = {
     TOKEN, PASSWORD,
-    SQLHOST, SQLUSER, SQLDATABASE, SQLPASSWORD,
+    SQLHOST, SQLUSER, SQLDATABASE, SQLPASSWORD, SQLDATABASE_MAFIA,
     htmlStart1,htmlStart2,htmlEnd, puppeteer,
     payment,
     paymentMessages,
