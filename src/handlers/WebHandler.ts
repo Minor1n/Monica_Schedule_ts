@@ -4,6 +4,7 @@ import http from "node:http";
 import web from "../web";
 import {bot} from "../index";
 import {Server} from 'socket.io';
+import {MafiaPlayer} from "../classes/games/MafiaPlayer";
 
 export default ()=>{
     const app = express()
@@ -139,90 +140,103 @@ export default ()=>{
 
     const io = new Server(httpServer, {
         cors: {
-            origin: bot.devMode?"http://localhost:3000":"http://104.249.40.163:3000",
+            origin: bot.devMode ? "http://localhost:3000" : "http://104.249.40.163:3000",
             methods: ["GET", "POST"]
         }
     });
 
-    interface IHost{
-        userId:number;
-        socketId:string;
+    interface IHost {
+        userId: number;
+        socketId: string;
     }
 
-    interface IJoin{
-        userId:number;
-        socketId:string;
-        sessionId:number;
+    interface IJoin {
+        userId: number;
+        socketId: string;
+        sessionId: number;
     }
 
     interface IPlayer {
-        userId: string;
+        userId: number;
         userName: string;
         role: string;
-        isDeath: 'true'|'false';
+        isDeath: 'true' | 'false';
     }
 
-    io.on('connection',(socket)=>{
-        socket.on('setHost', async (newState:IHost) => {
-            const session = await bot.mafiaSessions.createSession(newState.userId,newState.socketId)
-            const newPlayers = session.players.map(player=>({
-                userId: player.id,
-                userName: bot.users.getUser(player.id)?.info.name,
-                role: player.role,
-                isDeath: player.isDeath
-            }))
-            io.emit('updatePlayers', {newPlayers,sessionId:newState.userId})
-        })
+    const mapPlayers = (players: MafiaPlayer[]) => players.map(player => ({
+        userId: player.id,
+        userName: String(bot.users.getUser(player.id)?.info.name),
+        role: player.role,
+        isDeath: player.isDeath
+    }));
 
-        socket.on('joinPlayer', (newState:IJoin) => {
-            const session = bot.mafiaSessions.getSession(newState.sessionId)
-            const player = session?.addPlayer(newState.userId,socket.id)
-            const newPlayers = session?.players.map(player=>({
-                userId: player.id,
-                userName: bot.users.getUser(player.id)?.info.name,
-                role: player.role,
-                isDeath: player.isDeath
-            }))
-            if(newPlayers){
-                io.emit('updatePlayers',{newPlayers,sessionId:newState.userId})
-                io.emit('updatePlayer',{
+    const updatePlayersInfo = (sessionId: number, players: IPlayer[]) => {
+        io.emit('updatePlayers', { newPlayers: players, sessionId });
+        players.forEach(player => {
+            io.emit('updatePlayer', player);
+        });
+    };
+
+    io.on('connection', (socket) => {
+
+        socket.on('setHost', async (newState: IHost) => {
+            try {
+                const session = await bot.mafiaSessions.createSession(newState.userId, newState.socketId);
+                const newPlayers = mapPlayers(session.players);
+                updatePlayersInfo(newState.userId, newPlayers);
+            } catch (error) {
+                console.error('Error setting host:', error);
+            }
+        });
+
+        socket.on('joinPlayer', (newState: IJoin) => {
+            try {
+                const session = bot.mafiaSessions.getSession(newState.sessionId);
+                if (!session) return;
+
+                const player = session.addPlayer(newState.userId, socket.id);
+                const newPlayers = mapPlayers(session.players);
+
+                updatePlayersInfo(newState.sessionId, newPlayers);
+                io.emit('updatePlayer', {
                     userId: newState.userId,
                     userName: bot.users.getUser(newState.userId)?.info.name,
-                    role: player?.role,
-                    isDeath: player?.isDeath,
-                })
-            }
-        })
-
-        socket.on('setPlayers', (options:{newPlayers: IPlayer[],sessionId:number})=>{
-            io.emit('updatePlayers',options)
-            options.newPlayers.forEach(player=>{
-                io.emit('updatePlayer',{
-                    userId: player.userId,
-                    userName: player.userName,
                     role: player.role,
                     isDeath: player.isDeath,
-                })
-            })
-
-        })
-
-        socket.on('disconnect',()=>{
-            const session = bot.mafiaSessions.games.find(session=>session.socketId===socket.id)
-            if(session){
-                session.players.forEach(player=>{
-                    session.removePlayer(player.id)
-                })
-                bot.mafiaSessions.removeSession(session.sessionId)
-            }else{
-                const sessionPlayer = bot.mafiaSessions.games.find(session=>session.players.find(player=>player.socketId === socket.id))
-                const player = sessionPlayer?.players.find(player=>player.socketId===socket.id)
-                if(sessionPlayer&&player){
-                    sessionPlayer.removePlayer(player.id)
-                }
+                });
+            } catch (error) {
+                console.error('Error joining player:', error);
             }
-        })
-    })
+        });
+
+        socket.on('setPlayers', (options: { newPlayers: IPlayer[], sessionId: number }) => {
+            updatePlayersInfo(options.sessionId, options.newPlayers);
+        });
+
+        socket.on('disconnect', () => {
+            try {
+                const session = bot.mafiaSessions.games.find(game => game.socketId === socket.id);
+                if (session) {
+                    session.players.forEach(player => session.removePlayer(player.id));
+                    bot.mafiaSessions.removeSession(session.sessionId);
+                    return;
+                }
+
+                const sessionPlayer = bot.mafiaSessions.games.find(game =>
+                    game.players.some(player => player.socketId === socket.id)
+                );
+
+                if (sessionPlayer) {
+                    const player = sessionPlayer.players.find(player => player.socketId === socket.id);
+                    if (player) {
+                        sessionPlayer.removePlayer(player.id);
+                    }
+                }
+            } catch (error) {
+                console.error('Error handling disconnect:', error);
+            }
+        });
+    });
 
     httpServer.listen(5000,bot.devMode?'localhost':'104.249.40.163');
 }
