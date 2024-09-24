@@ -140,7 +140,7 @@ export default ()=>{
 
     const io = new Server(httpServer, {
         cors: {
-            origin: bot.devMode ? "http://localhost:3000" : "http://104.249.40.163:3000",
+            origin: bot.devMode ? "http://localhost:3000" : "https://minorin.ru",
             methods: ["GET", "POST"]
         }
     });
@@ -182,6 +182,7 @@ export default ()=>{
         socket.on('setHost', async (newState: IHost) => {
             try {
                 const session = await bot.mafiaSessions.createSession(newState.userId, newState.socketId);
+                console.log(session)
                 const newPlayers = mapPlayers(session.players);
                 updatePlayersInfo(newState.userId, newPlayers);
             } catch (error) {
