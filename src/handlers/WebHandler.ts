@@ -181,8 +181,7 @@ export default ()=>{
 
         socket.on('setHost', async (newState: IHost) => {
             try {
-                const session = await bot.mafiaSessions.createSession(newState.userId, newState.socketId);
-                console.log(session)
+                const session = bot.mafiaSessions.getSession(newState.userId) ?? await bot.mafiaSessions.createSession(newState.userId, newState.socketId);
                 const newPlayers = mapPlayers(session.players);
                 updatePlayersInfo(newState.userId, newPlayers);
             } catch (error) {
@@ -194,8 +193,7 @@ export default ()=>{
             try {
                 const session = bot.mafiaSessions.getSession(newState.sessionId);
                 if (!session) return;
-
-                const player = session.addPlayer(newState.userId, socket.id);
+                const player = session.getPlayer(newState.userId) ?? session.addPlayer(newState.userId, socket.id);
                 const newPlayers = mapPlayers(session.players);
 
                 updatePlayersInfo(newState.sessionId, newPlayers);
