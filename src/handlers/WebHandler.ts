@@ -212,29 +212,29 @@ export default ()=>{
             updatePlayersInfo(options.sessionId, options.newPlayers);
         });
 
-        socket.on('disconnect', () => {
-            try {
-                const session = bot.mafiaSessions.games.find(game => game.socketId === socket.id);
-                if (session) {
-                    session.players.forEach(player => session.removePlayer(player.id));
-                    bot.mafiaSessions.removeSession(session.sessionId);
-                    return;
-                }
-
-                const sessionPlayer = bot.mafiaSessions.games.find(game =>
-                    game.players.some(player => player.socketId === socket.id)
-                );
-
-                if (sessionPlayer) {
-                    const player = sessionPlayer.players.find(player => player.socketId === socket.id);
-                    if (player) {
-                        sessionPlayer.removePlayer(player.id);
-                    }
-                }
-            } catch (error) {
-                console.error('Error handling disconnect:', error);
-            }
-        });
+        // socket.on('disconnect', () => {
+        //     try {
+        //         const session = bot.mafiaSessions.games.find(game => game.socketId === socket.id);
+        //         if (session) {
+        //             session.players.forEach(player => session.removePlayer(player.id));
+        //             bot.mafiaSessions.removeSession(session.sessionId);
+        //             return;
+        //         }
+        //
+        //         const sessionPlayer = bot.mafiaSessions.games.find(game =>
+        //             game.players.some(player => player.socketId === socket.id)
+        //         );
+        //
+        //         if (sessionPlayer) {
+        //             const player = sessionPlayer.players.find(player => player.socketId === socket.id);
+        //             if (player) {
+        //                 sessionPlayer.removePlayer(player.id);
+        //             }
+        //         }
+        //     } catch (error) {
+        //         console.error('Error handling disconnect:', error);
+        //     }
+        // });
     });
 
     httpServer.listen(5000,bot.devMode?'localhost':'104.249.40.163');
