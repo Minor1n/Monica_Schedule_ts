@@ -209,6 +209,14 @@ export default ()=>{
         });
 
         socket.on('setPlayers', (options: { newPlayers: IPlayer[], sessionId: number }) => {
+            const session = bot.mafiaSessions.getSession(options.sessionId);
+            if (!session) return;
+            options.newPlayers.forEach(player=>{
+                const sessionPlayer = session.getPlayer(player.userId)
+                if(!sessionPlayer)return player
+                sessionPlayer.role = player.role
+                sessionPlayer.isDeath = player.isDeath
+            })
             updatePlayersInfo(options.sessionId, options.newPlayers);
         });
 
