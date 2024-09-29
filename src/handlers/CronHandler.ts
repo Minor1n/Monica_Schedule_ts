@@ -36,15 +36,29 @@ const fetchUrls = async ()=>{
     const responseText = await (await fetch(config.fetchUrl)).text();
 
     const year = new Date().getFullYear();
-    const linkRegex = new RegExp('<a href="http:\\/\\/rgkript.ru\\/wp-content\\/uploads\\/\\/'+year+'[0-9/.\\-A-Za-z_]+"','g')
-    const links = Array.from(new Set(responseText.match(linkRegex))).map(link => link.slice(9, -1));
+    const linkRegExp = new RegExp('<a href="http:\\/\\/rgkript.ru\\/wp-content\\/uploads\\/\\/'+year+'[0-9/.\\-A-Za-z_]+"','g')
+    const links = Array.from(new Set(responseText.match(linkRegExp))).map(link => link.slice(9, -1));
+
+    const scheduleRegExp = new RegExp('.xls','g')
+    const replacementRegExp = new RegExp('.doc|.pdf','g')
+
+    const scheduleLinks:string[] = <string[]> links.map(link=> {
+        if(link.match(scheduleRegExp)){
+            return link
+        }
+    }).filter(Boolean)
+    const replacementLinks:string[] = <string[]> links.map(link=> {
+        if(link.match(replacementRegExp)){
+            return link
+        }
+    }).filter(Boolean)
 
     const settings = await new SettingsAll().load();
     const scheduleSettings = settings.getSettings('scheduleLink');
     const replacementSettings = settings.getSettings('replacementLink');
 
-    if (scheduleSettings && links[0] !== scheduleSettings.value) {
-        const keyboardSchedules:InlineKeyboardButton[][] = links.map((link,index) => {
+    if (scheduleSettings && !scheduleLinks.find(link=> link === scheduleSettings.value)) {
+        const keyboardSchedules:InlineKeyboardButton[][] = scheduleLinks.map((link,index) => {
             return[{
                 text:link.slice(36),
                 callback_data:`fetchSchedules${index}`
@@ -53,8 +67,8 @@ const fetchUrls = async ()=>{
         user.sendButtons('Доступны следующие url для расписания:',keyboardSchedules)
     }
 
-    if (replacementSettings && links[1] !== replacementSettings.value) {
-        const keyboardReplacements:InlineKeyboardButton[][] = links.map((link,index) => {
+    if (replacementSettings && !replacementLinks.find(link=> link === replacementSettings.value)) {
+        const keyboardReplacements:InlineKeyboardButton[][] = replacementLinks.map((link,index) => {
             return[{
                 text:link.slice(36),
                 callback_data:`fetchReplacements${index}`

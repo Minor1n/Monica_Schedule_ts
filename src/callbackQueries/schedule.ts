@@ -19,6 +19,13 @@ export default async (data:string,userId:number)=>{
     const linkRegex = new RegExp('<a href="http:\\/\\/rgkript.ru\\/wp-content\\/uploads\\/\\/'+year+'[0-9/.\\-A-Za-z_]+"','g')
     const links = Array.from(new Set(responseText.match(linkRegex))).map(link => link.slice(9, -1));
 
+    const scheduleRegExp = new RegExp('.xls','g')
+    const scheduleLinks:string[] = <string[]> links.map(link=> {
+        if(link.match(scheduleRegExp)){
+            return link
+        }
+    }).filter(Boolean)
+
     if (!dateMatches) {
         user.sendText('DateArr not found');
         return;
@@ -26,11 +33,11 @@ export default async (data:string,userId:number)=>{
 
     const dates = <string[]> dateMatches.map(match => match.match(/[0-9]+.[0-9]+.[0-9]+/g)?.[0]).filter(Boolean);
 
-    if (scheduleSettings && links[index] !== scheduleSettings.value) {
-        user.sendAutoDeleteText(`Расписание: ${dates[0]} ${links[index].slice(36)}`, 1000 * 30);
+    if (scheduleSettings && scheduleLinks[index] !== scheduleSettings.value) {
+        user.sendAutoDeleteText(`Расписание: ${dates[0]} ${scheduleLinks[index].slice(36)}`, 1000 * 30);
 
-        await tables.schedule(links[index])
-        scheduleSettings.value = links[index];
+        await tables.schedule(scheduleLinks[index])
+        scheduleSettings.value = scheduleLinks[index];
     } else {
         user.sendAutoDeleteText('Расписание не найдено', 1000 * 30);
     }
