@@ -71,7 +71,7 @@ export class UserSettings implements IUserSettings{
 
     set groupReplacement(value: UserSettingsStatus) {
         this._groupReplacement = value;
-        this.updateField('settingsReplacement', value);
+        this.updateField('settingsGroupReplacement', value);
     }
 
     set lightMode(value: UserLightMode) {

@@ -3,6 +3,7 @@ interface ISettings{
     duty:'on'|'off'
     replacement:'on'|'off'
     schedule:'on'|'off'
+    groupReplacement:'on'|'off'
 }
 
 export default (userId: number): ISettings|void => {
@@ -11,6 +12,7 @@ export default (userId: number): ISettings|void => {
     return {
         duty:user.settings.duty,
         schedule:user.settings.schedule,
-        replacement:user.settings.replacement
+        replacement:user.settings.replacement,
+        groupReplacement:user.settings.groupReplacement
     };
 }
