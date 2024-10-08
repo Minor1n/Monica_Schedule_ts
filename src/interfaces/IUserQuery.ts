@@ -16,6 +16,7 @@ export interface IUserQuery {
     dutyDay:UserDutyDay;
     settingsSchedule:UserSettingsStatus;
     settingsReplacement:UserSettingsStatus;
+    settingsGroupReplacement:UserSettingsStatus;
     settingsDuty:UserSettingsStatus;
     theme:string;
     refKey:string;

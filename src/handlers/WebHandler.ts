@@ -72,6 +72,10 @@ export default ()=>{
         web.settings.notifications.replacement(Number(req.query.user))
         res.send();
     })
+    app.get('/settings/notifications/groupReplacement', async (req, res) => {
+        web.settings.notifications.groupReplacement(Number(req.query.user))
+        res.send();
+    })
     app.get('/settings/notifications/duty', async (req, res) => {
         web.settings.notifications.duty(Number(req.query.user))
         res.send();

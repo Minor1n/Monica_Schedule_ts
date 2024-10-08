@@ -7,13 +7,15 @@ export class UserSettings implements IUserSettings{
     private _duty: UserSettingsStatus;
     private _lightMode: UserLightMode;
     private _replacement: UserSettingsStatus;
+    private _groupReplacement: UserSettingsStatus;
     private _schedule: UserSettingsStatus;
     private _theme:"standard"|string;
-    constructor(id:number,duty:UserSettingsStatus,lightMode:UserLightMode,replacement:UserSettingsStatus,schedule:UserSettingsStatus,theme:"standard"|string) {
+    constructor(id:number,duty:UserSettingsStatus,lightMode:UserLightMode,replacement:UserSettingsStatus,groupReplacement:UserSettingsStatus,schedule:UserSettingsStatus,theme:"standard"|string) {
         this.id = id
         this._duty = duty
         this._lightMode = lightMode
         this._replacement = replacement
+        this._groupReplacement = groupReplacement
         this._schedule = schedule
         this._theme = theme
     }
@@ -27,6 +29,10 @@ export class UserSettings implements IUserSettings{
 
     get replacement(): UserSettingsStatus {
         return this._replacement;
+    }
+
+    get groupReplacement(): UserSettingsStatus {
+        return this._groupReplacement;
     }
 
     get lightMode(): UserLightMode {
@@ -63,6 +69,11 @@ export class UserSettings implements IUserSettings{
         this.updateField('settingsReplacement', value);
     }
 
+    set groupReplacement(value: UserSettingsStatus) {
+        this._groupReplacement = value;
+        this.updateField('settingsReplacement', value);
+    }
+
     set lightMode(value: UserLightMode) {
         this._lightMode = value;
         this.updateField('lightMode', value);
@@ -85,6 +96,11 @@ export class UserSettings implements IUserSettings{
     switchReplacement() {
         this._replacement = this.switchStatus(this._replacement);
         this.updateField('settingsReplacement', this._replacement);
+    }
+
+    switchGroupReplacement() {
+        this._groupReplacement = this.switchStatus(this._groupReplacement);
+        this.updateField('settingsGroupReplacement', this._groupReplacement);
     }
 
     switchLightMode() {

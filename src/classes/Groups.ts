@@ -3,6 +3,8 @@ import {bot} from "../index";
 import {MysqlError} from "mysql";
 import XLSX from "xlsx";
 import {IGroupQuery} from "../interfaces/IGroupQuery";
+import {HtmlToImage} from "./HtmlToImage";
+import payments from "../payments";
 
 
 export class Groups {
@@ -67,6 +69,26 @@ export class Groups {
                 }
             );
         })
+    }
+
+    async sendReplacement(){
+        await Promise.all(this.all.map(async (group) => {
+            const gradient = bot.gradients.dark;
+            const html = group.replacement.html
+            const image = await new HtmlToImage(gradient,html).getImage();
+
+            await Promise.all(group.users.map(async (user) => {
+                const userGradient = user.settings.theme;
+                const img = html && userGradient !== 'standard' ? await new HtmlToImage(userGradient, html).getImage() : image;
+                const groupTg = await payments.groupIsPaid(user);
+
+                if (user.payment.status !== 0 && user.settings['groupReplacement'] === 'on' && groupTg) {
+                    if(bot.devMode&&user.info.id !== 6018898378)return;
+                    user.sendPhoto(img, 'groupReplacement.png');
+                }
+            }))
+
+        }))
     }
 }
 

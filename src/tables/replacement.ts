@@ -31,6 +31,7 @@ export default async(url: string, date: string): Promise<void> => {
             const image = await new HtmlToImage(gradient, html).getImage();
 
             await bot.users.sendPhoto(image, `replacement.png`, 'replacement', true, html);
+            await bot.groups.sendReplacement()
         }
 
     } catch (error) {

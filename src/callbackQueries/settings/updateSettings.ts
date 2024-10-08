@@ -3,7 +3,7 @@ import {bot} from "../../index";
 import {config} from "../../config";
 import keyboard from "./keyboard";
 
-export default async (ctx: Context, data: string, settingType: 'duty' | 'schedule' | 'replacement') => {
+export default async (ctx: Context, data: string, settingType: 'duty' | 'schedule' | 'replacement' | 'groupreplacement') => {
     const userId = Number(data.replace(/^\D+/g, ''));
     const user = bot.users.getUser(userId);
     if (!user) {
@@ -19,6 +19,9 @@ export default async (ctx: Context, data: string, settingType: 'duty' | 'schedul
             break;
         case 'replacement':
             user.settings.switchReplacement();
+            break;
+        case 'groupreplacement':
+            user.settings.switchGroupReplacement();
             break;
     }
     await ctx.editMessageText('Настройки:', {

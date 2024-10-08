@@ -58,7 +58,7 @@ export class Users{
         return this._all.filter(user=>user.info.groupName === groupName)
     }
 
-    async sendPhoto(image: Buffer, name: string, settings: 'duty' | 'schedule' | 'replacement', groups: boolean, html?: string): Promise<void> {
+    async sendPhoto(image: Buffer, name: string, settings: 'duty' | 'schedule' | 'replacement' | 'groupReplacement', groups: boolean, html?: string): Promise<void> {
         await Promise.all(this._all.map(async (user) => {
             const gradient = user.settings.theme;
             const img = html && gradient !== 'standard' ? await new HtmlToImage(gradient, html).getImage() : image;

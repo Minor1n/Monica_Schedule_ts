@@ -5,6 +5,7 @@ export interface IUserSettings{
     schedule:UserSettingsStatus;
     replacement:UserSettingsStatus;
     duty:UserSettingsStatus;
+    groupReplacement: UserSettingsStatus;
     theme:"standard"|string;
     lightMode:UserLightMode
 }

@@ -39,7 +39,8 @@ export class User implements IUser{
             duty: new UserDuty(result.userId, result.dutyCount, result.dutyDay, result.dutyLastDate),
             info: new UserInfo(result.groupBots, result.groupName, result.userId, result.name, result.userName, result.role),
             payment: new UserPayment(result.userId, result.paidWhenever, result.price, result.payment, referral),
-            settings: new UserSettings(result.userId, result.settingsDuty, result.lightMode, result.settingsReplacement, result.settingsSchedule, result.theme),
+            settings: new UserSettings(result.userId, result.settingsDuty, result.lightMode, result.settingsReplacement,
+                result.settingsGroupReplacement, result.settingsSchedule, result.theme),
         };
     }
 
