@@ -72,7 +72,7 @@ export class Groups {
     }
 
     async sendReplacement(){
-        await Promise.all(this.all.map(async (group) => {
+        this.all.map(async (group) => {
             const gradient = bot.gradients.dark;
             const html = group.replacement.html
             const image = await new HtmlToImage(gradient,html).getImage();
@@ -88,7 +88,7 @@ export class Groups {
                 }
             }))
 
-        }))
+        })
     }
 }
 
