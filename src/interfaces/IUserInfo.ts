@@ -1,10 +1,10 @@
-import {UserRole} from "./IUserQuery";
+import {UserRoleType} from "@interfaces/Types";
 
-export interface IUserInfo{
+export default interface IUserInfo{
     id:number;
     userName:string;
     name:string;
     groupName:string
-    role:UserRole
+    role:UserRoleType
     bots:number
 }

@@ -1,9 +1,16 @@
-import {bot} from "../../index";
-import {config} from "../../config";
+import {bot} from "@index";
+import config from "@config";
 
+interface IQuery{
+    user:string;
+}
 
-export default (userId:number): {alert: string }=>{
-    const author = bot.users.getUser(userId);
+interface IResolve{
+    alert: string;
+}
+
+export default (query:IQuery): IResolve =>{
+    const author = bot.users.getUser(Number(query.user));
     if (!author) return {alert:config.notfoundMessagesSite.user}
 
     const group = bot.groups.getGroup(author.info.groupName);

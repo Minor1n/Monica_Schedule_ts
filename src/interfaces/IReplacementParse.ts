@@ -1,6 +1,6 @@
-import {IGroup} from "./IGroup";
+import IGroup from "@interfaces/IGroup";
 
-export interface IReplacementParse {
+export default interface IReplacementParse {
     text: string;
     group: IGroup|null;
     pair: string|undefined;

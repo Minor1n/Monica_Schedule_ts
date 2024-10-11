@@ -1,10 +1,18 @@
-import {bot} from "../../../index";
-import {config} from "../../../config";
-import payments from "../../../payments";
+import {bot} from "@index";
+import config from "@config";
+import {payments} from "@utils";
 
+interface IQuery {
+    user:string;
+    refKey:string;
+}
 
-export default async (userId: number, refKey: string): Promise<string> => {
-    const user = bot.users.getUser(userId);
-    if (!user) return config.notfoundMessagesSite.user;
-    return payments.setReferralKey(user, refKey);
+interface IResolve{
+    alert: string;
+}
+
+export default async (query:IQuery): Promise<IResolve> => {
+    const user = bot.users.getUser(Number(query.user));
+    if (!user) return {alert: config.notfoundMessagesSite.user};
+    return {alert: await payments.setReferralKey(user, query.refKey)};
 };

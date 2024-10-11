@@ -1,15 +1,9 @@
-import {MafiaSession} from "./MafiaSession";
-import {bot} from "../../index";
+import {bot} from "@index";
 import {MysqlError} from "mysql";
+import MafiaSession from "@classes/games/MafiaSession";
+import ISessionQuery from "@interfaces/ISessionQuery";
 
-interface ISessionQuery {
-    authorid: number;
-    users: number;
-    joinable: 'true' | 'false';
-}
-
-
-export class MafiaSessions {
+export default class MafiaSessions {
     games:MafiaSession[] = []
     private map: Map<number, MafiaSession> = new Map();
 
@@ -30,7 +24,7 @@ export class MafiaSessions {
     }
 
     async createSession(sessionId: number,socketId:string) {
-        querySQL.createSession(sessionId)
+        await querySQL.createSession(sessionId)
         const newSession = await new MafiaSession(sessionId,socketId).load()
         this.map.set(sessionId, newSession)
         this.games.push(newSession)

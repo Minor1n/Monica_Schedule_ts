@@ -1,7 +1,7 @@
-export type SettingsType = 'scheduleLink'|'replacementLink'
+import {SettingsLinksType} from "@interfaces/Types";
 
-export interface ISettings{
-    type:SettingsType
+export default interface ISettings{
+    type:SettingsLinksType
     value:string
     number:number
 }

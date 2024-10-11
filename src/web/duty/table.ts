@@ -1,14 +1,22 @@
-import {bot} from "../../index";
-import {config} from "../../config";
+import {bot} from "@index";
+import config from "@config";
 
+interface IQuery{
+    user:string;
+    page:string;
+}
 
-export default (userId: number, num: number): { table: string }=> {
-    const user = bot.users.getUser(userId);
+interface IResolve{
+    table: string;
+}
+
+export default (query:IQuery): IResolve => {
+    const user = bot.users.getUser(Number(query.user));
     if (!user) return { table: config.notfoundMessagesSite.user };
 
     const group = bot.groups.getGroup(user.info.groupName);
     if (!group) return { table: config.notfoundMessagesSite.group };
 
-    const table = group.duty.generateHTML(num);
+    const table = group.duty.generateHTML(Number(query.page));
     return { table };
 };

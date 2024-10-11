@@ -1,10 +1,18 @@
-import home from "./home";
-import duty from "./duty";
-import profile from "./profile";
-import settings from "./settings";
-import gradient from "./gradient";
+import home from "@web/home";
+import duty from "@web/duty";
+import profile from "@web/profile";
+import settings from "@web/settings";
+import games from "@web/games";
+import sockets from "@web/sockets";
+import gradient from "@web/gradient";
 
 
 export default {
-    home,duty,profile,settings,gradient
+    home,
+    duty,
+    profile,
+    settings,
+    games,
+    sockets,
+    gradient
 }

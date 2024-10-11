@@ -1,5 +1,9 @@
-import {Bot} from "./classes";
-import handlers from "./handlers";
+import Bot from "@classes/Bot";
+import WebHandler from "@handlers/WebHandler";
+import CommandsHandler from "@handlers/CommandsHandler";
+import CallbackQueryHandler from "@handlers/CallbackQueryHandler";
+import HearsHandler from "@handlers/HearsHandler";
+import CronHandler from "@handlers/CronHandler";
 
 export const bot = new Bot()
 
@@ -10,11 +14,11 @@ export const bot = new Bot()
     await bot.addGroups();
     await bot.addReplacements()
     await bot.addMafiaSessions()
-    handlers.WebHandler()
-    handlers.CommandsHandler()
-    handlers.CallbackQueryHandler()
-    handlers.HearsHandler()
-    handlers.CronHandler()
+    WebHandler()
+    CommandsHandler()
+    CallbackQueryHandler()
+    HearsHandler()
+    CronHandler()
     bot.launchBot()
 })();
 

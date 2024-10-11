@@ -1,9 +1,9 @@
-import {IReferral} from "./IReferral";
+import IUserReferralQuery from "@interfaces/IUserReferralQuery";
 
-export interface IUserReferral{
+export default interface IUserReferral{
     id:number;
     key:string;
-    agents:Map<number,IReferral>;
+    agents:Map<number,IUserReferralQuery>;
     agentsApprove:number;
-    user:IReferral;
+    user:IUserReferralQuery;
 }

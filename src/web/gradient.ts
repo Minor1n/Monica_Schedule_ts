@@ -1,8 +1,15 @@
-import {bot} from "../index";
+import {bot} from "@index";
 
+interface IQuery {
+    user: string;
+}
 
-export default (userId: number): { gradient: string } => {
-    const user = bot.users.getUser(userId);
+interface IResolve {
+    gradient: string;
+}
+
+export default (query:IQuery): IResolve => {
+    const user = bot.users.getUser(Number(query.user));
     if (!user) return { gradient: bot.gradients.light.slice(11, -1) };
 
     const { theme, lightMode } = user.settings;

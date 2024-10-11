@@ -1,8 +1,9 @@
-import {GroupSchedule, User} from "../classes";
-import {GroupDuty} from "../classes/GroupDuty";
-import {GroupReplacement} from "../classes/GroupReplacement";
+import GroupSchedule from "@classes/groups/GroupSchedule";
+import GroupReplacement from "@classes/groups/GroupReplacement";
+import User from "@classes/users/User";
+import GroupDuty from "@classes/groups/GroupDuty";
 
-export interface IGroup{
+export default interface IGroup{
     name: string
     schedule: GroupSchedule
     replacement: GroupReplacement

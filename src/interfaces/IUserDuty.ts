@@ -1,8 +1,8 @@
-import {UserDutyDay} from "./IUserQuery";
+import {UserDutyDayType} from "@interfaces/Types";
 
-export interface IUserDuty {
+export default interface IUserDuty {
     id:number;
     count:number;
-    day:UserDutyDay|number;
+    day:UserDutyDayType|number;
     lastDate:number;
 }

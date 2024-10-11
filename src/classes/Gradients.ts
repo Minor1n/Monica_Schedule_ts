@@ -1,8 +1,8 @@
-import {bot} from "../index";
+import {bot} from "@index";
 import {MysqlError} from "mysql";
-import {IGradient} from "../interfaces/IGradient";
+import IGradient from "@interfaces/IGradient";
 
-export class Gradients{
+export default class Gradients{
     private _light: IGradient[] = []
     private _dark: IGradient[] = []
     constructor() {}
