@@ -1,8 +1,15 @@
-import {bot} from "../../../index";
+import {bot} from "@index";
 
+interface IQuery{
+    page:string;
+}
 
-export default async (index: number): Promise<{ table: string }> => {
-    const replacement = bot.replacements.getReplacement(index);
+interface IResolve{
+    table: string;
+}
+
+export default async (query: IQuery): Promise<IResolve> => {
+    const replacement = bot.replacements.getReplacement(Number(query.page));
     const table = replacement?.html ?? 'null';
     return { table };
 };

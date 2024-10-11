@@ -1,6 +1,6 @@
-type GradientType = 'light'|'dark'
+import {GradientType} from "@interfaces/Types";
 
-export interface IGradient{
+export default interface IGradient{
     css: string
     type: GradientType
 }

@@ -1,26 +1,23 @@
-export type UserRole = 'headman'|'user'|'support'|'admin'|'group'
-export type UserDutyDay = -1|1|2|3|4|5|6
-export type UserSettingsStatus = "on" | "off"
-export type UserLightMode = 0 | 1
+import {UserDutyDayType, UserLightModeType, UserRoleType, UserSettingsStatusType} from "@interfaces/Types";
 
-export interface IUserQuery {
+export default interface IUserQuery {
     groupName:string;
     userId:number;
     userName:string;
     payment:number;
     price:number;
     name:string;
-    role:UserRole;
+    role:UserRoleType;
     dutyCount:number;
     dutyLastDate:number;
-    dutyDay:UserDutyDay;
-    settingsSchedule:UserSettingsStatus;
-    settingsReplacement:UserSettingsStatus;
-    settingsGroupReplacement:UserSettingsStatus;
-    settingsDuty:UserSettingsStatus;
+    dutyDay:UserDutyDayType;
+    settingsSchedule:UserSettingsStatusType;
+    settingsReplacement:UserSettingsStatusType;
+    settingsGroupReplacement:UserSettingsStatusType;
+    settingsDuty:UserSettingsStatusType;
     theme:string;
     refKey:string;
     paidWhenever:'true'|'false';
-    lightMode:UserLightMode;
+    lightMode:UserLightModeType;
     groupBots:number;
 }

@@ -1,8 +1,7 @@
 import nodeHtmlToImage from "node-html-to-image";
-import {config} from "../config";
+import config from "@config";
 
-
-export class HtmlToImage{
+export default class HtmlToImage{
     private readonly gradient:string
     private readonly html:string
     constructor(gradient:string, html:string) {

@@ -1,28 +1,14 @@
 import { Telegraf } from "telegraf";
-import { config } from "../config";
+import config from "@config";
 import { createPool, Pool } from "mysql";
-import { Gradients } from "./Gradients";
-import { Groups } from "./Groups";
-import { Users } from "./Users";
-import { IBot } from "../interfaces/IBot";
-import {Replacements} from "./Replacements";
-import {MafiaSessions} from "./games/MafiaSessions";
+import Gradients from "@classes/Gradients";
+import Groups from "@classes/groups/Groups";
+import Users from "@classes/users/Users";
+import Replacements from "@classes/replacements/Replacements";
+import MafiaSessions from "@classes/games/MafiaSessions";
+import IBot from "@interfaces/IBot";
 
-const databaseConfig = {
-    host: config.SQLHOST,
-    user: config.SQLUSER,
-    database: config.SQLDATABASE,
-    password: config.SQLPASSWORD,
-};
-
-const gamesDB = {
-    host: config.SQLHOST,
-    user: config.SQLUSER,
-    database: config.SQLDATABASE_MAFIA,
-    password: config.SQLPASSWORD,
-};
-
-export class Bot extends Telegraf implements IBot{
+export default class Bot extends Telegraf implements IBot{
     devMode:boolean = false
     connection: Pool;
     gamesConnection: Pool;
@@ -34,8 +20,8 @@ export class Bot extends Telegraf implements IBot{
 
     constructor() {
         super(config.TOKEN);
-        this.connection = createPool(databaseConfig);
-        this.gamesConnection = createPool(gamesDB);
+        this.connection = createPool(config.databaseConfig);
+        this.gamesConnection = createPool(config.gamesDB);
     }
 
     launchBot() {

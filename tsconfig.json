@@ -10,6 +10,25 @@
     "forceConsistentCasingInFileNames": true,
     "strict": true,
     "strictNullChecks": true,
-    "skipLibCheck": true
+    "skipLibCheck": true,
+    "baseUrl": "./src",
+    "paths": {
+      "@classes/*": ["classes/*"],
+      "@interfaces/*": ["interfaces/*"],
+      "@types": ["interfaces/Types.ts"],
+      "@index": ["index.ts"],
+      "@config": ["config.ts"],
+      "@web/*": ["web/*"],
+      "@web": ["web/index.ts"],
+      "@handlers/*": ["handlers/*"],
+      "@utils/*": ["utils/*"],
+      "@utils": ["utils/index.ts"],
+      "@controllers/*": ["controllers/*"],
+      "@controllers": ["controllers/index.ts"]
+    },
+    "lib": [
+      "es2020",
+      "dom"
+    ]
   }
 }

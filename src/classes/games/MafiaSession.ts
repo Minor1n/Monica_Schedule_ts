@@ -1,15 +1,9 @@
-import {MafiaPlayer} from "./MafiaPlayer";
-import {bot} from "../../index";
+import {bot} from "@index";
 import {MysqlError} from "mysql";
+import MafiaPlayer from "@classes/games/MafiaPlayer";
+import IMafiaPlayersQuery from "@interfaces/IMafiaPlayersQuery";
 
-interface IPlayersQuery {
-    session:number;
-    id:number;
-    role:string;
-    isDeath:'true'|'false';
-}
-
-export class MafiaSession {
+export default class MafiaSession {
     sessionId!: number;
     socketId!: string;
     players: MafiaPlayer[] = [];
@@ -51,7 +45,7 @@ export class MafiaSession {
 }
 
 const querySQL = {
-    getPlayers: async (sessionId:number): Promise<IPlayersQuery[]> => {
+    getPlayers: async (sessionId:number): Promise<IMafiaPlayersQuery[]> => {
         return queryDatabase(`SELECT * FROM players WHERE session = ?`,[sessionId]);
     },
     addPlayer: async(sessionId: number,userId:number)=>{
@@ -62,9 +56,9 @@ const querySQL = {
     }
 };
 
-async function queryDatabase(query: string, values: any[]): Promise<IPlayersQuery[]> {
+async function queryDatabase(query: string, values: any[]): Promise<IMafiaPlayersQuery[]> {
     return new Promise((resolve, reject) => {
-        bot.gamesConnection.query(query, values, (err: MysqlError | null, result: IPlayersQuery[]) => {
+        bot.gamesConnection.query(query, values, (err: MysqlError | null, result: IMafiaPlayersQuery[]) => {
             if (err) {
                 return reject(new Error(`SQL ERROR ${err}`));
             }

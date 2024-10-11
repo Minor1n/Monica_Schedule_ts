@@ -1,11 +1,11 @@
-import {UserLightMode, UserSettingsStatus} from "./IUserQuery";
+import {UserLightModeType, UserSettingsStatusType} from "@interfaces/Types";
 
-export interface IUserSettings{
+export default interface IUserSettings{
     id:number;
-    schedule:UserSettingsStatus;
-    replacement:UserSettingsStatus;
-    duty:UserSettingsStatus;
-    groupReplacement: UserSettingsStatus;
+    schedule:UserSettingsStatusType;
+    replacement:UserSettingsStatusType;
+    duty:UserSettingsStatusType;
+    groupReplacement: UserSettingsStatusType;
     theme:"standard"|string;
-    lightMode:UserLightMode
+    lightMode:UserLightModeType
 }

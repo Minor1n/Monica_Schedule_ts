@@ -1,13 +1,22 @@
-import {bot} from "../../../index";
-import {config} from "../../../config";
+import {bot} from "@index";
+import config from "@config";
 
+interface IQuery {
+    user:string;
+    months:string;
+}
 
-export default (userId: number, months: number): string => {
-    const user = bot.users.getUser(userId);
-    if (!user) return config.notfoundMessagesSite.user;
+interface IResolve{
+    alert: string;
+}
+
+export default (query:IQuery): IResolve => {
+    const user = bot.users.getUser(Number(query.user));
+    if (!user) return {alert: config.notfoundMessagesSite.user};
     const totalCost = Math.floor(
         config.paymentMessages.cost(user.info.id, user.payment.price, user.payment.referral.agentsApprove) +
-        ((months - 1) * user.payment.price)
+        ((Number(query.months) - 1) * user.payment.price)
     );
-    return `Сумма оплаты на ${months} месяцев: ${totalCost}`;
+    return {alert: `Сумма оплаты на ${Number(query.months)} месяцев: ${totalCost}`
+};
 };

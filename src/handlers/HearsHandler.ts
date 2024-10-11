@@ -1,8 +1,10 @@
-import {bot} from "../index";
-import hears from "../hears";
+import {bot} from "@index";
+import {hears} from "@controllers";
 
 export default ()=> {
-    bot.hears("Отдежурил", async (ctx) => {
-        await hears.duty(ctx);
-    });
+    hears.forEach(({name,execute})=>{
+        bot.hears(name, (ctx) => {
+            execute(ctx);
+        });
+    })
 }

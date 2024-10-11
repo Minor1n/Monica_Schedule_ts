@@ -1,7 +1,11 @@
-import {bot} from "../../../index";
-import {config} from "../../../config";
+import {bot} from "@index";
+import config from "@config";
 
-interface IUser{
+interface IQuery {
+    user:string;
+}
+
+interface IResolve{
     name:string
     groupName:string
     duty:string
@@ -13,8 +17,8 @@ interface IUser{
     dutyDayOptions:string
 }
 
-export default (userId: number): IUser|void  => {
-    const user = bot.users.getUser(userId);
+export default (query:IQuery): IResolve|void  => {
+    const user = bot.users.getUser(Number(query.user));
     if (!user) return;
     const refBonus = config.paymentMessages.refBonus(user.info.id, user.payment.referral.agentsApprove);
     const dutyDays = new Map<number, string>([
@@ -37,7 +41,7 @@ export default (userId: number): IUser|void  => {
 
     const paymentAmount = Math.floor(user.payment.price - (user.payment.price * (refBonus / 100)));
 
-    return <IUser>{
+    return <IResolve>{
         name: user.info.name,
         groupName: user.info.groupName,
         duty: dutyDays.get(user.duty.day),

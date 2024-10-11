@@ -79,7 +79,21 @@ const notfoundMessages = {
 
 const fetchUrl = 'http://rgkript.ru/raspisanie-zanyatiy/'
 
-export const config = {
+const databaseConfig = {
+    host: SQLHOST,
+    user: SQLUSER,
+    database: SQLDATABASE,
+    password: SQLPASSWORD,
+};
+
+const gamesDB = {
+    host: SQLHOST,
+    user: SQLUSER,
+    database: SQLDATABASE_MAFIA,
+    password: SQLPASSWORD,
+};
+
+export default {
     TOKEN, PASSWORD,
     SQLHOST, SQLUSER, SQLDATABASE, SQLPASSWORD, SQLDATABASE_MAFIA,
     htmlStart1,htmlStart2,htmlEnd, puppeteer,
@@ -87,5 +101,7 @@ export const config = {
     paymentMessages,
     fetchUrl,
     notfoundMessagesSite,
-    notfoundMessages
+    notfoundMessages,
+    databaseConfig,
+    gamesDB
 };

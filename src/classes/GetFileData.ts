@@ -1,26 +1,24 @@
-import pdf from "pdf-parse";
 import WordExtractor from "word-extractor";
-
-
-export type fileType = 'pdf'|'doc'
+import {FileType} from "@types";
 
 const extractor = new WordExtractor();
 
-export class GetFileData{
+export default class GetFileData{
     private readonly buffer: Buffer
-    private readonly fileType: fileType
+    private readonly fileType: FileType
     private data: string | undefined
     private replIgnore = ['Группа','ПАРА','ПРЕПОДАВАТЕЛЬ','ЗАМЕНА','РАСПИСАНИЮ']
-    constructor(buffer:Buffer,fileType:fileType) {
+    constructor(buffer:Buffer,fileType:FileType) {
         this.buffer = buffer
         this.fileType = fileType
     }
     private async getData():Promise<string>{
+        const pdf = await import('pdf-parse');
         switch (this.fileType){
             case "doc":
                 return (await extractor.extract(this.buffer)).getBody()
             case "pdf":
-                return (await pdf(this.buffer)).text
+                return (await pdf.default(this.buffer)).text
         }
     }
     async getReplacementData():Promise<string[]>{

@@ -1,5 +1,5 @@
-import {bot} from "../index";
-import callbackQueries from "../callbackQueries";
+import {bot} from "@index";
+import {callbackQueries} from "@controllers";
 
 export default () => {
     bot.on('callback_query', async (ctx) => {
