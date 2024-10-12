@@ -25,8 +25,8 @@ export default class Bot extends Telegraf implements IBot{
     }
 
     async launchBot() {
-        await this.launch();
         await this.sendTemporaryMessage(6018898378, 'Бот запущен!');
+        await this.launch();
         console.log('Бот запущен')
     }
 
