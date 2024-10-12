@@ -36,6 +36,7 @@ export default ()=>{
                 }else{
                     await handler(query);
                     res.statusCode = 200
+                    res.send()
                 }
             });
         });
