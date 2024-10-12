@@ -24,9 +24,9 @@ export default class Bot extends Telegraf implements IBot{
         this.gamesConnection = createPool(config.gamesDB);
     }
 
-    launchBot() {
-        this.launch();
-        this.sendTemporaryMessage(6018898378, 'Бот запущен!');
+    async launchBot() {
+        await this.launch();
+        await this.sendTemporaryMessage(6018898378, 'Бот запущен!');
         console.log('Бот запущен')
     }
 

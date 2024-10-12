@@ -19,7 +19,7 @@ export const bot = new Bot()
     CallbackQueryHandler()
     HearsHandler()
     CronHandler()
-    bot.launchBot()
+    await bot.launchBot()
 })();
 
 
