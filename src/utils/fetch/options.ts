@@ -1,8 +1,21 @@
 import config from "@config";
 import User from "@classes/users/User";
+import axios from "axios";
 
 export default async (user:User):Promise<{ links:string[], dates:string[] }>=>{
-    const responseText = await (await fetch(config.fetchUrl)).text();
+    const response = await axios.get(config.fetchUrl);
+
+    if(response.statusText !== 'OK'){
+        console.log(`Failed to fetch: ${response.statusText}`);
+        user.sendText('DateArr not found');
+        return {
+            links: [],
+            dates: [],
+        }
+    }
+
+    const responseText:string = response.data;
+
     const dateRegex = /<strong>[А-Яа-я0-9. ]+/g;
     const dateMatches = responseText.match(dateRegex) || ['DateArr not found','DateArr not found']
 

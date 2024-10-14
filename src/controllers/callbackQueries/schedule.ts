@@ -24,7 +24,7 @@ export default async (data:string,userId:number)=>{
         user.sendAutoDeleteText(`Расписание: ${dates[0]} ${scheduleLinks[index].slice(36)}`, 1000 * 30);
 
         await schedule(scheduleLinks[index])
-        scheduleSettings.value = scheduleLinks[index];
+        !bot.devMode ? scheduleSettings.value = scheduleLinks[index]:null;
     } else {
         user.sendAutoDeleteText('Расписание не найдено', 1000 * 30);
     }

@@ -1,4 +1,5 @@
 import WordExtractor from "word-extractor";
+import pdf from "pdf-parse";
 import {FileType} from "@types";
 
 const extractor = new WordExtractor();
@@ -13,12 +14,11 @@ export default class GetFileData{
         this.fileType = fileType
     }
     private async getData():Promise<string>{
-        const pdf = await import('pdf-parse');
         switch (this.fileType){
             case "doc":
                 return (await extractor.extract(this.buffer)).getBody()
             case "pdf":
-                return (await pdf.default(this.buffer)).text
+                return (await pdf(this.buffer)).text
         }
     }
     async getReplacementData():Promise<string[]>{

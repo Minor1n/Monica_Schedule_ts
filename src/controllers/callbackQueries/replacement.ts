@@ -24,7 +24,7 @@ export default async (data:string,userId:number)=>{
         user.sendAutoDeleteText(`Замены: ${dates[1]} ${replacementLinks[index].slice(36)}`, 1000 * 30);
 
         await replacement(replacementLinks[index], dates[1])
-        replacementSettings.value = replacementLinks[index];
+        !bot.devMode ? replacementSettings.value = replacementLinks[index]:null;
     } else {
         user.sendAutoDeleteText('Замены не найдены', 1000 * 30);
     }

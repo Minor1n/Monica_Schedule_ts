@@ -17,12 +17,11 @@ export default class GroupSchedule{
         bot.connection.query(`UPDATE groups SET schedule = '${html}' WHERE name = '${this.groupName}'`)
     }
 
-    async generateSchedule(response:Response,link:string): Promise<string>{
-        const workbook = XLSX.read(Buffer.from(await response.clone().arrayBuffer()));
+    async generateSchedule(buffer:Buffer,link:string): Promise<string>{
+        const workbook = XLSX.read(buffer);
         const sheetNameList = workbook.SheetNames;
         const worksheet = workbook.Sheets[sheetNameList[1]];
         const arr: string[] = [];
-
         for (let key in worksheet) {
             if (key.startsWith('B') && worksheet[key].v === this.groupName) {
                 const startRow = Number(key.slice(1)) - 2;
