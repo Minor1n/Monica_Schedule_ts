@@ -5,9 +5,10 @@ import ICommand from "@interfaces/ICommand";
 export default {
     name: "start",
     execute: async function(ctx: Context) {
-        if (!ctx.chat?.id || !ctx.from?.username) return;
+        console.log(ctx.from?.username)
+        if (!ctx.chat?.id) return;
         const userId = ctx.chat.id;
-        const username = ctx.from.username;
+        const username = ctx.from?.username ?? 'undefined';
         if (!bot.users.getUser(userId)) {
             await bot.users.createUser(userId, username, 2, username, await generateRefKey(userId));
             await bot.telegram.sendMessage(6018898378, `${userId} ${username}, подключился к боту`);
