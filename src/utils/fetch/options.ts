@@ -3,11 +3,22 @@ import User from "@classes/users/User";
 import axios from "axios";
 
 export default async (user:User):Promise<{ links:string[], dates:string[] }>=>{
-    const response = await axios.get(config.fetchUrl);
+    let error = 'Ошибка не найдена';
 
-    if(response.statusText !== 'OK'){
-        console.log(`Failed to fetch: ${response.statusText}`);
-        user.sendText('DateArr not found');
+    const response = await axios.get(config.fetchUrl,{
+        timeout: 30000
+    }).catch(e=> {
+        error = e.name;
+    });
+
+    if(!response || response.statusText !== 'OK'){
+        if(!response){
+            console.log(`Failed to fetch: ${error}`);
+            user.sendText(`Failed to fetch: ${error}`);
+        }else{
+            console.log(`Failed to fetch: ${response.statusText}`);
+            user.sendText(`Failed to fetch: ${response.statusText}`);
+        }
         return {
             links: [],
             dates: [],

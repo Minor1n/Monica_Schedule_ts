@@ -17,21 +17,28 @@ export default {
 
         const {scheduleLinks,replacementLinks} = await fetchUtils.links(user)
 
-        const keyboardSchedules:InlineKeyboardButton[][] = scheduleLinks.map((link,index) => {
-            return[{
-                text:link.slice(36),
-                callback_data:`fetchSchedules${index}`
-            }]
-        })
+        if(!scheduleLinks[0]) {
+            user.sendText('Расписания не найдены')
+        }else{
+            const keyboardSchedules:InlineKeyboardButton[][] = scheduleLinks.map((link,index) => {
+                return[{
+                    text:link.slice(36),
+                    callback_data:`fetchSchedules${index}`
+                }]
+            })
+            user.sendButtons('Доступны следующие url для расписания:',keyboardSchedules)
+        }
 
-        const keyboardReplacements:InlineKeyboardButton[][] = replacementLinks.map((link,index) => {
-            return[{
-                text:link.slice(36),
-                callback_data:`fetchReplacements${index}`
-            }]
-        })
-
-        user.sendButtons('Доступны следующие url для расписания:',keyboardSchedules)
-        user.sendButtons('Доступны следующие url для замен:',keyboardReplacements)
+        if(!replacementLinks[0]) {
+            user.sendText('Замены не найдены')
+        }else{
+            const keyboardReplacements:InlineKeyboardButton[][] = replacementLinks.map((link,index) => {
+                return[{
+                    text:link.slice(36),
+                    callback_data:`fetchReplacements${index}`
+                }]
+            })
+            user.sendButtons('Доступны следующие url для замен:',keyboardReplacements)
+        }
     }
 } satisfies ICommand;

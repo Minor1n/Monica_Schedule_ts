@@ -5,7 +5,6 @@ import ICommand from "@interfaces/ICommand";
 export default {
     name: "start",
     execute: async function(ctx: Context) {
-        console.log(ctx.from?.username)
         if (!ctx.chat?.id) return;
         const userId = ctx.chat.id;
         const username = ctx.from?.username ?? 'undefined';

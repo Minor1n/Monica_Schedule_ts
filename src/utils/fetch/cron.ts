@@ -14,7 +14,7 @@ export default async ()=>{
     const scheduleSettings = settings.getSettings('scheduleLink');
     const replacementSettings = settings.getSettings('replacementLink');
 
-    if (scheduleSettings && !scheduleLinks.find(link=> link === scheduleSettings.value)) {
+    if (scheduleLinks[0] && scheduleSettings && !scheduleLinks.find(link=> link === scheduleSettings.value)) {
         const keyboardSchedules:InlineKeyboardButton[][] = scheduleLinks.map((link,index) => {
             return[{
                 text:link.slice(36),
@@ -24,7 +24,7 @@ export default async ()=>{
         user.sendButtons('Доступны следующие url для расписания:',keyboardSchedules)
     }
 
-    if (replacementSettings && !replacementLinks.find(link=> link === replacementSettings.value)) {
+    if (replacementLinks[0] && replacementSettings && !replacementLinks.find(link=> link === replacementSettings.value)) {
         const keyboardReplacements:InlineKeyboardButton[][] = replacementLinks.map((link,index) => {
             return[{
                 text:link.slice(36),

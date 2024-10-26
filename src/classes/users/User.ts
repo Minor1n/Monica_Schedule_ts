@@ -56,7 +56,6 @@ export default class User implements IUser{
     }
     sendPhoto(image:Buffer,name:string){
         bot.telegram.sendPhoto(this.info.id, Input.fromBuffer(image,name)).catch(e=>{console.log(e)})
-        console.log('success')
         payments.alert(this).catch(e=>{console.log(e)})
     }
     sendButtons(text:string,keyboard:InlineKeyboardButton[][]){
