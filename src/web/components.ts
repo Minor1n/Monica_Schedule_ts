@@ -4,6 +4,7 @@ import ISocketComponent from "@interfaces/ISocketComponent";
 
 const standardRouterHandlers:IWebComponent[] = [
     { method: 'get', url: '/gradient', handler: web.gradient },
+    { method: 'get', url: '/paymentStatus', handler: web.paymentStatus}
 ]
 
 const homeRouterHandlers:IWebComponent[] = [

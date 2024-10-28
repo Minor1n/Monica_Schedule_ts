@@ -8,7 +8,7 @@ export default async (user:User):Promise<{ links:string[], dates:string[] }>=>{
     const response = await axios.get(config.fetchUrl,{
         timeout: 30000
     }).catch(e=> {
-        error = e.name;
+        error = `${e.name}\n\`\`\`${e.value}\`\`\``;
     });
 
     if(!response || response.statusText !== 'OK'){

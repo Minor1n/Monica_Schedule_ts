@@ -5,6 +5,7 @@ import settings from "@web/settings";
 import games from "@web/games";
 import sockets from "@web/sockets";
 import gradient from "@web/gradient";
+import paymentStatus from "@web/paymentStatus";
 
 
 export default {
@@ -14,5 +15,6 @@ export default {
     settings,
     games,
     sockets,
-    gradient
+    gradient,
+    paymentStatus
 }
