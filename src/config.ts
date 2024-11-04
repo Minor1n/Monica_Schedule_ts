@@ -35,6 +35,9 @@ let payment:Map<number,string> = new Map()
     .set(8,'Оплачен на 7 месяцев')
     .set(9,'Оплачен на 8 месяцев')
     .set(10,'Оплачен на 9 месяцев')
+    .set(11,'Оплачен на 10 месяцев')
+    .set(12,'Оплачен на 11 месяцев')
+    .set(13,'Оплачен на 1 год')
 const puppeteer = { args: [ '--no-sandbox', '--disable-setuid-sandbox', '--disable-dev-shm-usage', '--disable-accelerated-2d-canvas', '--no-first-run', '--headless', '--no-zygote', '--disable-gpu' ], headless: true, ignoreHTTPSErrors: true }
 
 const paymentMessages ={
@@ -48,11 +51,14 @@ const paymentMessages ={
         let arr = [
             `Оплатите подписку <b>${Math.round(cost)}р</b>`,
             `Вы также можете оплатить подписку на несколько месяцев(${Math.round(cost + price)}р, ${Math.round(cost + (price * 2))}р, ${Math.round(cost + (price * 3))}р, ${Math.round(cost + (price * 4))}р, ${Math.round(cost + (price * 5))}р)`,
+            `Сумму оплаты на большее количество месяцев можно узнать в профиле APP (до 12 месяцев)`,
+            ``,
             `При оплате, в комментарии указывайте ваш id (id можно узнать введя команду /profile)`,
             `После оплаты пропишите /paid для оповещения администрации об оплате`,
-            `<a href="https://www.tinkoff.ru/rm/korop.aleksandr4/KHtiD43274">ссылка для оплаты</a>`,
             ``,
-            `При оплате за июнь вы получаете статус Оплачен на 3 месяца`
+            `<a href="https://www.tinkoff.ru/rm/korop.aleksandr4/KHtiD43274">Ссылка для оплаты</a> или +79241481304(Т-Банк)`,
+            ``,
+            `В период с 1.07 по 1.09 статус оплаты не изменяется`
         ]
         return arr.join('\n')
     },

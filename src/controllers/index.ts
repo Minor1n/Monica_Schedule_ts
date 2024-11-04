@@ -1,3 +1,5 @@
+import {BaseScene} from "telegraf/scenes";
+import IContext from "@interfaces/IContext";
 //CallbackQueries
 import keyboard from "@controllers/callbackQueries/settings/keyboard";
 import updateSettings from "@controllers/callbackQueries/settings/updateSettings";
@@ -6,8 +8,6 @@ import replacement from "@controllers/callbackQueries/replacement";
 import schedule from "@controllers/callbackQueries/schedule";
 import setGroup from "@controllers/callbackQueries/setGroup";
 import userPaid from "@controllers/callbackQueries/userPaid";
-import userStatus from "@controllers/callbackQueries/userStatus";
-import vipStatus from "@controllers/callbackQueries/vipStatus";
 import setDutyDay from "@controllers/callbackQueries/setDutyDay";
 //Hears
 import duty from "@controllers/hears/duty";
@@ -31,7 +31,8 @@ import status from "@controllers/commands/status";
 import theme from "@controllers/commands/theme";
 import IHear from "@interfaces/IHear";
 import ICommand from "@interfaces/ICommand";
-
+//Scenes
+import SceneUserPaid from "@controllers/scenes/userPaid";
 
 export const commands:ICommand[] = [
     CDuty,
@@ -70,6 +71,8 @@ export const callbackQueries = {
     setDutyDay,
     setGroup,
     userPaid,
-    userStatus,
-    vipStatus,
 }
+
+export const scenes: BaseScene<IContext<any>>[] = [
+    SceneUserPaid
+]

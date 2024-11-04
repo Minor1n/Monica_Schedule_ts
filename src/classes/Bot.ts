@@ -1,4 +1,4 @@
-import { Telegraf } from "telegraf";
+import {Scenes, session, Telegraf} from "telegraf";
 import config from "@config";
 import { createPool, Pool } from "mysql";
 import Gradients from "@classes/Gradients";
@@ -7,8 +7,10 @@ import Users from "@classes/users/Users";
 import Replacements from "@classes/replacements/Replacements";
 import MafiaSessions from "@classes/games/MafiaSessions";
 import IBot from "@interfaces/IBot";
+import {scenes} from "@controllers";
+import IContext from "@interfaces/IContext";
 
-export default class Bot extends Telegraf implements IBot{
+export default class Bot extends Telegraf<IContext<any>> implements IBot{
     devMode:boolean = false
     connection: Pool;
     gamesConnection: Pool;
@@ -17,11 +19,14 @@ export default class Bot extends Telegraf implements IBot{
     users!: Users;
     replacements!:Replacements
     mafiaSessions!: MafiaSessions;
+    stage = new Scenes.Stage<IContext<any>>(scenes);
 
     constructor() {
         super(config.TOKEN);
         this.connection = createPool(config.databaseConfig);
         this.gamesConnection = createPool(config.gamesDB);
+        this.use(session())
+        this.use(this.stage.middleware());
     }
 
     async launchBot() {

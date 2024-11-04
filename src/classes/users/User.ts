@@ -43,8 +43,8 @@ export default class User implements IUser{
         };
     }
 
-    sendText(text:string){
-        if(bot.devMode&&this.info.id !== 6018898378)return;
+    sendText(text:string,devMode:boolean = true){
+        if(bot.devMode&&this.info.id !== 6018898378&&devMode)return;
         bot.telegram.sendMessage(this.info.id,text,{ parse_mode: 'HTML' }).catch(e=>{console.log(e)})
         payments.alert(this).catch(e=>{console.log(e)})
     }
