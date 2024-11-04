@@ -1,27 +1,12 @@
-import {Context} from "telegraf";
-import {bot} from "@index";
-import config from "@config";
-import {payments} from "@utils";
 import ICommand from "@interfaces/ICommand";
+import IContext from "@interfaces/IContext";
+import ISceneSessionSetReferralKey from "@interfaces/scenes/ISceneSessionSetReferralKey";
 
 export default {
     name: "referral",
-    execute: async function(ctx:Context){
-        const chatId = ctx.chat?.id;
-        const refKey = ctx.text?.slice(10).trim();
-        if (!chatId) {
-            return;
-        }
-        const user = bot.users.getUser(chatId)
-        if (!user) {
-            await ctx.reply(config.notfoundMessages.user);
-            return;
-        }
-        if (!refKey) {
-            await ctx.reply('Вы не указали реферальный ключ(/referral реферальный ключ)');
-            return;
-        }
-        const responseMessage = await payments.setReferralKey(user, refKey);
-        await ctx.reply(responseMessage);
+    execute: async function(ctx:IContext<ISceneSessionSetReferralKey>){
+        if(!ctx.from?.id)return
+        ctx.session.userId = ctx.from.id;
+        await ctx.scene.enter("setReferralKey")
     }
 } satisfies ICommand;

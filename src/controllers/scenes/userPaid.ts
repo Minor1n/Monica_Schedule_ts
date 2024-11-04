@@ -1,7 +1,7 @@
 import {Markup, Scenes} from "telegraf";
 import config from "@config";
 import IContext from "@interfaces/IContext";
-import ISceneSessionUserPaid from "@interfaces/ISceneSessionUserPaid";
+import ISceneSessionUserPaid from "@interfaces/scenes/ISceneSessionUserPaid";
 import {bot} from "@index";
 import {ExtraEditMessageText} from "telegraf/typings/telegram-types";
 

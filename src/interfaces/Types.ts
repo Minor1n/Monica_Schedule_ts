@@ -8,3 +8,4 @@ export type UserDutyDayType = -1|1|2|3|4|5|6
 export type UserSettingsStatusType = "on" | "off"
 export type UserLightModeType = 0 | 1
 export type FileType = 'pdf'|'doc'
+export type SceneNames = 'setName'|'setReferralKey'|'setTheme'|'userPaid'

@@ -1,6 +1,6 @@
-import {Context} from "telegraf";
+import IContext from "@interfaces/IContext";
 
 export default interface ICommand {
     name: string;
-    execute: (ctx:Context) => void;
+    execute: (ctx:IContext<any>) => void;
 }

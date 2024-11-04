@@ -22,7 +22,7 @@ import CReplacement from "@controllers/commands/replacement"
 import CSchedule from "@controllers/commands/schedule"
 import restart from "@controllers/commands/restart";
 import send from "@controllers/commands/send";
-import CSetDutyDay from "@controllers/commands/setDutyDay";
+import CSetDutyDate from "@controllers/commands/setDutyDate";
 import CSetGroup from "@controllers/commands/setGroup";
 import setName from "@controllers/commands/setName";
 import settings from "@controllers/commands/settings";
@@ -33,6 +33,9 @@ import IHear from "@interfaces/IHear";
 import ICommand from "@interfaces/ICommand";
 //Scenes
 import SceneUserPaid from "@controllers/scenes/userPaid";
+import SceneSetName from "@controllers/scenes/setName";
+import SceneSetReferralKey from "@controllers/scenes/setReferralKey";
+import SceneSetTheme from "@controllers/scenes/setTheme";
 
 export const commands:ICommand[] = [
     CDuty,
@@ -45,7 +48,7 @@ export const commands:ICommand[] = [
     CSchedule,
     restart,
     send,
-    CSetDutyDay,
+    CSetDutyDate,
     CSetGroup,
     setName,
     settings,
@@ -74,5 +77,8 @@ export const callbackQueries = {
 }
 
 export const scenes: BaseScene<IContext<any>>[] = [
-    SceneUserPaid
+    SceneUserPaid,
+    SceneSetName,
+    SceneSetReferralKey,
+    SceneSetTheme
 ]

@@ -4,9 +4,9 @@ import config from "@config";
 import ICommand from "@interfaces/ICommand";
 
 export default {
-    name: "setdutyday",
+    name: "setdutydate",
     execute: async function (ctx:Context){
-        const chatId = ctx.chat?.id;
+        const chatId = ctx.from?.id;
         if (!chatId) {
             return;
         }

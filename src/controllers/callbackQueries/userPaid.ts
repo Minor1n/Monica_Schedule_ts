@@ -1,5 +1,5 @@
 import IContext from "@interfaces/IContext";
-import ISceneSessionUserPaid from "@interfaces/ISceneSessionUserPaid";
+import ISceneSessionUserPaid from "@interfaces/scenes/ISceneSessionUserPaid";
 import {bot} from "@index";
 import {payments} from "@utils";
 
