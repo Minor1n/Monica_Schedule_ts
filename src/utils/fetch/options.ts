@@ -1,6 +1,7 @@
 import config from "@config";
 import User from "@classes/users/User";
 import axios from "axios";
+import {getNextMondayAndTomorrow} from "@utils/utils";
 
 export default async (user:User):Promise<{ links:string[], dates:string[] }>=>{
     let error = 'Ошибка не найдена';
@@ -27,8 +28,12 @@ export default async (user:User):Promise<{ links:string[], dates:string[] }>=>{
 
     const responseText:string = response.data;
 
-    const dateRegex = /<strong>[А-Яа-я0-9. ]+/g;
-    const dateMatches = responseText.match(dateRegex) || ['DateArr not found','DateArr not found']
+    const dateRegex = /<strong>[А-Яа-я0-9. ]+| [0-9]+\.[0-9]+\.[0-9]+/g;
+    const matches = responseText.match(dateRegex)?.slice(0,2)
+    const getDates = getNextMondayAndTomorrow()
+    const dateMatches = []
+    dateMatches.push(matches?.length!>0 ? matches![0] : getDates[0])
+    dateMatches.push(matches?.length!>1 ? matches![1] : getDates[1])
 
     const year = new Date().getFullYear();
     const linkRegex = new RegExp('<a href="http:\\/\\/rgkript.ru\\/wp-content\\/uploads\\/\\/'+year+'[0-9/.\\-A-Za-z_]+"','g')
