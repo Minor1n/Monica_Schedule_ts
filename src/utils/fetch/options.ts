@@ -28,22 +28,22 @@ export default async (user:User):Promise<{ links:string[], dates:string[] }>=>{
 
     const responseText:string = response.data;
 
-    const dateRegex = /<strong>[А-Яа-я0-9. ]+| [0-9]+\.[0-9]+\.[0-9]+/g;
+    const dateRegex = /<strong>[А-Яа-я0-9. ]+/g;
     const matches = responseText.match(dateRegex)?.slice(0,2)
     const getDates = getNextMondayAndTomorrow()
-    const dateMatches = []
-    dateMatches.push(matches?.length!>0 ? matches![0] : getDates[0])
-    dateMatches.push(matches?.length!>1 ? matches![1] : getDates[1])
+    const datesMatches = <string[]> matches?.map(match => match.match(/[0-9]+.[0-9]+.[0-9]+/g)?.[0]).filter(Boolean);
+    const dates = []
+    dates.push(datesMatches.length!>0 ? datesMatches![0] : getDates[0])
+    dates.push(datesMatches.length!>1 ? datesMatches![1] : getDates[1])
 
     const year = new Date().getFullYear();
     const linkRegex = new RegExp('<a href="http:\\/\\/rgkript.ru\\/wp-content\\/uploads\\/\\/'+year+'[0-9/.\\-A-Za-z_]+"','g')
     const links = Array.from(new Set(responseText.match(linkRegex))).map(link => link.slice(9, -1));
 
-    if (!dateMatches) {
+    if (!dates) {
         user.sendText('DateArr not found');
     }
 
-    const dates = <string[]> dateMatches.map(match => match.match(/[0-9]+.[0-9]+.[0-9]+/g)?.[0]).filter(Boolean);
 
     return {
         links,
