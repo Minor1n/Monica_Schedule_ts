@@ -84,10 +84,12 @@ export default class User implements IUser{
     }
 
     private checkStatus(e:any){
-        if(e.code === 403){
-            this.info.banStatus = true;
+        if(!this.info.banStatus){
+            if(e.code === 403){
+                this.info.banStatus = true;
+                bot.users.getUser(6018898378)?.sendText(`Пользователь: ${this.info.name}(${this.info.id}, ${this.info.userName}) заблокировал бота`)
+            }
         }
-        bot.users.getUser(6018898378)?.sendText(`Пользователь: ${this.info.name}(${this.info.id}, ${this.info.userName}) заблокировал бота`)
     }
 }
 
