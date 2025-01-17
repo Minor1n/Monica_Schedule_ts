@@ -45,8 +45,10 @@ export default class User implements IUser{
 
     sendText(text:string,devMode:boolean = true){
         if(bot.devMode&&this.info.id !== 6018898378&&devMode)return;
-        bot.telegram.sendMessage(this.info.id,text,{ parse_mode: 'HTML' }).catch(e=>{
-            this.checkStatus(e)
+        bot.telegram.sendMessage(this.info.id,text,{ parse_mode: 'HTML' }).then(()=>{
+            this.unbanStatus()
+        }).catch(e=>{
+            this.banStatus(e)
             console.log(e)
         })
         payments.alert(this).catch(e=>{console.log(e)})
@@ -54,20 +56,26 @@ export default class User implements IUser{
     sendAutoDeleteText(text:string,timeout:number){
         bot.telegram.sendMessage(this.info.id,text,{ parse_mode: 'HTML' })
             .then(r=>{setTimeout(()=>{
-                bot.telegram.deleteMessage(r.chat.id,r.message_id).catch(e=>{
-                    this.checkStatus(e)
+                bot.telegram.deleteMessage(r.chat.id,r.message_id).then(()=>{
+                    this.unbanStatus()
+                }).catch(e=>{
+                    this.banStatus(e)
                     console.log(e)
                 })},timeout
-            )})
+            )}).then(()=>{
+            this.unbanStatus()
+            })
             .catch(e=>{
-                this.checkStatus(e)
+                this.banStatus(e)
                 console.log(e)
             })
         payments.alert(this).catch(e=>{console.log(e)})
     }
     sendPhoto(image:Buffer,name:string){
-        bot.telegram.sendPhoto(this.info.id, Input.fromBuffer(image,name)).catch(e=>{
-            this.checkStatus(e)
+        bot.telegram.sendPhoto(this.info.id, Input.fromBuffer(image,name)).then(()=>{
+            this.unbanStatus()
+        }).catch(e=>{
+            this.banStatus(e)
             console.log(e)
         })
         payments.alert(this).catch(e=>{console.log(e)})
@@ -77,18 +85,27 @@ export default class User implements IUser{
             reply_markup: {
                 inline_keyboard: keyboard,
             },
+        }).then(()=>{
+            this.unbanStatus()
         }).catch(e=>{
-            this.checkStatus(e)
+            this.banStatus(e)
             console.log(e)
         })
     }
 
-    private checkStatus(e:any){
+    private banStatus(e:any){
         if(!this.info.banStatus){
             if(e.code === 403){
                 this.info.banStatus = true;
                 bot.users.getUser(6018898378)?.sendText(`Пользователь: ${this.info.name}(${this.info.id}, ${this.info.userName}) заблокировал бота`)
             }
+        }
+    }
+
+    private unbanStatus(){
+        if(this.info.banStatus){
+            this.info.banStatus = false;
+            bot.users.getUser(6018898378)?.sendText(`Пользователь: ${this.info.name}(${this.info.id}, ${this.info.userName}) разблокировал бота`)
         }
     }
 }
