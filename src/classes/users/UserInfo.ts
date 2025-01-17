@@ -9,13 +9,15 @@ export default class UserInfo implements IUserInfo{
     private _name: string;
     private readonly _role: UserRoleType;
     private _userName: string;
-    constructor(bots:number,groupName:string,id:number,name:string,userName:string,role:UserRoleType) {
+    private _banStatus: boolean
+    constructor(bots:number,groupName:string,id:number,name:string,userName:string,role:UserRoleType,banStatus:boolean) {
         this._bots = bots
         this._groupName = groupName
         this._id = id
         this._name = name
         this._role = role
         this._userName = userName
+        this._banStatus = banStatus
     }
     get bots(): number {
         return this._bots;
@@ -41,6 +43,10 @@ export default class UserInfo implements IUserInfo{
         return this._userName;
     }
 
+    get banStatus(): boolean {
+        return this._banStatus;
+    }
+
     set groupName(value: string) {
         this._groupName = value;
         this.updateField('groupName', value);
@@ -54,6 +60,11 @@ export default class UserInfo implements IUserInfo{
     set userName(value: string) {
         this._userName = value;
         this.updateField('userName', value);
+    }
+
+    set banStatus(value:boolean) {
+        this._banStatus = value;
+        this.updateField('banStatus', value.toString());
     }
 
     private updateField(field: string, value: string) {

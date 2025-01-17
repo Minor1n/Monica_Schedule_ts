@@ -36,7 +36,7 @@ export default class User implements IUser{
         const referral = await new UserReferral(result.userId, result.refKey).load();
         return {
             duty: new UserDuty(result.userId, result.dutyCount, result.dutyDay, result.dutyLastDate),
-            info: new UserInfo(result.groupBots, result.groupName, result.userId, result.name, result.userName, result.role),
+            info: new UserInfo(result.groupBots, result.groupName, result.userId, result.name, result.userName, result.role, result.banStatus),
             payment: new UserPayment(result.userId, result.paidWhenever, result.price, result.payment, referral),
             settings: new UserSettings(result.userId, result.settingsDuty, result.lightMode, result.settingsReplacement,
                 result.settingsGroupReplacement, result.settingsSchedule, result.theme),
@@ -45,17 +45,31 @@ export default class User implements IUser{
 
     sendText(text:string,devMode:boolean = true){
         if(bot.devMode&&this.info.id !== 6018898378&&devMode)return;
-        bot.telegram.sendMessage(this.info.id,text,{ parse_mode: 'HTML' }).catch(e=>{console.log(e)})
+        bot.telegram.sendMessage(this.info.id,text,{ parse_mode: 'HTML' }).catch(e=>{
+            this.checkStatus(e)
+            console.log(e)
+        })
         payments.alert(this).catch(e=>{console.log(e)})
     }
     sendAutoDeleteText(text:string,timeout:number){
         bot.telegram.sendMessage(this.info.id,text,{ parse_mode: 'HTML' })
-            .then(r=>{setTimeout(()=>{bot.telegram.deleteMessage(r.chat.id,r.message_id).catch(e=>{console.log(e)})},timeout)})
-            .catch(e=>{console.log(e)})
+            .then(r=>{setTimeout(()=>{
+                bot.telegram.deleteMessage(r.chat.id,r.message_id).catch(e=>{
+                    this.checkStatus(e)
+                    console.log(e)
+                })},timeout
+            )})
+            .catch(e=>{
+                this.checkStatus(e)
+                console.log(e)
+            })
         payments.alert(this).catch(e=>{console.log(e)})
     }
     sendPhoto(image:Buffer,name:string){
-        bot.telegram.sendPhoto(this.info.id, Input.fromBuffer(image,name)).catch(e=>{console.log(e)})
+        bot.telegram.sendPhoto(this.info.id, Input.fromBuffer(image,name)).catch(e=>{
+            this.checkStatus(e)
+            console.log(e)
+        })
         payments.alert(this).catch(e=>{console.log(e)})
     }
     sendButtons(text:string,keyboard:InlineKeyboardButton[][]){
@@ -63,7 +77,17 @@ export default class User implements IUser{
             reply_markup: {
                 inline_keyboard: keyboard,
             },
-        }).catch(e=>{console.log(e)})
+        }).catch(e=>{
+            this.checkStatus(e)
+            console.log(e)
+        })
+    }
+
+    private checkStatus(e:any){
+        if(e.code === 403){
+            this.info.banStatus = true;
+        }
+        bot.users.getUser(6018898378)?.sendText(`Пользователь: ${this.info.name}(${this.info.id}, ${this.info.userName}) заблокировал бота`)
     }
 }
 
