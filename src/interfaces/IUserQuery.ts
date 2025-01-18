@@ -20,5 +20,5 @@ export default interface IUserQuery {
     paidWhenever:'true'|'false';
     lightMode:UserLightModeType;
     groupBots:number;
-    banStatus:boolean;
+    banStatus:'true'|'false';
 }

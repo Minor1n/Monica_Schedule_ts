@@ -94,17 +94,17 @@ export default class User implements IUser{
     }
 
     private banStatus(e:any){
-        if(!this.info.banStatus){
+        if(this.info.banStatus === 'false'){
             if(e.code === 403){
-                this.info.banStatus = true;
+                this.info.banStatus = 'true';
                 bot.users.getUser(6018898378)?.sendText(`Пользователь: ${this.info.name}(${this.info.id}, ${this.info.userName}) заблокировал бота`)
             }
         }
     }
 
     private unbanStatus(){
-        if(this.info.banStatus){
-            this.info.banStatus = false;
+        if(this.info.banStatus === 'true'){
+            this.info.banStatus = 'false';
             bot.users.getUser(6018898378)?.sendText(`Пользователь: ${this.info.name}(${this.info.id}, ${this.info.userName}) разблокировал бота`)
         }
     }
