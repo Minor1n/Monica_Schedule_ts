@@ -26,6 +26,7 @@ export default new Scenes.BaseScene<IContext<ISceneSessionUserPaid>>('userPaid')
         if (status && user) {
             user.payment.status += Number(status)
             user.payment.paid = "true";
+            user.insertPayment(Number(status))
             edit(ctx,`Статус оплаты пользователя ${user.info.userName}(${user.info.id}) изменен на ${config.payment.get(user.payment.status)}`,{
                 reply_markup:{
                     inline_keyboard:[[

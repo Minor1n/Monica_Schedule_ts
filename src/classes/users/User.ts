@@ -108,6 +108,12 @@ export default class User implements IUser{
             bot.users.getUser(6018898378)?.sendText(`Пользователь: ${this.info.name}(${this.info.id}, ${this.info.userName}) разблокировал бота`)
         }
     }
+
+    async insertPayment(status:number){
+        const date = new Date().toISOString().slice(0, 19).replace('T', ' ');
+        const count = Math.round(status * 39.4)
+        await querySQL.insertPayment(date, count, this.info.id, this.info.userName, this.info.name)
+    }
 }
 
 const querySQL = {
@@ -116,6 +122,9 @@ const querySQL = {
     },
     userId: async (userId: number): Promise<IUserQuery> => {
         return queryDatabase(`SELECT * FROM users WHERE userId = ?`, [userId]);
+    },
+    insertPayment: async (date:string, count:number, userId:number, userName:string, name:string):Promise<IUserQuery> => {
+        return queryDatabase(`INSERT INTO payment (date, count, userId, userName, name) values(?,?,?,?,?)`,[date, count, userId, userName, name])
     }
 };
 
