@@ -65,6 +65,9 @@ export default class UserInfo implements IUserInfo{
     set banStatus(value:'true'|'false') {
         this._banStatus = value;
         this.updateField('banStatus', value);
+        if(value == 'true'){
+            this.updateField('banDate',new Date().toISOString().slice(0, 19).replace('T', ' '))
+        }
     }
 
     private updateField(field: string, value: string) {
