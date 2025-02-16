@@ -4,11 +4,11 @@ import {bot} from "@index";
 import {mafia} from "@utils";
 
 
-export default (io: Server, _socket: Socket, newState: IMafiaJoin) => {
+export default (io: Server, socket: Socket, newState: IMafiaJoin) => {
     try {
         const session = bot.mafiaSessions.getSession(newState.sessionId);
         if (!session) return;
-        const player = session.getPlayer(newState.userId) ?? session.addPlayer(newState.userId);
+        const player = session.getPlayer(newState.userId) ?? session.addPlayer(newState.userId, socket.id);
         const newPlayers = mafia.mapPlayers(session.players);
 
         mafia.updatePlayersInfo(io, newState.sessionId, newPlayers);
