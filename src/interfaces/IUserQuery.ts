@@ -1,4 +1,4 @@
-import {UserDutyDayType, UserLightModeType, UserRoleType, UserSettingsStatusType} from "@interfaces/Types";
+import type {UserDutyDayType, UserLightModeType, UserRoleType, UserSettingsStatusType} from "@interfaces/Types";
 
 export default interface IUserQuery {
     groupName:string;

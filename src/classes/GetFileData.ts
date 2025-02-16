@@ -1,6 +1,6 @@
 import WordExtractor from "word-extractor";
 import pdf from "pdf-parse";
-import {FileType} from "@types";
+import type {FileType} from "@types";
 
 const extractor = new WordExtractor();
 

@@ -1,6 +1,6 @@
 import {bot} from "@index";
-import {MysqlError} from "mysql";
-import IReplacement from "@interfaces/IReplacement";
+import type {MysqlError} from "mysql";
+import type IReplacement from "@interfaces/IReplacement";
 
 export default class Replacements {
     private all: IReplacement[] = [];

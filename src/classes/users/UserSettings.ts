@@ -1,6 +1,6 @@
 import {bot} from "@index";
-import IUserSettings from "@interfaces/IUserSettings";
-import {UserLightModeType, UserSettingsStatusType} from "@types";
+import type IUserSettings from "@interfaces/IUserSettings";
+import type {UserLightModeType, UserSettingsStatusType} from "@types";
 
 export default class UserSettings implements IUserSettings{
     id:number;

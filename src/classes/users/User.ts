@@ -1,14 +1,14 @@
 import {bot} from "@index";
-import {MysqlError} from "mysql";
+import type {MysqlError} from "mysql";
 import {Input} from "telegraf";
-import {InlineKeyboardButton} from '@telegraf/types'
+import type {InlineKeyboardButton} from '@telegraf/types';
 import UserInfo from './UserInfo'
 import UserDuty from "./UserDuty";
 import UserPayment from "./UserPayment";
 import UserSettings from "./UserSettings";
 import UserReferral from "./UserReferral";
-import IUserQuery from "@interfaces/IUserQuery";
-import IUser from "@interfaces/IUser";
+import type IUserQuery from "@interfaces/IUserQuery";
+import type IUser from "@interfaces/IUser";
 import {payments} from "@utils";
 
 export default class User implements IUser{

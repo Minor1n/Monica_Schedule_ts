@@ -1,7 +1,7 @@
 import {Scenes} from "telegraf";
-import IContext from "@interfaces/IContext";
+import type IContext from "@interfaces/IContext";
 import {bot} from "@index";
-import ISceneSessionSetTheme from "@interfaces/scenes/ISceneSessionSetTheme";
+import type ISceneSessionSetTheme from "@interfaces/scenes/ISceneSessionSetTheme";
 
 
 export default new Scenes.BaseScene<IContext<ISceneSessionSetTheme>>('setTheme')

@@ -3,7 +3,7 @@ import {bot} from "@index";
 import config from "@config";
 import HtmlToImage from "@classes/HtmlToImage";
 import {payments} from "@utils";
-import ICommand from "@interfaces/ICommand";
+import type ICommand from "@interfaces/ICommand";
 
 export default {
     name: "schedule",

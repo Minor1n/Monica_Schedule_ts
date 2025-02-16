@@ -1,5 +1,5 @@
 import {bot} from "@index";
-import IReplacementParse from "@interfaces/IReplacementParse";
+import type IReplacementParse from "@interfaces/IReplacementParse";
 
 export default class Replacement{
     private readonly _date:number

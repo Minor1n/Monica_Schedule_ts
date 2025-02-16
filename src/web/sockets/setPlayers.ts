@@ -1,10 +1,10 @@
 import {Server, Socket} from "socket.io";
-import IMafiaPlayer from "@interfaces/IMafiaPlayer";
+import type IMafiaPlayer from "@interfaces/IMafiaPlayer";
 import {bot} from "@index";
 import {mafia} from "@utils";
 
 
-export default (io: Server, socket: Socket, options: { newPlayers: IMafiaPlayer[], sessionId: number }) => {
+export default (io: Server, _socket: Socket, options: { newPlayers: IMafiaPlayer[], sessionId: number }) => {
     const session = bot.mafiaSessions.getSession(options.sessionId);
     if (!session) return;
     options.newPlayers.forEach(player=>{

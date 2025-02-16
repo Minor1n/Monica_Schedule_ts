@@ -1,9 +1,9 @@
 import {bot} from "@index";
-import {MysqlError} from "mysql";
+import type {MysqlError} from "mysql";
 import XLSX from "xlsx";
 import Group from "./Group";
 import HtmlToImage from "@classes/HtmlToImage";
-import IGroupQuery from "@interfaces/IGroupQuery";
+import type IGroupQuery from "@interfaces/IGroupQuery";
 import {payments} from "@utils";
 
 export default class Groups {

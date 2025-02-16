@@ -1,4 +1,4 @@
-import {TrueFalseType} from "@interfaces/Types";
+import type {TrueFalseType} from "@interfaces/Types";
 
 export default interface ISessionQuery {
     authorid: number;

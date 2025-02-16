@@ -1,4 +1,4 @@
-import IGroup from "@interfaces/IGroup";
+import type IGroup from "@interfaces/IGroup";
 
 export default interface IReplacementParse {
     text: string;

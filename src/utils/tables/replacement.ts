@@ -2,7 +2,7 @@ import {bot} from "@index";
 import GetFileData from "@classes/GetFileData";
 import Replacement from "@classes/replacements/Replacement";
 import HtmlToImage from "@classes/HtmlToImage";
-import {FileType} from "@types";
+import type {FileType} from "@types";
 import axios from "axios";
 
 

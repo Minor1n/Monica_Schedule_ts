@@ -1,17 +1,17 @@
 import {Scenes, session, Telegraf} from "telegraf";
 import config from "@config";
-import { createPool, Pool } from "mysql";
+import { createPool, type Pool } from "mysql";
 import Gradients from "@classes/Gradients";
 import Groups from "@classes/groups/Groups";
 import Users from "@classes/users/Users";
 import Replacements from "@classes/replacements/Replacements";
 import MafiaSessions from "@classes/games/MafiaSessions";
-import IBot from "@interfaces/IBot";
+import type IBot from "@interfaces/IBot";
 import {scenes} from "@controllers";
-import IContext from "@interfaces/IContext";
+import type IContext from "@interfaces/IContext";
 
 export default class Bot extends Telegraf<IContext<any>> implements IBot{
-    devMode:boolean = false
+    devMode:boolean = true
     connection: Pool;
     gamesConnection: Pool;
     gradients!: Gradients;

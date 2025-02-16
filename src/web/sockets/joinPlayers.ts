@@ -1,5 +1,5 @@
 import {Server, Socket} from "socket.io";
-import IMafiaJoin from "@interfaces/IMafiaJoin";
+import type IMafiaJoin from "@interfaces/IMafiaJoin";
 import {bot} from "@index";
 import {mafia} from "@utils";
 

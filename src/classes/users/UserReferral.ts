@@ -1,7 +1,7 @@
 import {bot} from "@index";
 import User from "./User";
-import IUserReferral from "@interfaces/IUserReferral";
-import IUserReferralQuery from "@interfaces/IUserReferralQuery";
+import type IUserReferral from "@interfaces/IUserReferral";
+import type IUserReferralQuery from "@interfaces/IUserReferralQuery";
 
 export default class UserReferral implements IUserReferral{
     id:number;

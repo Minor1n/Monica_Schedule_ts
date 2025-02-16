@@ -1,4 +1,4 @@
-import {TrueFalseType} from "@types";
+import type {TrueFalseType} from "@types";
 
 export default interface IMafiaPlayer{
     userId: number;

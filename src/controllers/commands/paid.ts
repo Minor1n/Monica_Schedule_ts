@@ -1,7 +1,7 @@
 import {Context} from "telegraf";
 import {bot} from "@index";
 import config from "@config";
-import ICommand from "@interfaces/ICommand";
+import type ICommand from "@interfaces/ICommand";
 
 export default {
     name: "paid",

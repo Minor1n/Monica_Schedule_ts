@@ -1,4 +1,4 @@
-import {UserRoleType} from "@interfaces/Types";
+import type {UserRoleType} from "@interfaces/Types";
 
 export default interface IUserInfo{
     id:number;

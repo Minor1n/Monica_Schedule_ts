@@ -1,8 +1,8 @@
 import {bot} from "@index";
-import {MysqlError} from "mysql";
+import type {MysqlError} from "mysql";
 import Settings from "./Settings";
-import ISettings from "@interfaces/ISettings";
-import {SettingsLinksType} from "@types";
+import type ISettings from "@interfaces/ISettings";
+import type {SettingsLinksType} from "@types";
 
 export default class SettingsAll {
     all: Map<SettingsLinksType, Settings> = new Map();

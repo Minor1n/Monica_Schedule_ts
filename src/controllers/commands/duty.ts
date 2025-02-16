@@ -1,5 +1,5 @@
 import {Context} from "telegraf";
-import ICommand from "@interfaces/ICommand";
+import type ICommand from "@interfaces/ICommand";
 
 export default {
     name: "duty",
