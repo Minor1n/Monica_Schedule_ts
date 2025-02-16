@@ -1,7 +1,7 @@
 import {bot} from "@index";
 import {fetchUtils} from "@utils";
 import SettingsAll from "@classes/settings/SettingsAll";
-import type {InlineKeyboardButton} from "@telegraf/types";
+import {InlineKeyboardButton} from "@telegraf/types";
 
 
 export default async ()=>{

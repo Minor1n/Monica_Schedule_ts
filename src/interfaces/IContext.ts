@@ -1,5 +1,5 @@
 import {Scenes,Context} from "telegraf";
-import type {SceneNames} from "@types";
+import {SceneNames} from "@types";
 
 interface CustomSceneContextScene<TContext extends Context> extends Scenes.SceneContextScene<TContext> {
     enter(scene: SceneNames): Promise<void>;

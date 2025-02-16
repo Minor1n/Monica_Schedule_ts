@@ -1,4 +1,4 @@
-import type {SettingsLinksType} from "@interfaces/Types";
+import {SettingsLinksType} from "@interfaces/Types";
 
 export default interface ISettings{
     type:SettingsLinksType

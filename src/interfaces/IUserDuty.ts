@@ -1,4 +1,4 @@
-import type {UserDutyDayType} from "@interfaces/Types";
+import {UserDutyDayType} from "@interfaces/Types";
 
 export default interface IUserDuty {
     id:number;

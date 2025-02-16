@@ -1,4 +1,4 @@
-import type {GradientType} from "@interfaces/Types";
+import {GradientType} from "@interfaces/Types";
 
 export default interface IGradient{
     css: string

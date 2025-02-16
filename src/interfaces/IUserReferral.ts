@@ -1,4 +1,4 @@
-import type IUserReferralQuery from "@interfaces/IUserReferralQuery";
+import IUserReferralQuery from "@interfaces/IUserReferralQuery";
 
 export default interface IUserReferral{
     id:number;

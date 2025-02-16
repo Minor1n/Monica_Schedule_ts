@@ -1,5 +1,5 @@
 import {bot} from "@index";
-import type {TrueFalseType} from "@types";
+import {TrueFalseType} from "@types";
 
 interface IQuery{
     user:string;

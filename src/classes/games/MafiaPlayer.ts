@@ -1,14 +1,16 @@
-import type {TrueFalseType} from "@types";
+import {TrueFalseType} from "@types";
 
 export default class MafiaPlayer {
     id: number;
+    private _socketId!: string;
     private _role: string;
     private _isDeath: TrueFalseType;
 
-    constructor(id: number, role: string, isDeath: TrueFalseType) {
+    constructor(id: number, role: string, isDeath: TrueFalseType, socketId: string) {
         this.id = id;
         this._role = role;
         this._isDeath = isDeath;
+        this._socketId = socketId;
     }
 
     set role(roleName: string) {

@@ -1,7 +1,7 @@
 import {bot} from "@index";
 import config from "@config";
 import {Context} from "telegraf";
-import type IHear from "@interfaces/IHear";
+import IHear from "@interfaces/IHear";
 
 export default {
     name: 'Отдежурил',

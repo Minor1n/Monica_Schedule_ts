@@ -2,7 +2,7 @@ import {Context} from "telegraf";
 import {bot} from "@index";
 import config from "@config";
 import {callbackQueries} from "@controllers";
-import type ICommand from "@interfaces/ICommand";
+import ICommand from "@interfaces/ICommand";
 
 export default {
     name: "settings",

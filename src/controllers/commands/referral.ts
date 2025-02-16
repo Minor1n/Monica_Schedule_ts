@@ -1,6 +1,6 @@
-import type ICommand from "@interfaces/ICommand";
-import type IContext from "@interfaces/IContext";
-import type ISceneSessionSetReferralKey from "@interfaces/scenes/ISceneSessionSetReferralKey";
+import ICommand from "@interfaces/ICommand";
+import IContext from "@interfaces/IContext";
+import ISceneSessionSetReferralKey from "@interfaces/scenes/ISceneSessionSetReferralKey";
 
 export default {
     name: "referral",

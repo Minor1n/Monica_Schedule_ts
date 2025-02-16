@@ -1,6 +1,6 @@
 import {bot} from "@index";
 import User from "@classes/users/User";
-import type IDuty from "@interfaces/IDuty";
+import IDuty from "@interfaces/IDuty";
 
 export default class GroupDuty{
     private readonly groupName: string

@@ -1,6 +1,6 @@
 import {Scenes} from "telegraf";
-import type IContext from "@interfaces/IContext";
-import type ISceneSessionSetName from "@interfaces/scenes/ISceneSessionSetName";
+import IContext from "@interfaces/IContext";
+import ISceneSessionSetName from "@interfaces/scenes/ISceneSessionSetName";
 import {bot} from "@index";
 
 

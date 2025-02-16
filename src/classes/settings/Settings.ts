@@ -1,7 +1,7 @@
 import {bot} from "@index";
-import type {MysqlError} from "mysql";
-import type ISettings from "@interfaces/ISettings";
-import type {SettingsLinksType} from "@types";
+import {MysqlError} from "mysql";
+import ISettings from "@interfaces/ISettings";
+import {SettingsLinksType} from "@types";
 
 export default class Settings implements ISettings{
     type!:SettingsLinksType

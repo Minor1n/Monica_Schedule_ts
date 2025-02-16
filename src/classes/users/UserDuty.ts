@@ -1,6 +1,6 @@
 import {bot} from "@index";
-import type IUserDuty from "@interfaces/IUserDuty";
-import type {UserDutyDayType} from "@types";
+import IUserDuty from "@interfaces/IUserDuty";
+import {UserDutyDayType} from "@types";
 
 export default class UserDuty implements IUserDuty {
     id: number;

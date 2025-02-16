@@ -1,8 +1,8 @@
 import {bot} from "@index";
-import type {MysqlError} from "mysql";
+import {MysqlError} from "mysql";
 import User from "./User";
 import HtmlToImage from "@classes/HtmlToImage";
-import type IUserQuery from "@interfaces/IUserQuery";
+import IUserQuery from "@interfaces/IUserQuery";
 import {payments} from "@utils";
 
 export default class Users{

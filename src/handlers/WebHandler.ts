@@ -6,7 +6,7 @@ import {bot} from "@index";
 import components from "@web/components";
 
 
-import type IWebComponent from "@interfaces/IWebComponent";
+import IWebComponent from "@interfaces/IWebComponent";
 
 export default ()=>{
     const app = express()

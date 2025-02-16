@@ -1,4 +1,4 @@
-import type {UserLightModeType, UserSettingsStatusType} from "@interfaces/Types";
+import {UserLightModeType, UserSettingsStatusType} from "@interfaces/Types";
 
 export default interface IUserSettings{
     id:number;

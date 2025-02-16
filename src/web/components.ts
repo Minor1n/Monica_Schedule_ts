@@ -1,6 +1,6 @@
-import type IWebComponent from "@interfaces/IWebComponent";
+import IWebComponent from "@interfaces/IWebComponent";
 import web from "@web";
-import type ISocketComponent from "@interfaces/ISocketComponent";
+import ISocketComponent from "@interfaces/ISocketComponent";
 
 const standardRouterHandlers:IWebComponent[] = [
     { method: 'get', url: '/gradient', handler: web.gradient },

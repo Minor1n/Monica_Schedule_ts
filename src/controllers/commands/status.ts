@@ -1,6 +1,6 @@
 import {Context} from "telegraf";
 import {payments} from "@utils";
-import type ICommand from "@interfaces/ICommand";
+import ICommand from "@interfaces/ICommand";
 
 export default {
     name: "status",

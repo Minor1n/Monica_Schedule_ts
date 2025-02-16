@@ -1,5 +1,5 @@
 import {BaseScene} from "telegraf/scenes";
-import type IContext from "@interfaces/IContext";
+import IContext from "@interfaces/IContext";
 //CallbackQueries
 import keyboard from "@controllers/callbackQueries/settings/keyboard";
 import updateSettings from "@controllers/callbackQueries/settings/updateSettings";
@@ -29,8 +29,8 @@ import settings from "@controllers/commands/settings";
 import start from "@controllers/commands/start";
 import status from "@controllers/commands/status";
 import theme from "@controllers/commands/theme";
-import type IHear from "@interfaces/IHear";
-import type ICommand from "@interfaces/ICommand";
+import IHear from "@interfaces/IHear";
+import ICommand from "@interfaces/ICommand";
 //Scenes
 import SceneUserPaid from "@controllers/scenes/userPaid";
 import SceneSetName from "@controllers/scenes/setName";

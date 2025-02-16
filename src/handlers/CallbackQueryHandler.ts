@@ -1,6 +1,6 @@
 import {bot} from "@index";
 import {callbackQueries} from "@controllers";
-import type {UserSettingsType} from "@types";
+import {UserSettingsType} from "@types";
 
 export default () => {
     bot.on('callback_query', async (ctx) => {

@@ -1,6 +1,6 @@
 import {bot} from "@index";
-import type {MysqlError} from "mysql";
-import type IGradient from "@interfaces/IGradient";
+import {MysqlError} from "mysql";
+import IGradient from "@interfaces/IGradient";
 
 export default class Gradients{
     private _light: IGradient[] = []

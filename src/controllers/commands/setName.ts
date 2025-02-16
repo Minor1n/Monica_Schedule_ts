@@ -1,6 +1,6 @@
-import type ICommand from "@interfaces/ICommand";
-import type IContext from "@interfaces/IContext";
-import type ISceneSessionSetName from "@interfaces/scenes/ISceneSessionSetName";
+import ICommand from "@interfaces/ICommand";
+import IContext from "@interfaces/IContext";
+import ISceneSessionSetName from "@interfaces/scenes/ISceneSessionSetName";
 
 export default {
     name: "setname",

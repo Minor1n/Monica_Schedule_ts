@@ -1,14 +1,14 @@
 import {bot} from "@index";
-import type {MysqlError} from "mysql";
+import {MysqlError} from "mysql";
 import HtmlToImage from "@classes/HtmlToImage";
 import Settings from "@classes/settings/Settings";
 import GroupSchedule from "./GroupSchedule";
 import GroupDuty from "./GroupDuty";
 import GroupReplacement from "./GroupReplacement";
-import type IGroup from "@interfaces/IGroup";
-import type IDuty from "@interfaces/IDuty";
-import type IGroupQuery from "@interfaces/IGroupQuery";
-import type {UserSettingsType} from "@types";
+import IGroup from "@interfaces/IGroup";
+import IDuty from "@interfaces/IDuty";
+import IGroupQuery from "@interfaces/IGroupQuery";
+import {UserSettingsType} from "@types";
 import {payments} from "@utils";
 
 export default class Group implements IGroup{

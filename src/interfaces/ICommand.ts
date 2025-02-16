@@ -1,4 +1,4 @@
-import type IContext from "@interfaces/IContext";
+import IContext from "@interfaces/IContext";
 
 export default interface ICommand {
     name: string;

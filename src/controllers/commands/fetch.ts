@@ -1,7 +1,7 @@
 import {bot} from "@index";
 import {Context} from "telegraf";
-import type {InlineKeyboardButton} from "@telegraf/types";
-import type ICommand from "@interfaces/ICommand";
+import {InlineKeyboardButton} from "@telegraf/types";
+import ICommand from "@interfaces/ICommand";
 import {fetchUtils} from "@utils";
 
 export default {

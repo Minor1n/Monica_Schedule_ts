@@ -1,6 +1,6 @@
 import {Context} from "telegraf";
 import {bot} from "@index";
-import type ICommand from "@interfaces/ICommand";
+import ICommand from "@interfaces/ICommand";
 
 export default {
     name: "send",

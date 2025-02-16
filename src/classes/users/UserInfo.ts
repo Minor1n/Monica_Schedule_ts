@@ -1,6 +1,6 @@
 import {bot} from "@index";
-import type IUserInfo from "@interfaces/IUserInfo";
-import type {UserRoleType} from "@types";
+import IUserInfo from "@interfaces/IUserInfo";
+import {UserRoleType} from "@types";
 
 export default class UserInfo implements IUserInfo{
     private readonly _bots: number;

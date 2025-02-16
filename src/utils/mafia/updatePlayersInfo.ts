@@ -1,4 +1,4 @@
-import type IMafiaPlayer from "@interfaces/IMafiaPlayer";
+import IMafiaPlayer from "@interfaces/IMafiaPlayer";
 import {Server} from "socket.io";
 
 

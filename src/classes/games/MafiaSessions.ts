@@ -1,7 +1,7 @@
 import {bot} from "@index";
-import type {MysqlError} from "mysql";
+import {MysqlError} from "mysql";
 import MafiaSession from "@classes/games/MafiaSession";
-import type ISessionQuery from "@interfaces/ISessionQuery";
+import ISessionQuery from "@interfaces/ISessionQuery";
 
 export default class MafiaSessions {
     games:MafiaSession[] = []

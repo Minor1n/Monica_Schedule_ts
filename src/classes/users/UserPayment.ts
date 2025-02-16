@@ -1,6 +1,6 @@
 import {bot} from "@index";
 import UserReferral from "./UserReferral";
-import type IUserPayment from "@interfaces/IUserPayment";
+import IUserPayment from "@interfaces/IUserPayment";
 
 export default class UserPayment implements IUserPayment{
     id: number;

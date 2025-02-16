@@ -1,7 +1,7 @@
 import {bot} from "@index";
-import type {MysqlError} from "mysql";
+import {MysqlError} from "mysql";
 import MafiaPlayer from "@classes/games/MafiaPlayer";
-import type IMafiaPlayersQuery from "@interfaces/IMafiaPlayersQuery";
+import IMafiaPlayersQuery from "@interfaces/IMafiaPlayersQuery";
 
 export default class MafiaSession {
     sessionId!: number;
@@ -18,7 +18,7 @@ export default class MafiaSession {
         const queryPlayers = await querySQL.getPlayers(this.sessionId)
         for(let i = 0; i < queryPlayers.length; i++){
             const query = queryPlayers[i]
-            const player = new MafiaPlayer(query.id,query.role,query.isDeath)
+            const player = new MafiaPlayer(query.id,query.role,query.isDeath,'null')
             this.map.set(query.id,player)
             this.players.push(player)
         }
@@ -29,9 +29,9 @@ export default class MafiaSession {
         return this.map.get(userId)
     }
 
-    addPlayer(userId:number){
+    addPlayer(userId:number,socketId:string){
         querySQL.addPlayer(this.sessionId,userId)
-        const newPlayer = new MafiaPlayer(userId,'null','false')
+        const newPlayer = new MafiaPlayer(userId,'null','false',socketId)
         this.map.set(userId,newPlayer)
         this.players.push(newPlayer)
         return newPlayer

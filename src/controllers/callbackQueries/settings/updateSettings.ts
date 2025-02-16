@@ -2,7 +2,7 @@ import {Context} from "telegraf";
 import {bot} from "@index";
 import config from "@config";
 import keyboard from "./keyboard";
-import type {UserSettingsType} from "@types";
+import {UserSettingsType} from "@types";
 
 export default async (ctx: Context, data: string, settingType: UserSettingsType) => {
     const userId = Number(data.replace(/^\D+/g, ''));

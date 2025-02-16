@@ -1,6 +1,6 @@
-import type ICommand from "@interfaces/ICommand";
-import type IContext from "@interfaces/IContext";
-import type ISceneSessionSetTheme from "@interfaces/scenes/ISceneSessionSetTheme";
+import ICommand from "@interfaces/ICommand";
+import IContext from "@interfaces/IContext";
+import ISceneSessionSetTheme from "@interfaces/scenes/ISceneSessionSetTheme";
 
 export default {
     name: "theme",

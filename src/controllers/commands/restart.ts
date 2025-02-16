@@ -1,5 +1,5 @@
 import {Context} from "telegraf";
-import type ICommand from "@interfaces/ICommand";
+import ICommand from "@interfaces/ICommand";
 import {exec} from "child_process";
 
 export default {
@@ -8,7 +8,7 @@ export default {
         if(ctx.chat?.id === 6018898378){
             await ctx.reply('Бот выключен!')
             setTimeout(()=>{
-                exec('pm2 restart Monica_Schedule', (error, stdout) => {
+                exec('pm2 restart Monica_Schedule', (error, stdout, stderr) => {
                     if (error) {
                         console.error(`Ошибка перезапуска: ${error}`);
                     }

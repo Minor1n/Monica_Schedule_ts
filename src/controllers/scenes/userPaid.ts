@@ -1,9 +1,9 @@
 import {Markup, Scenes} from "telegraf";
 import config from "@config";
-import type IContext from "@interfaces/IContext";
-import type ISceneSessionUserPaid from "@interfaces/scenes/ISceneSessionUserPaid";
+import IContext from "@interfaces/IContext";
+import ISceneSessionUserPaid from "@interfaces/scenes/ISceneSessionUserPaid";
 import {bot} from "@index";
-import type {ExtraEditMessageText} from "telegraf/typings/telegram-types";
+import {ExtraEditMessageText} from "telegraf/typings/telegram-types";
 
 const edit = (ctx:IContext<ISceneSessionUserPaid>, message:string, extra?: ExtraEditMessageText) => {
     bot.telegram.editMessageText(ctx.session.adminId,ctx.session.messageId,undefined,message,extra);
