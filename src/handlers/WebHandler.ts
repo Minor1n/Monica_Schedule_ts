@@ -63,5 +63,5 @@ export default ()=>{
         });
     })
 
-    httpServer.listen(5000,bot.devMode?'localhost':'104.249.40.163');
+    httpServer.listen(5000,bot.devMode?'localhost':'104.164.54.119');
 }
