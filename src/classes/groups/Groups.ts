@@ -38,7 +38,8 @@ export default class Groups {
         const worksheet = workbook.Sheets[sheetNameList[0]];
         const arr: string[] = []
         for (let key in worksheet) {
-            if (key.startsWith('B') && worksheet[key].v.trim().match(/^[А-Я]+-[0-9][0-9]$|^[А-Я]+-[0-9][0-9][а-я]$/ig)){
+            console.log(worksheet[key]);
+            if (key.startsWith('B') && worksheet[key]?.v?.trim().match(/^[А-Я]+-[0-9][0-9]$|^[А-Я]+-[0-9][0-9][а-я]$/ig)){
                 if(!this.getGroup(worksheet[key].v.trim())){
                     await this.setGroup(worksheet[key].v.trim())
                     arr.push(worksheet[key].v.trim())
